@@ -62,7 +62,7 @@ export default createStore({
       localStorage.clear();
     },
     setTokenExpired(state) {
-      state.loggedIn = false;
+      state.logedIn = false;
       state.token = "";
       state.role = "";
       state.position = "";

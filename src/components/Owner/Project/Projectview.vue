@@ -8,7 +8,7 @@
         </div>
         <div class="mb-4">
           <label class="block text-sm font-bold mb-2">ประเภท</label>
-          <p>{{ detailEmployee?.refs[0]?.packagename }}</p>
+          <p>{{ detailEmployee.projectType }}</p>
         </div>
         <div class="mb-4">
           <label class="block text-sm font-bold mb-2">รายละเอียด</label>
@@ -67,12 +67,11 @@
       </div>
     </Sidebar>
 
-    <Dialog v-model:visible="showAddProjectModal" :modal="true" class="w-1/2"
-      header="เพิ่มโปรเจคใหม่">
+    <Dialog v-model:visible="showAddProjectModal" :modal="true" class="w-1/2" header="เพิ่มโปรเจคใหม่">
       <form class="px-4 sm:px-10 mt-2 sm:mt-5">
         <div class="grid gap-3 sm:gap-6 mb-3 sm:mb-6 md:grid-cols-2">
 
-        <div>
+          <div>
             <label for="projectTitle"
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ชื่อโปรเจค</label>
             <input v-model="newProject.title" type="text" id="projectTitle"
@@ -83,90 +82,66 @@
           <div>
             <label for="projectType"
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ผู้รับผิดชอบ</label>
-            <select v-model="newProject.type" @change="fetchEmployees" id="projectType"
+            <select v-model="newProject.projectType" @change="fetchEmployees" id="projectType"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
               required>
               <option value="" disabled selected>โปรดเลือกผู้รับผิดชอบ</option>
-              <option v-for="pType in projectTypes" :key="pType._id" :value="pType">
+              <option v-for="pType in projectTypes" :key="pType._id" :value="pType.code">
                 {{ pType.name }}
               </option>
             </select>
           </div>
 
           <div>
-            <label for="datePicker">ตั้งแต่วันที่:</label>
-            <input type="date" v-model="selectedDate" id="datePicker">
+            <label>ตั้งแต่วันที่:</label>
+            <input type="date" v-model="newProject.selectedStartDate">
           </div>
           <div>
-            <label for="datePicker">ถึงวันที่:</label>
-            <input type="date" v-model="selectedDate" id="datePicker">
+            <label>ถึงวันที่:</label>
+            <input type="date" v-model="newProject.selectedEndDate">
           </div>
 
           <div>
             <label for="projectTitle"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">สถานที่ตั้ง</label>
-            <input v-model="newProject.title" type="text" id="projectTitle"
+              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ที่อยู่</label>
+            <input v-model="newProject.location" type="text" id="projectTitle"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
               placeholder="" required />
           </div>
 
-          <div>
-            <label for="projectType"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">จังหวัด</label>
-            <select v-model="newProject.type" @change="fetchEmployees" id="projectType"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              required>
-              <option value="" disabled selected>จังหวัด</option>
-              <option v-for="pType in projectTypes" :key="pType._id" :value="pType">
-                {{ pType.name }}
-              </option>
-            </select>
+          <div class="transition-all duration-300">
+            <label for="province" class="block mb-1 font-medium text-gray-700">จังหวัด</label>
+            <Dropdown v-model="newProject.province" :options="provinces" optionLabel="name_th" optionValue="id"
+              placeholder="เลือกจังหวัด" class="w-full bg-gray-50 border-gray-300 border" @change="handleProvinceChange"
+              filter />
           </div>
 
-<div>
-            <label for="projectType"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">อำเภอ</label>
-            <select v-model="newProject.type" @change="fetchEmployees" id="projectType"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              required>
-              <option value="" disabled selected>อำเภอ</option>
-              <option v-for="pType in projectTypes" :key="pType._id" :value="pType">
-                {{ pType.name }}
-              </option>
-            </select>
+          <div class="transition-all duration-300">
+            <label for="district" class="block mb-1 font-medium text-gray-700">อำเภอ</label>
+            <Dropdown v-model="newProject.district" :options="districts" optionLabel="name_th" optionValue="id"
+              placeholder="เลือกอำเภอ" class="w-full bg-gray-50 border-gray-300 border" :disabled="!newProject.province"
+              @change="handleDistrictChange" filter />
           </div>
 
-          <div>
-            <label for="projectType"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ตำบล</label>
-            <select v-model="newProject.type" @change="fetchEmployees" id="projectType"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              required>
-              <option value="" disabled selected>ตำบล</option>
-              <option v-for="pType in projectTypes" :key="pType._id" :value="pType">
-                {{ pType.name }}
-              </option>
-            </select>
+          <div class="transition-all duration-300">
+            <label for="subdistrict" class="block mb-1 font-medium text-gray-700">ตำบล</label>
+            <Dropdown v-model="newProject.subdistrict" :options="subdistricts" optionLabel="name_th" optionValue="id"
+              placeholder="เลือกตำบล" class="w-full bg-gray-50 border-gray-300 border" :disabled="!newProject.district"
+              @change="handleSubdistrictChange" filter />
           </div>
 
-          <div>
-            <label for="projectType"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">รหัสไปรษณีย์</label>
-            <select v-model="newProject.type" @change="fetchEmployees" id="projectType"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              required>
-              <option value="" disabled selected>รหัสไปรษณีย์</option>
-              <option v-for="pType in projectTypes" :key="pType._id" :value="pType">
-                {{ pType.name }}
-              </option>
-            </select>
+          <div class="transition-all duration-300 mt-1">
+            <label for="postcode" class="block mb-1 font-medium text-gray-700">รหัสไปรษณีย์</label>
+            <input v-model="newProject.postcode" type="text" id="postcode"
+              class="w-full border border-gray-300 rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+              readonly />
           </div>
 
           <div>
             <label for="projectTitle"
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">เลขพิกัดละติจูด ลองจิจูด</label>
-            <input v-model="newProject.title" type="text" id="projectTitle"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
+            <input v-model="newProject.address" type="text" id="projectTitle"
+              class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
               placeholder="" required />
           </div>
 
@@ -179,16 +154,14 @@
           </div>
         </div>
         <div class="flex justify-end">
-          <button @click="submitProject"
-            class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
+          <button @click="submitProject" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
             เพิ่มงาน
           </button>
         </div>
       </form>
     </Dialog>
 
-    <Dialog v-model:visible="showEditProjectModal" :modal="true" class="w-1/2"
-      header="แก้ไขโปรเจค">
+    <Dialog v-model:visible="showEditProjectModal" :modal="true" class="w-1/2" header="แก้ไขโปรเจค">
       <form class="px-4 sm:px-10 mt-2 sm:mt-5">
         <div class="grid gap-3 sm:gap-6 mb-3 sm:mb-6 md:grid-cols-2">
           <!-- Position -->
@@ -198,7 +171,7 @@
             <select v-model="editedProject.position" @change="fetchEmployeesForEditedProject" id="editProjectPosition"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
               required>
-              <option  disabled selected>โปรดเลือกตำแหน่งงาน</option>
+              <option disabled selected>โปรดเลือกตำแหน่งงาน</option>
               <option value="GRP">Graphic</option>
               <option value="DEV">Programmer</option>
             </select>
@@ -214,8 +187,8 @@
               <option value="" disabled selected>โปรดเลือกพนักงาน</option>
               <option v-for="employee in employees" :key="employee._id" :value="employee._id">
                 {{ employee.first_name }} {{ employee.last_name }} ({{
-      employee.nick_name
-    }})
+                  employee.nick_name
+                }})
               </option>
             </select>
           </div>
@@ -322,8 +295,7 @@
 
         <!-- Submit Button -->
         <div class="flex justify-end">
-          <button @click="submitEditedProject"
-            class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
+          <button @click="submitEditedProject" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
             บันทึก
           </button>
         </div>
@@ -342,7 +314,7 @@
                   {{ new Date().getFullYear() + 543 }}</span>
               </h3>
             </div>
-<!-- หน้าปกติ -->
+            <!-- หน้าปกติ -->
             <div class="px-10 space-y-4">
               <div class="flex md:justify-start justify-center">
                 <button @click="toggleAddProjectModal"
@@ -427,7 +399,7 @@
                               <Image v-if="em.imageUrl" :src="em.imageUrl" :alt="em.nick_name"
                                 imageClass="w-[45px] h-[45px] rounded-full shadow-md" preview />
                               <div v-else class="w-[45px] h-[45px] rounded-full bg-sky-200">
-                                <small class="p-0 m-0">{{em.nick_name}}</small>
+                                <small class="p-0 m-0">{{ em.nick_name }}</small>
                               </div>
                             </div>
                             <div v-else class="flex items-center font-normal flex-wrap gap-2">
@@ -450,18 +422,18 @@
                       <td class="p-3">
                         <div>
                           <ButtonP icon="pi pi-angle-double-up" :label="project.status[project.status.length - 1]?.name
-      " :class="[
-      project.status[project.status.length - 1]?.name ===
-        'รอรับงาน'
-        ? 'bg-teal-500'
-        : project.status[project.status.length - 1]
-          ?.name === 'กำลังดำเนินการ'
-          ? 'bg-yellow-500'
-          : project.status[project.status.length - 1]
-            ?.name === 'เสร็จแล้ว'
-            ? 'bg-blue-500'
-            : 'bg-gray-500', // กรณีอื่นๆ ใช้สีเทา
-    ]" class="px-3 py-2 text-white inline-block rounded hover:shadow-lg"
+                            " :class="[
+                              project.status[project.status.length - 1]?.name ===
+                                'รอรับงาน'
+                                ? 'bg-teal-500'
+                                : project.status[project.status.length - 1]
+                                  ?.name === 'กำลังดำเนินการ'
+                                  ? 'bg-yellow-500'
+                                  : project.status[project.status.length - 1]
+                                    ?.name === 'เสร็จแล้ว'
+                                    ? 'bg-blue-500'
+                                    : 'bg-gray-500', // กรณีอื่นๆ ใช้สีเทา
+                            ]" class="px-3 py-2 text-white inline-block rounded hover:shadow-lg"
                             @click="viewStatus(project)" />
                         </div>
                         <!-- <span
@@ -488,13 +460,13 @@
                         </span> -->
                       </td>
                       <td class="pr-0 text-center">
-                        <div v-if="project.dueDate">
+                        <div v-if="project.endDate">
                           <p class="font-semibold m-0 p-0 text-light-inverse text-md/normal">
-                            {{ formatDate(project.dueDate) }}
+                            {{ formatDate(project.endDate) }}
                           </p>
                           <p class="font-semibold m-0 p-0 text-light-inverse text-md/normal"
-                            :class="formatDayLeft(project.dueDate)?.class">
-                            {{ formatDayLeft(project.dueDate)?.text }}
+                            :class="formatDayLeft(project.endDate)?.class">
+                            {{ formatDayLeft(project.endDate)?.text }}
                           </p>
                         </div>
                         <div v-else>
@@ -543,12 +515,11 @@
       </div>
     </div>
 
-    <Dialog v-model:visible="openSelectEmployeesDialog" :modal="true"
-      class="w-1/2 bg-white" header=" ">
+    <Dialog v-model:visible="openSelectEmployeesDialog" :modal="true" class="w-1/2 bg-white" header=" ">
       <p class="mt-2">
         พนักงานที่เลือก
         <span class="rounded-full px-2.5 text-white" :class="selectedEmployees.length ? 'bg-red-500' : 'bg-gray-500'">{{
-      selectedEmployees.length }}</span>
+          selectedEmployees.length }}</span>
       </p>
       <div class="flex overflow-x-auto bg-white">
         <div v-for="(selected, index) in selectedEmployees" :key="selected._id">
@@ -565,27 +536,27 @@
                   {{ selected.nick_name ? `(${selected.nick_name})` : null }}
                 </p>
                 <small :class="[
-      'text-xs px-2 rounded',
-      selected?.position?.toLowerCase().includes('programmer')
-        ? 'bg-sky-200'
-        : selected?.position?.toLowerCase().includes('graphic')
-          ? 'bg-pink-200'
-          : selected?.position?.toLowerCase().includes('marketting')
-            ? 'bg-yellow-200'
-            : selected?.position?.toLowerCase().includes('manager')
-              ? 'bg-green-200'
-              : selected?.position?.toLowerCase().includes('hr')
-                ? 'bg-purple-200'
-                : selected?.position?.toLowerCase().includes('owner')
-                  ? 'bg-red-200'
-                  : selected?.position?.toLowerCase().includes('admin')
-                    ? 'bg-orange-200'
-                    : selected?.position?.toLowerCase().includes('accounting')
-                      ? 'bg-emerald-200'
-                      : selected?.position?.toLowerCase().includes('lawyer')
-                        ? 'bg-gray-200'
-                        : '',
-    ]">
+                  'text-xs px-2 rounded',
+                  selected?.position?.toLowerCase().includes('programmer')
+                    ? 'bg-sky-200'
+                    : selected?.position?.toLowerCase().includes('graphic')
+                      ? 'bg-pink-200'
+                      : selected?.position?.toLowerCase().includes('marketting')
+                        ? 'bg-yellow-200'
+                        : selected?.position?.toLowerCase().includes('manager')
+                          ? 'bg-green-200'
+                          : selected?.position?.toLowerCase().includes('hr')
+                            ? 'bg-purple-200'
+                            : selected?.position?.toLowerCase().includes('owner')
+                              ? 'bg-red-200'
+                              : selected?.position?.toLowerCase().includes('admin')
+                                ? 'bg-orange-200'
+                                : selected?.position?.toLowerCase().includes('accounting')
+                                  ? 'bg-emerald-200'
+                                  : selected?.position?.toLowerCase().includes('lawyer')
+                                    ? 'bg-gray-200'
+                                    : '',
+                ]">
                   {{ selected.position?.toLowerCase() }}
                 </small>
               </div>
@@ -597,41 +568,41 @@
         <SelectButton class="py-3" v-model="filterEmployees" :options="employTypesOptions" multiple
           aria-labelledby="multiple" :pt="{ button: 'border text-xs border-collapse' }" />
       </div>
-      <div class="grid grid-cols-3 justify-start items-start gap-3">
+      <div class="grid grid-cols-2 justify-center items-center gap-y-3">
         <div v-for="employ in filteredEmployees" :key="employ._id">
           <div class="flex justify-between w-[300px] border rounded shadow-sm py-2 px-3 items-center" :class="selectedEmployees.includes(employ) ? 'bg-green-100' : 'bg-white'
-      ">
+            ">
             <div class="flex items-center gap-2">
               <Image v-if="employ.imageUrl" :src="employ.imageUrl" :alt="employ.image" preview
                 imageClass="w-[40px] h-[40px] rounded-full" />
               <div>
-                <p class="m-0 px-0 py-1 text-left">
+                <p class="m-0 px-0 py-1 text-left line-clamp-1">
                   {{ employ.name_title }}{{ employ.first_name }}
                   {{ employ.last_name }}
                   {{ employ.nick_name ? `(${employ.nick_name})` : null }}
                 </p>
                 <small :class="[
-      'text-xs px-2 rounded',
-      employ.position?.toLowerCase().includes('programmer')
-        ? 'bg-sky-200'
-        : employ.position?.toLowerCase().includes('graphic')
-          ? 'bg-pink-200'
-          : employ.position?.toLowerCase().includes('marketting')
-            ? 'bg-yellow-200'
-            : employ.position?.toLowerCase().includes('manager')
-              ? 'bg-green-200'
-              : employ.position?.toLowerCase().includes('hr')
-                ? 'bg-purple-200'
-                : employ.position?.toLowerCase().includes('owner')
-                  ? 'bg-red-200'
-                  : employ.position?.toLowerCase().includes('admin')
-                    ? 'bg-orange-200'
-                    : employ.position?.toLowerCase().includes('accounting')
-                      ? 'bg-emerald-200'
-                      : employ.position?.toLowerCase().includes('lawyer')
-                        ? 'bg-gray-200'
-                        : '',
-    ]">
+                  'text-xs px-2 rounded',
+                  employ.position?.toLowerCase().includes('ช่างเทคนิค')
+                    ? 'bg-sky-200'
+                    : employ.position?.toLowerCase().includes('พนักงานภาคสนาม')
+                      ? 'bg-pink-200'
+                      : employ.position?.toLowerCase().includes('marketting')
+                        ? 'bg-yellow-200'
+                        : employ.position?.toLowerCase().includes('manager')
+                          ? 'bg-green-200'
+                          : employ.position?.toLowerCase().includes('hr')
+                            ? 'bg-purple-200'
+                            : employ.position?.toLowerCase().includes('owner')
+                              ? 'bg-red-200'
+                              : employ.position?.toLowerCase().includes('admin')
+                                ? 'bg-orange-200'
+                                : employ.position?.toLowerCase().includes('accounting')
+                                  ? 'bg-emerald-200'
+                                  : employ.position?.toLowerCase().includes('lawyer')
+                                    ? 'bg-gray-200'
+                                    : '',
+                ]">
                   {{ employ.position?.toLowerCase() }}
                 </small>
               </div>
@@ -671,13 +642,13 @@
     <Dialog v-model:visible="DetailsStatus" modal header="รายละเอียดอัพเดตงาน" style="min-width: 320px">
       {{ console.log(detailEmployee) }}
       <Timeline :value="detailEmployee.map((item, index) => ({
-      content: item.name,
-      date: formatDate(item.timestamp),
-      time: formatTime(item.timestamp),
-      status: item.name,
-      index,
-    }))
-      ">
+        content: item.name,
+        date: formatDate(item.timestamp),
+        time: formatTime(item.timestamp),
+        status: item.name,
+        index,
+      }))
+        ">
         <template #opposite="slotProps">
           <small class="p-text-secondary">{{ slotProps.item.date }} {{ slotProps.item.time }}</small>
         </template>
@@ -696,6 +667,7 @@
 </template>
 
 <script>
+import { ref } from "vue";
 import axios from "axios";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
@@ -737,12 +709,24 @@ export default {
       detailEmployee: null, // เพิ่ม detailEmployee เพื่อเก็บข้อมูลโปรเจคที่ถูกเลือก
       employTypesOptions: [],
       DetailsStatus: false,
+      selectedStartDate: null,
+      selectedEndDate: null,
+
+      provinces: ref([]),
+      districts: ref([]),
+      subdistricts: ref([]),
+
+      province: null,
+      amphure: null,
+      tambon: null,
+      postcode: null,
     };
   },
   mounted() {
     this.fetchProjects();
     this.fetchProjectTypes();
     this.fetchEmployees();
+    this.fetchProvinces()
     // เรียกใช้เมื่อโหลด component
   },
   computed: {
@@ -796,6 +780,17 @@ export default {
     },
   },
   methods: {
+    async fetchProvinces() {
+      try {
+        const response = await axios.get(
+          'https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province_with_amphure_tambon.json'
+        );
+
+        this.provinces = response.data;
+      } catch (error) {
+        console.error('Error fetching provinces: ', error);
+      }
+    },
     async updateEmployees() {
       this.isLoaing = true;
       const id = this.newProject._id;
@@ -1192,6 +1187,9 @@ export default {
         console.log(err);
       }
     },
+
+
+
     async fetchProjects() {
       try {
         this.isLoading = true;
@@ -1223,37 +1221,49 @@ export default {
     toggleAddProjectModal() {
       this.showAddProjectModal = !this.showAddProjectModal;
     },
+
     async submitProject() {
-      let payload = this.newProject;
-      payload.code = this.newProject.type?.code;
-      payload.projectType = this.newProject.type?.name;
-      // console.log(this.newProject.type)
-      // return
+      this.isLoading = true;
+
+      console.log('newProject : ', this.newProject)
+      const payload = this.newProject;
+
+      const projectSubmit = {
+        title: payload.title,
+        projectType: payload.projectType,
+
+        startDate: payload.selectedStartDate ,
+        endDate: payload.selectedEndDate ,
+
+        location: payload.location,
+        address: payload.address,
+        subdistrict: payload.subdistrict,
+        district: payload.district,
+        province: payload.province,
+        postcode: payload.postcode,
+        remark: payload.remark
+      }
+
       try {
-        this.isLoading = true;
+        console.log('payload', payload)
+        console.log('projectSub : ', projectSubmit)
         const response = await axios.post(
           `${import.meta.env.VITE_VUE_APP_DECCAN}/project`,
-          payload,
-          {
-            headers: {
-              "auth-token": localStorage.getItem("token"),
-            },
-          }
+          projectSubmit
         );
-        if (response.data.status) {
-          this.newProject = {};
-          // ปิดกล่อง popup
-          this.showAddProjectModal = false;
-          // แสดง SweetAlert2 แจ้งเตือน
-          await Swal.fire({
-            icon: "success",
-            title: "เพิ่มงานสำเร็จ",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          // รีเฟรชรายการโปรเจค
-          this.fetchProjects();
-        }
+
+        this.newProject = {};
+        // ปิดกล่อง popup
+        this.showAddProjectModal = false;
+        // แสดง SweetAlert2 แจ้งเตือน
+        await Swal.fire({
+          icon: "success",
+          title: "เพิ่มงานสำเร็จ",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        // รีเฟรชรายการโปรเจค
+        this.fetchProjects();
       } catch (error) {
         if (
           error.response &&
@@ -1308,6 +1318,31 @@ export default {
         minute: "numeric",
         second: "numeric",
       });
+    },
+    handleProvinceChange(e) {
+      const selectedProvinceId = e.value;
+      const province = this.provinces.find((p) => p.id === parseInt(selectedProvinceId));
+
+      this.newProject.province = selectedProvinceId;
+      this.newProject.district = '';
+      this.newProject.subdistrict = '';
+      this.districts = province ? province.amphure : [];
+      this.subdistricts = [];
+    },
+    handleDistrictChange(e) {
+      const selectedDistrictId = e.value;
+      const district = this.districts.find((d) => d.id === parseInt(selectedDistrictId));
+
+      this.newProject.district = selectedDistrictId;
+      this.newProject.subdistrict = '';
+      this.subdistricts = district ? district.tambon : [];
+    },
+    handleSubdistrictChange(e) {
+      const selectedSubdistrictId = e.value;
+      const subdistrict = this.subdistricts.find((s) => s.id === parseInt(selectedSubdistrictId));
+
+      this.newProject.subdistrict = selectedSubdistrictId;
+      this.newProject.postcode = subdistrict ? subdistrict.zip_code.toString() : '';
     },
   },
 };
