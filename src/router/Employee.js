@@ -23,6 +23,16 @@ let routes = [
     component: () => import("../components/Employee/DashboardEmployee/ReportEmployee/FirstPage.vue"),
   },
   {
+    path: "/expenses/history",
+    name: "expenses-history",
+    component: () => import("../components/Employee/ExpensesHisView.vue"),
+  },
+  {
+    path: "/invoice/history",
+    name: "invoice-history",
+    component: () => import("../components/Employee/InvoiceHisView.vue"),
+  },
+  {
     path: "/ReportEmployee",
     name: "ReportEmployee",
     component: () =>

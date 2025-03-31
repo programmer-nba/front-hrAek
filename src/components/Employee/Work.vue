@@ -1642,6 +1642,8 @@ const submitInvoice = async () => {
   closeExpenses()
   const payload = newInvoice.value;
 
+  const emID = localStorage.getItem('id')
+
   const invoiceSubmit = {
     date: payload.date,
     title: payload.title,
@@ -1651,6 +1653,7 @@ const submitInvoice = async () => {
     image: img_invoice.value,
     projectId: projectIdEx.value,
     remark: payload.remark,
+    employeeID: emID
   };
 
   const result = await Swal.fire({
