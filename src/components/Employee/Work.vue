@@ -157,7 +157,8 @@ divdivdiv
           <div>
             <label for="time" class="block mb-2 text-sm font-medium text-gray-900">เลือกเวลา</label>
             <input id="time" type="time"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" v-model="deposit.time" />
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              v-model="deposit.time" />
           </div>
 
           <div>
@@ -169,21 +170,23 @@ divdivdiv
               <option value="ธนาคารกรุงเทพ (Bangkok Bank – BBL)">ธนาคารกรุงเทพ (Bangkok Bank – BBL)</option>
               <option value="ธนาคารกรุงไทย (Krungthai Bank – KTB)">ธนาคารกรุงไทย (Krungthai Bank – KTB)</option>
               <option value="ธนาคารกสิกรไทย (Kasikornbank – KBank)">ธนาคารกสิกรไทย (Kasikornbank – KBank)</option>
-              <option value="ธนาคารไทยพาณิชย์ (Siam Commercial Bank – SCB)">ธนาคารไทยพาณิชย์ (Siam Commercial Bank – SCB)</option>
+              <option value="ธนาคารไทยพาณิชย์ (Siam Commercial Bank – SCB)">ธนาคารไทยพาณิชย์ (Siam Commercial Bank –
+                SCB)</option>
               <option value="ธนาคารทหารไทยธนชาต (ทีเอ็มบีธนชาต) (TMBThanachart Bank – TTB)">
                 ธนาคารทหารไทยธนชาต (ทีเอ็มบีธนชาต) (TMBThanachart Bank – TTB)
               </option>
               <option value="ธนาคารเกียรตินาคินภัทร (Kiatnakin Phatra Bank – KKP)">
                 ธนาคารเกียรตินาคินภัทร (Kiatnakin Phatra Bank – KKP)
               </option>
-              <option value="ธนาคารซีไอเอ็มบี ไทย (CIMB Thai Bank – CIMBT)">ธนาคารซีไอเอ็มบี ไทย (CIMB Thai Bank – CIMBT)</option>
+              <option value="ธนาคารซีไอเอ็มบี ไทย (CIMB Thai Bank – CIMBT)">ธนาคารซีไอเอ็มบี ไทย (CIMB Thai Bank –
+                CIMBT)</option>
               <option value="ธนาคารยูโอบี (UOB Bank – UOB)">ธนาคารยูโอบี (UOB Bank – UOB)</option>
               <option value="ธนาคารแลนด์ แอนด์ เฮ้าส์ (Land and Houses Bank – LH Bank)">
                 ธนาคารแลนด์ แอนด์ เฮ้าส์ (Land and Houses Bank – LH Bank)
               </option>
-              
+
             </select>
-           
+
           </div>
 
           <div>
@@ -249,7 +252,7 @@ divdivdiv
         <h4 class="text-black">รูปที่ 1</h4>
       </div>
       <div class="mx-10 py-2 space-y-2">
-        <input type="file" @change="(e) => handleImageChange(e, 'receipt')"  />
+        <input type="file" @change="(e) => handleImageChange(e, 'receipt')" />
       </div>
 
       <!-- ปุ่มยืนยัน -->
@@ -425,7 +428,7 @@ divdivdiv
                     'ดำเนินการสำเร็จ' &&
                     project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
                     project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
-                  " @click="() => { detailEmployee = project; openDialog();}
+                  " @click="() => { detailEmployee = project; openDialog(); }
                   " label="ขั้นตอนการปฏิบัติงาน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
 
@@ -444,7 +447,7 @@ divdivdiv
                     'ดำเนินการสำเร็จ' &&
                     project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
                     project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
-                  " @click="() => { detailEmployee = project; openDeposit(project._id);}" label="แจ้งฝากเงิน"
+                  " @click="() => { detailEmployee = project; openDeposit(project._id); }" label="แจ้งฝากเงิน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
 
                   <ButtonP v-if="
@@ -453,7 +456,7 @@ divdivdiv
                     'ดำเนินการสำเร็จ' &&
                     project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
                     project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
-                  " @click="() => { detailEmployee = project; openReceipt();}" label="ใบเสร็จรับเงิน"
+                  " @click="() => { detailEmployee = project; openReceipt(); }" label="ใบเสร็จรับเงิน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
 
                   <ButtonP v-if="
@@ -680,7 +683,7 @@ const locationError = ref(null);
 const isLoggingTime = ref(false);
 
 const projectIdEx = ref('')
-const projectIdDp =ref('')
+const projectIdDp = ref('')
 
 const TimeToDay = ref({
   morningIn: null,
@@ -694,10 +697,12 @@ const selectTimeInOutCode = ref("");
 
 const newInvoice = ref({});
 
-const deposit =ref({});
+const deposit = ref({});
 const submitdeposit = async () => {
   closeDeposit()
   const payload = deposit.value;
+
+  const emID = localStorage.getItem('id')
 
   const depositSubmit = {
     date: payload.date,
@@ -709,6 +714,7 @@ const submitdeposit = async () => {
     image: img_deposit.value,
     projectId: projectIdDp.value,
     remark: payload.remark,
+    employeeID: emID
   };
 
   const result = await Swal.fire({
@@ -770,7 +776,7 @@ async function handleImageChange(event, type) {
   else if (type === "img_testing") img_testing.value = base64;
   else if (type === "img_deliverwork") img_deliverwork.value = base64;
   else if (type === "img_invoice") img_invoice.value = base64;
-  else if (type === "img_deposit")img_deposit.value = base64;
+  else if (type === "img_deposit") img_deposit.value = base64;
 }
 
 function convertToBase64(file) {
@@ -798,7 +804,7 @@ async function uploadImages() {
         img_process: img_process.value,
         img_testing: img_testing.value,
         img_deliverwork: img_deliverwork.value,
-        receipt:receipt.value,
+        receipt: receipt.value,
       }
     );
 
@@ -1215,12 +1221,12 @@ const getProjectAll = async () => {
     loading.value = true;
     const res = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/project/em/${employeeId}`, {
     });
-    console.log(res);
+    console.log('res : ' , res);
     const data = res.data;
     // .filter(
     //   (item) => item.projectSubType === itemMe.value.position
     // );
-    projects.value = data.slice().reverse();
+    projects.value = data
     projectOrigin.value = data.slice().reverse();
     searchProjects();
     loading.value = false;
@@ -1693,6 +1699,8 @@ const submitInvoice = async () => {
   closeExpenses()
   const payload = newInvoice.value;
 
+  const emID = localStorage.getItem('id')
+
   const invoiceSubmit = {
     date: payload.date,
     title: payload.title,
@@ -1702,6 +1710,7 @@ const submitInvoice = async () => {
     image: img_invoice.value,
     projectId: projectIdEx.value,
     remark: payload.remark,
+    employeeID: emID
   };
 
   const result = await Swal.fire({

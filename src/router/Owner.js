@@ -159,6 +159,18 @@ let routes = [
     component: () =>
       import("../components/Owner/ExpensesView.vue"),
   },
+  {
+    path: "/invoice",
+    name: "invoice",
+    component: () =>
+      import("../components/Owner/InvoiceView.vue"),
+  },
+  {
+    path: "/deposit",
+    name: "deposit",
+    component: () =>
+      import("../components/Owner/DepositView.vue"),
+  },
 ];
 
 const router = createRouter({

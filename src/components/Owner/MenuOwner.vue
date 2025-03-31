@@ -217,15 +217,25 @@ export default {
           // ],
           icon: "<i class='pi pi-box' style='font-size: 1.4rem'></i>",
         },
-        {
-          text: "ออกบิล",
-          action: "/SendBill",
-          icon: "<i class='pi pi-book' style='font-size: 1.4rem'></i>",
-        },
+        // {
+        //   text: "ออกบิล",
+        //   action: "/SendBill",
+        //   icon: "<i class='pi pi-book' style='font-size: 1.4rem'></i>",
+        // },
         {
           text: "เบิกค่าใช้จ่าย",
           action: "/expenses",
-          icon: "<i class='pi pi-home' style='font-size: 1.4rem'></i>",
+          icon: "<i class='pi pi-money-bill' style='font-size: 1.4rem'></i>",
+        },
+        {
+          text: "ใบแจ้งหนี้",
+          action: "/invoice",
+          icon: "<i class='pi pi-file-import' style='font-size: 1.4rem'></i>",
+        },
+        {
+          text: "การฝากเงิน",
+          action: "/deposit",
+          icon: "<i class='pi pi-credit-card' style='font-size: 1.4rem'></i>",
         },
         // {
         //   text: "สัญญา (ทนาย)",
