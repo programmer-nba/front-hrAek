@@ -248,18 +248,12 @@ divdivdiv
         <h4 class="text-black">รูปที่ 1</h4>
       </div>
       <div class="mx-10 py-2 space-y-2">
-        <input type="file" @change="handleFileChange($event, 'surveyFile')" required />
+        <input type="file" @change="(e) => handleImageChange(e, 'receipt')"  />
       </div>
 
-      <div class="flex sm:justify-start justify-center">
-        <h4 class="text-black">รูปที่ 2</h4>
-      </div>
-      <div class="mx-10 py-2 space-y-2">
-        <input type="file" @change="handleFileChange($event, 'workStepFile')" required />
-      </div>
       <!-- ปุ่มยืนยัน -->
       <div>
-        <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
+        <button @click="uploadImages" type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
           ยืนยัน
         </button>
 
@@ -416,17 +410,6 @@ divdivdiv
 
                   </div>
 
-                  <!-- 
-                  <ButtonP v-if="
-                    project.status[project.status.length - 1].name !== 'รอรับงาน' &&
-                    project.status[project.status.length - 1].name !==
-                    'ดำเนินการสำเร็จ' &&
-                    project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
-                    project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
-                  " @click="openCheckin(project._id, project.code)" label="เช็คอินเข้างาน"
-                    class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
-                  -->
-
                   <ButtonP v-if="
                     project.status[project.status.length - 1].name !== 'รอรับงาน' &&
                     project.status[project.status.length - 1].name !==
@@ -441,11 +424,7 @@ divdivdiv
                     'ดำเนินการสำเร็จ' &&
                     project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
                     project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
-                  " @click="
-                    () => {
-                      detailEmployee = project;
-                      openDialog();
-                    }
+                  " @click="() => { detailEmployee = project; openDialog();}
                   " label="ขั้นตอนการปฏิบัติงาน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
 
@@ -473,7 +452,7 @@ divdivdiv
                     'ดำเนินการสำเร็จ' &&
                     project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
                     project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
-                  " @click="openReceipt" label="ใบเสร็จรับเงิน"
+                  " @click="() => { detailEmployee = project; openReceipt();}" label="ใบเสร็จรับเงิน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
 
                   <ButtonP v-if="
@@ -692,6 +671,7 @@ const img_process = ref("");
 const img_testing = ref("");
 const img_deliverwork = ref("");
 const img_invoice = ref("");
+const receipt = ref("");
 
 const currentLocation = ref(null);
 const locationError = ref(null);
@@ -749,6 +729,7 @@ async function uploadImages() {
         img_process: img_process.value,
         img_testing: img_testing.value,
         img_deliverwork: img_deliverwork.value,
+        receipt:receipt.value,
       }
     );
 
