@@ -69,17 +69,16 @@
 
     <Dialog v-model:visible="showAddProjectModal" :modal="true" class="w-1/2" header="เพิ่มโปรเจคใหม่">
       <form class="px-4 sm:px-10 mt-2 sm:mt-5">
+        <div>
+          <label for="projectTitle"
+            class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ชื่อโปรเจค</label>
+          <input v-model="newProject.title" type="text" id="projectTitle"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
+            placeholder="" required />
+        </div>
         <div class="grid gap-3 sm:gap-6 mb-3 sm:mb-6 md:grid-cols-2">
 
-          <div>
-            <label for="projectTitle"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ชื่อโปรเจค</label>
-            <input v-model="newProject.title" type="text" id="projectTitle"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="" required />
-          </div>
-
-          <div>
+          <!-- <div>
             <label for="projectType"
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ผู้รับผิดชอบ</label>
             <select v-model="newProject.projectType" @change="fetchEmployees" id="projectType"
@@ -90,15 +89,19 @@
                 {{ pType.name }}
               </option>
             </select>
-          </div>
+          </div> -->
 
-          <div>
-            <label>ตั้งแต่วันที่:</label>
-            <input type="date" v-model="newProject.selectedStartDate">
+          <div class="mt-3 border-1 rounded-md py-2">
+            <div class="flex justify-center">
+              <label>ตั้งแต่วันที่:</label>
+              <input type="date" v-model="newProject.selectedStartDate">
+            </div>
           </div>
-          <div>
-            <label>ถึงวันที่:</label>
-            <input type="date" v-model="newProject.selectedEndDate">
+          <div class="mt-3 border-1 rounded-md py-2">
+            <div class="flex justify-center">
+              <label>ถึงวันที่:</label>
+              <input type="date" v-model="newProject.selectedEndDate">
+            </div>
           </div>
 
           <div>
@@ -328,20 +331,20 @@
                     class=" h-10 pr-16 text-sm bg-white border-2 border-gray-300 rounded-lg focus:outline-none pl-2 w-full" />
                 </div>
               </div>
-              <div class="w-full space-y-2">
+              <!-- <div class="w-full space-y-2">
                 <label for="filterType" class=" text-gray-600">ประเภทงาน</label>
                 <select v-model="filterType" id="filterType"
                   class="w-full h-10 text-sm bg-white border-2 border-gray-300 rounded-lg focus:outline-none">
                   <option value="">ทั้งหมด</option>
-                  <option value="DEV">Programmer</option>
-                  <option value="GRP">Graphic</option>
+                  <option value="TEC">ช่างเทคนิค</option>
+                  <option value="FW">พนักงานภาคสนาม</option>
                 </select>
                 <label for="filterStatus" class=" text-gray-600">สถานะ</label>
                 <select v-model="filterStatus" id="filterStatus"
                   class="w-full h-10 text-sm bg-white border-2 border-gray-300 rounded-lg focus:outline-none">
                   <option value="">ทั้งหมด</option>
                   <option value="โปรเจ็คเสร็จลุล่วง">โปรเจ็คเสร็จลุล่วง</option>
-                  <option value="อยู่ระหว่างการทำงาน">
+                  <option value="กำลังดำเนินการ">
                     อยู่ระหว่างการทำงาน
                   </option>
                   <option value="โปรเจ็ครอการอนุมัติ">
@@ -349,7 +352,7 @@
                   </option>
                   <option value="โปรเจ็คถูกระงับ">โปรเจ็คถูกระงับ</option>
                 </select>
-              </div>
+              </div> -->
             </div>
 
             <div class="flex-auto block py-8 pt-6 px-9 rounded-2xl">
@@ -392,25 +395,20 @@
                         </div>
                       </td>
                       <td class="p-3 text-center">
-                        <div v-if="project.employees.length"
+                        <!-- <div v-if="project.employees.length"
                           class="font-semibold text-light-inverse text-md/normal flex justify-center">
                           <div v-for="em in getEmployeesData(project.employees)" :key="em._id">
-                            <div v-if="!seeName" class="flex items-center -mx-3">
-                              <Image v-if="em.imageUrl" :src="em.imageUrl" :alt="em.nick_name"
-                                imageClass="w-[45px] h-[45px] rounded-full shadow-md" preview />
-                              <div v-else class="w-[45px] h-[45px] rounded-full bg-sky-200">
-                                <small class="p-0 m-0">{{ em.nick_name }}</small>
-                              </div>
-                            </div>
-                            <div v-else class="flex items-center font-normal flex-wrap gap-2">
-                              <p class="m-0 py-0 px-1 rounded bg-gray-200">
-                                {{ em.nick_name || em.first_name }}
-                              </p>
-                            </div>
+                            <p>{{ em.first_name || em.last_name }}</p>
                           </div>
                           <ButtonP icon="pi pi-plus-circle text-purple-500 font-bold text-4xl"
                             class="bg-white hidden rounded-full scale-75 focus:outline-0 focus:ring-0 hover:bg-purple-300"
                             @click="openSelectEmployees(project)" />
+                        </div> -->
+                        <div v-if="project.employees.length">
+                          <p v-for="(employee, index) in project.employees" :key="index"
+                            class="text-center m-0 font-medium">
+                            {{ employee }}
+                          </p>
                         </div>
                         <div v-else>
                           <ButtonP icon="pi pi-plus-circle text-purple-500 font-bold text-xl"
@@ -983,7 +981,6 @@ export default {
       // Fetch additional data for edited project
       this.fetchEmployeesForEditedProject();
     },
-
     async submitEditedProject() {
       try {
         this.isLoading = true;
@@ -1203,6 +1200,23 @@ export default {
         );
         this.projects = response.data.data.slice().reverse();
         console.log(this.projects);
+
+        await Promise.all(
+          this.projects.map(async (project) => {
+            if (Array.isArray(project.employees) && project.employees.length) {
+              // ขยาย array ซ้อนให้เป็น array ของ employeeId ทั้งหมด
+              const employeeIds = project.employees.flat();
+
+              // เรียก fetchEmployeeById สำหรับแต่ละ employeeId
+              project.employees = await Promise.all(
+                employeeIds.map((id) => this.fetchEmployeeById(id))
+              );
+            } else {
+              project.employees = [];
+            }
+          })
+        );
+
         // แปลงเวลาในโซน UTC เป็นเวลาในโซนไทย
         this.projects.forEach((project) => {
           project.due_date = dayjs(project.due_date)
@@ -1218,6 +1232,21 @@ export default {
         this.isLoading = false;
       }
     },
+    async fetchEmployeeById(employeeId) {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_VUE_APP_DECCAN}/getid/${employeeId}`,
+          {
+            headers: { "auth-token": localStorage.getItem("token") },
+          }
+        );
+        const { first_name, last_name } = response.data.data || {};
+        return `${first_name || ""} ${last_name || ""}`.trim() || "ไม่พบข้อมูล";
+      } catch (error) {
+        console.error(`Error fetching employee ${employeeId}:`, error);
+        return "ไม่พบข้อมูล";
+      }
+    },
     toggleAddProjectModal() {
       this.showAddProjectModal = !this.showAddProjectModal;
     },
@@ -1230,11 +1259,8 @@ export default {
 
       const projectSubmit = {
         title: payload.title,
-        projectType: payload.projectType,
-
-        startDate: payload.selectedStartDate ,
-        endDate: payload.selectedEndDate ,
-
+        startDate: payload.selectedStartDate,
+        endDate: payload.selectedEndDate,
         location: payload.location,
         address: payload.address,
         subdistrict: payload.subdistrict,
