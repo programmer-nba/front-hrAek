@@ -1,5 +1,5 @@
+divdivdiv
 <template>
-
   <!-- Dialog ที่จะเปิดเมื่อคลิก -->
   <dialog ref="uploadDialog" header="อัปโหลดไฟล์" position="right"
     class="px-2 sm:px-2 py-1 sm:py-1 bg-white rounded-xl shadow-lg">
@@ -13,29 +13,28 @@
         <h4 class="text-black">1. เพิ่มไฟล์สำรวจพื้นที่</h4>
       </div>
       <div class="mx-10 py-2 space-y-2">
-        <input type="file" @change="e => handleImageChange(e, 'img_surway')" />
-
+        <input type="file" @change="(e) => handleImageChange(e, 'img_surway')" />
       </div>
 
       <div class="flex sm:justify-start justify-center">
         <h4 class="text-black">2. เพิ่มภาพขั้นตอนการทำงาน</h4>
       </div>
       <div class="mx-10 py-2 space-y-2">
-        <input type="file" @change="e => handleImageChange(e, 'img_process')" />
+        <input type="file" @change="(e) => handleImageChange(e, 'img_process')" />
       </div>
 
       <div class="flex sm:justify-start justify-center">
         <h4 class="text-black">3. เพิ่มภาพการทดสอบ</h4>
       </div>
       <div class="mx-10 py-2 space-y-2">
-        <input type="file" @change="e => handleImageChange(e, 'img_testing')" />
+        <input type="file" @change="(e) => handleImageChange(e, 'img_testing')" />
       </div>
 
       <div class="flex sm:justify-start justify-center">
         <h4 class="text-black">4. เพิ่มภาพส่งมอบงาน</h4>
       </div>
       <div class="mx-10 py-2 space-y-2">
-        <input type="file" @change="e => handleImageChange(e, 'img_deliverwork')" />
+        <input type="file" @change="(e) => handleImageChange(e, 'img_deliverwork')" />
       </div>
 
       <!-- ปุ่มยืนยัน -->
@@ -54,18 +53,21 @@
 
   <dialog ref="expensesDialog" header="เบิกค่าใช้จ่าย" position="right"
     class="px-2 sm:px-2 py-1 sm:py-1 bg-white rounded-xl shadow-lg">
-    <div class=" bg-[#EAFDFC] px-6 py-12 sm:py-24 lg:px-8 min-h-screen">
+    <div class="bg-[#EAFDFC] px-6 py-12 sm:py-24 lg:px-8 min-h-screen">
       <div class="mx-auto max-w-2xl text-center">
         <button @click="closeExpenses" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800">
           ✕
         </button>
-        <h2 class="text-3xl font-bold tracking-tight text-[#0002A1] sm:text-4xl">ขอเบิกค่าใช้จ่าย</h2>
+        <h2 class="text-3xl font-bold tracking-tight text-[#0002A1] sm:text-4xl">
+          ขอเบิกค่าใช้จ่าย
+        </h2>
       </div>
       <div class="mx-auto mt-16 max-w-xl sm:mt-20">
         <div class="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
           <div>
             <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">วันที่</label>
-              <input v-model="newInvoice.date" type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5">
+            <input v-model="newInvoice.date" type="date"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5" />
           </div>
 
           <div>
@@ -75,10 +77,10 @@
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
               placeholder="กรอกชื่อ">
               <option disabled selected></option>
-              <option value="">ค่าที่พัก</option>
-              <option value="">ค่าน้ำมัน</option>
-              <option value="">ค่าเบี้ยเลี้ยง</option>
-              <option value="">อื่นๆ</option>
+              <option value="ค่าที่พัก">ค่าที่พัก</option>
+              <option value="ค่าน้ำมัน">ค่าน้ำมัน</option>
+              <option value="ค่าเบี้ยเลี้ยง">ค่าเบี้ยเลี้ยง</option>
+              <option value="อื่นๆ">อื่นๆ</option>
             </select>
           </div>
 
@@ -96,7 +98,6 @@
             <input v-model="newInvoice.lastname" type="text" id="editProjectCustomer"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
               placeholder="กรอกนามสกุล" required />
-
           </div>
 
           <div>
@@ -104,12 +105,11 @@
             <input v-model="newInvoice.totalAmount" type="text" id="editProjectCustomer"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
               placeholder="กรอกจำนวนเงิน" required />
-
           </div>
 
           <div class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">
-            <h4 class="text-black"> เพิ่มรูปภาพหรือไฟล์</h4>
-            <input type="file" @change="e => handleImageChange(e, 'img_invoice')"/>
+            <h4 class="text-black">เพิ่มรูปภาพหรือไฟล์</h4>
+            <input type="file" @change="(e) => handleImageChange(e, 'img_invoice')" />
           </div>
 
           <div class="sm:col-span-2">
@@ -118,7 +118,6 @@
             <textarea v-model="newInvoice.remark" id="note" placeholder="กรอกหมายเหตุ" rows="4"
               class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block"></textarea>
           </div>
-
         </div>
         <div class="mt-6 flex justify-between gap-4">
           <button @click="closeExpenses" type="button"
@@ -127,7 +126,7 @@
             ยกเลิก
           </button>
 
-          <button type="submit"
+          <button type="submit" @click="submitInvoice()"
             class="w-1/2 rounded-md bg-[#153E90] px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-[#0E49B5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             บันทึก
           </button>
@@ -138,16 +137,17 @@
 
   <dialog ref="depositDialog" header="แจ้งฝากเงิน" position="right"
     class="px-2 sm:px-2 py-1 sm:py-1 bg-white rounded-xl shadow-lg">
-    <div class=" bg-[#EAFDFC] px-6 py-12 sm:py-24 lg:px-8 min-h-screen">
+    <div class="bg-[#EAFDFC] px-6 py-12 sm:py-24 lg:px-8 min-h-screen">
       <div class="mx-auto max-w-2xl text-center">
         <button @click="closeDeposit" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800">
           ✕
         </button>
-        <h2 class="text-3xl font-bold tracking-tight text-[#0002A1] sm:text-4xl">แจ้งฝากเงิน</h2>
+        <h2 class="text-3xl font-bold tracking-tight text-[#0002A1] sm:text-4xl">
+          แจ้งฝากเงิน
+        </h2>
       </div>
       <div class="mx-auto mt-16 max-w-xl sm:mt-20">
         <div class="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
-
           <div>
             <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">วันที่</label>
             <a-date-picker
@@ -158,7 +158,6 @@
             <label for="time" class="block mb-2 text-sm font-medium text-gray-900">เลือกเวลา</label>
             <input id="time" type="time"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
-
           </div>
 
           <div>
@@ -171,11 +170,17 @@
               <option value="">ธนาคารกรุงไทย (Krungthai Bank – KTB)</option>
               <option value="">ธนาคารกสิกรไทย (Kasikornbank – KBank)</option>
               <option value="">ธนาคารไทยพาณิชย์ (Siam Commercial Bank – SCB)</option>
-              <option value="">ธนาคารทหารไทยธนชาต (ทีเอ็มบีธนชาต) (TMBThanachart Bank – TTB)</option>
-              <option value="">ธนาคารเกียรตินาคินภัทร (Kiatnakin Phatra Bank – KKP)</option>
+              <option value="">
+                ธนาคารทหารไทยธนชาต (ทีเอ็มบีธนชาต) (TMBThanachart Bank – TTB)
+              </option>
+              <option value="">
+                ธนาคารเกียรตินาคินภัทร (Kiatnakin Phatra Bank – KKP)
+              </option>
               <option value="">ธนาคารซีไอเอ็มบี ไทย (CIMB Thai Bank – CIMBT)</option>
               <option value="">ธนาคารยูโอบี (UOB Bank – UOB)</option>
-              <option value="">ธนาคารแลนด์ แอนด์ เฮ้าส์ (Land and Houses Bank – LH Bank)</option>
+              <option value="">
+                ธนาคารแลนด์ แอนด์ เฮ้าส์ (Land and Houses Bank – LH Bank)
+              </option>
               <option value="">อื่นๆ</option>
             </select>
           </div>
@@ -194,7 +199,6 @@
             <input type="text" id="editProjectCustomer"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
               placeholder="กรอกเลขบัญชี" required />
-
           </div>
 
           <div>
@@ -202,11 +206,10 @@
             <input type="text" id="editProjectCustomer"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
               placeholder="กรอกจำนวนเงินฝาก" required />
-
           </div>
 
           <div class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">
-            <h4 class="text-black"> เพิ่มรูปภาพหรือไฟล์สลิป</h4>
+            <h4 class="text-black">เพิ่มรูปภาพหรือไฟล์สลิป</h4>
             <input type="file" required />
           </div>
 
@@ -216,7 +219,6 @@
             <textarea id="note" placeholder="กรอกหมายเหตุ" rows="4"
               class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block"></textarea>
           </div>
-
         </div>
         <div class="mt-6 flex justify-between gap-4">
           <button @click="closeDeposit" type="button"
@@ -278,72 +280,35 @@
       </button>
 
       <div>
-        <div class=" pb-6 space-y-2 text-center pt-8 hidden">
-          <span
-            class="block w-max mx-auto px-3 py-1.5 border border-green-200 rounded-full bg-green-100 text-green-600">
-            {{ workPeriodLabel }}</span>
-          <h2 class="text-2xl text-cyan-900 font-bold">
-            <a-statistic-countdown :value="deadline" :value-style="valueStyle" class="custom-statistic"> {{ workPeriod
-              }}
-            </a-statistic-countdown>
-            <h1></h1>
-          </h2>
-        </div>
         <main class="grid grid-cols-[100%,100%] gap-6 w-full max-w-screen-lg pb-2">
-
           <section class="w-full relative bg-[#79E0EE]/60 rounded-[6px]">
-            <CheckLocation class="scale-75 origin-top" @check="onsiteHandle" />
-
             <div class="-mt-px flex divide-x divide-gray-200 p-4 bg-[#11009E]">
               <div class="flex-1 w-0">
-
                 <div class="flex flex-col justify-center items-center gap-1 mb-2">
-                  <div class="text-xs font-semibold text-white"> เข้างานเช้า</div>
-                  <button v-if="!TimeToDay?.morningIn" :class="!onsite ? '' : 'hover:bg-[#472e99]'" @click="logWorkTime"
-                    class="px-2 py-1 text-white bg-green-500 rounded">
+                  <div class="text-xs font-semibold text-white">ลงชื่อเข้างาน</div>
+                  <button @click="logWorkTime" class="px-2 py-1 text-white bg-green-500 rounded">
                     ลงเวลา
                   </button>
-                  <div v-else class="text-lg text-white"> {{ TimeToDay.morningIn ? TimeToDay.morningIn : "-" }}</div>
                 </div>
-
-                <!-- <div class="flex flex-col justify-center items-center gap-1">
-                          <div class="text-xs font-semibold text-white">ออกงานเช้า</div>
-                          <button v-if="!TimeToDay.morningOut" :class="!onsite ? '' : 'hover:bg-[#472e99]'" @click="logWorkTime" class="px-2 py-1 text-white bg-green-500 rounded"> ลงเวลา
-                          </button>
-                          <div v-else class="text-lg text-white"> {{ TimeToDay.morningOut ? TimeToDay.morningOut : "-" }}</div>
-                        </div> -->
-
               </div>
               <div class="-ml-px flex w-0 flex-1">
                 <div class="flex-1 w-0">
-
-                  <!-- <div
-                            class="flex flex-col justify-center items-center gap-1 mb-2">
-                            <div class="text-xs font-semibold text-white"> เข้างานบ่าย</div>
-                            <button v-if="!TimeToDay.afterIn" :class="!onsite ? '' : 'hover:bg-[#472e99]'" @click="logWorkTime" class="px-2 py-1 text-white bg-green-500 rounded"> ลงเวลา
-                            </button>
-                            <div v-else class="text-lg text-white"> {{ TimeToDay.afterIn ? TimeToDay.afterIn : "-" }}</div>
-                          </div> -->
-
                   <div class="flex flex-col justify-center items-center gap-1">
-                    <div class="text-xs font-semibold text-white"> ออกงานบ่าย</div>
+                    <div class="text-xs font-semibold text-white">ลงชื่อออกงาน</div>
                     <button v-if="!TimeToDay?.afterOut" :class="!onsite ? '' : 'hover:bg-[#472e99]'"
                       @click="logWorkTime" class="px-2 py-1 text-white bg-green-500 rounded">
                       ลงเวลา
                     </button>
-                    <div v-else class="text-lg text-white"> {{ TimeToDay.afterOut ? TimeToDay.afterOut : "-" }}</div>
+                    <div v-else class="text-lg text-white">
+                      {{ TimeToDay.afterOut ? TimeToDay.afterOut : "-" }}
+                    </div>
                   </div>
-
                 </div>
               </div>
-
             </div>
           </section>
-
         </main>
-
       </div>
-
     </div>
   </dialog>
 
@@ -366,16 +331,13 @@
             class="h-10 px-2 text-sm bg-white border-2 border-gray-300 rounded-lg focus:outline-none"
             @keyup="searchProjects" />
 
-          <label for="filterStatus" class="text-gray-600">สถานะ:</label>
+          <!-- <label for="filterStatus" class="text-gray-600">สถานะ:</label>
           <Dropdown v-model="filterStatus" placeholder="สถานะ" :options="filstatus" optionLabel="name"
             optionValue="value" class="border" filter @change="searchProjects" />
-          <!-- {{ console.log(checkedMe) }} -->
           <Checkbox v-model="checkedMe" class="border rounded" :binary="true" @change="searchProjects" />
-          <label class="text-gray-600">งานของฉัน</label>
+          <label class="text-gray-600">งานของฉัน</label> -->
         </div>
-        <div>
-
-        </div>
+        <div></div>
       </div>
 
       <div class="w-full flex justify-center">
@@ -399,135 +361,132 @@
                   <ButtonP v-if="
                     project.status[project.status.length - 1].name !==
                     'ดำเนินการสำเร็จ' &&
-                    project.status[project.status.length - 1].name !==
-                    'ส่งงานแล้ว'
+                    project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
                   " icon="pi pi-angle-double-up" :label="project.status[project.status.length - 1].name" :class="[
-                      project.status[project.status.length - 1].name ===
-                        'รอรับงาน'
-                        ? 'bg-teal-500'
+                    project.status[project.status.length - 1].name === 'รอรับงาน'
+                      ? 'bg-teal-500'
+                      : project.status[project.status.length - 1].name ===
+                        'กำลังดำเนินการ'
+                        ? 'bg-yellow-500'
                         : project.status[project.status.length - 1].name ===
-                          'กำลังดำเนินการ'
-                          ? 'bg-yellow-500'
-                          : project.status[project.status.length - 1].name ===
-                            'งานถูกยกเลิก'
-                            ? 'bg-red-500'
-                            : project.status[project.status.length - 1].name ===
-                              'เสร็จแล้ว'
-                              ? 'bg-blue-500'
-                              : 'bg-gray-500', // กรณีอื่นๆ ใช้สีเทา
-                    ]" class="px-3 py-2 text-white inline-block rounded hover:shadow-lg"
-                    @click="viewStatus(project)" />
+                          'งานถูกยกเลิก'
+                          ? 'bg-red-500'
+                          : project.status[project.status.length - 1].name === 'เสร็จแล้ว'
+                            ? 'bg-blue-500'
+                            : 'bg-gray-500', // กรณีอื่นๆ ใช้สีเทา
+                  ]" class="px-3 py-2 text-white inline-block rounded hover:shadow-lg" @click="viewStatus(project)" />
                   <ButtonP v-if="
                     project.status[project.status.length - 1].name ===
                     'ดำเนินการสำเร็จ' ||
-                    project.status[project.status.length - 1].name ===
-                    'ส่งงานแล้ว'
+                    project.status[project.status.length - 1].name === 'ส่งงานแล้ว'
                   " @click="viewStatus(project)" icon="pi pi-check" label="ส่งงานแล้ว"
                     class="px-3 py-2 text-white bg-blue-500 inline-block rounded hover:shadow-lg" />
                 </div>
               </td>
+
+              <!-- ดูรายละเอียด-->
               <td class="py-2 px-4">
-                <div>{{ formatDate(project.dueDate) }}</div>
-                <span v-if="isOverdue(project.dueDate)" class="text-red-500">
-                  (เลยกำหนด {{ calculateDays(project.dueDate) }} วัน)
+                <div>{{ formatDate(project.endDate) }}</div>
+                <span v-if="isOverdue(project.endDate)" class="text-red-500">
+                  (เลยกำหนด {{ calculateDays(project.endDate) }} วัน)
                 </span>
               </td>
               <td class="py-2 px-4">
                 <ButtonP @click="viewDetails(project)" label="ดูรายละเอียด"
                   class="px-3 py-2 text-green-500 border-2 border-green-500 rounded hover:bg-green-500 hover:text-white" />
               </td>
-              <td class="py-2 px-4"> {{ console.log(project) }}
+
+              <!-- รับงาน-->
+              <td class="py-2 px-4">
+                {{ console.log(project) }}
                 <div class="flex flex-wrap gap-2">
-                  <ButtonP v-if="
-                    project.status[project.status.length - 1].name ===
-                    'รอรับงาน'
-                  " @click="acceptWork(project)" label="รับงานนี้"
+                  <ButtonP v-if="project.status[project.status.length - 1].name === 'รอรับงาน'"
+                    @click="acceptWork(project)" label="รับงานนี้"
                     class="px-3 py-2 text-blue-500 border-2 border-blue-500 rounded hover:bg-blue-500 hover:text-white" />
 
-                  <ButtonP v-if="
-                    project.status[project.status.length - 1].name !==
-                    'รอรับงาน' &&
+                  <div v-if="
+                    project.status[project.status.length - 1].name !== 'รอรับงาน' &&
                     project.status[project.status.length - 1].name !==
                     'ดำเนินการสำเร็จ' &&
+                    project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
+                    project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
+                  ">
+
+                    <CheckinLocation :projectId="project._id" :projectCode="project.code" />
+
+                  </div>
+
+                  <!-- 
+                  <ButtonP v-if="
+                    project.status[project.status.length - 1].name !== 'รอรับงาน' &&
                     project.status[project.status.length - 1].name !==
-                    'งานถูกยกเลิก' &&
-                    project.status[project.status.length - 1].name !==
-                    'ส่งงานแล้ว'
-                  " @click="openCheckin" label="เช็คอินเข้างาน"
+                    'ดำเนินการสำเร็จ' &&
+                    project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
+                    project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
+                  " @click="openCheckin(project._id, project.code)" label="เช็คอินเข้างาน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
+                  -->
 
                   <ButtonP v-if="
-                    project.status[project.status.length - 1].name !==
-                    'รอรับงาน' &&
+                    project.status[project.status.length - 1].name !== 'รอรับงาน' &&
                     project.status[project.status.length - 1].name !==
                     'ดำเนินการสำเร็จ' &&
-                    project.status[project.status.length - 1].name !==
-                    'งานถูกยกเลิก' &&
-                    project.status[project.status.length - 1].name !==
-                    'ส่งงานแล้ว'
+                    project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
+                    project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
                   " @click="updateWork(project)" label="อัพเดทงาน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
                   <ButtonP v-if="
-                    project.status[project.status.length - 1].name !==
-                    'รอรับงาน' &&
+                    project.status[project.status.length - 1].name !== 'รอรับงาน' &&
                     project.status[project.status.length - 1].name !==
                     'ดำเนินการสำเร็จ' &&
-                    project.status[project.status.length - 1].name !==
-                    'งานถูกยกเลิก' &&
-                    project.status[project.status.length - 1].name !==
-                    'ส่งงานแล้ว'
-                  " @click="() => { detailEmployee = project; openDialog(); }" label="อัพโหลดไฟล์"
+                    project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
+                    project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
+                  " @click="
+                    () => {
+                      detailEmployee = project;
+                      openDialog();
+                    }
+                  " label="ขั้นตอนการปฏิบัติงาน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
 
                   <ButtonP v-if="
-                    project.status[project.status.length - 1].name !==
-                    'รอรับงาน' &&
+                    project.status[project.status.length - 1].name !== 'รอรับงาน' &&
                     project.status[project.status.length - 1].name !==
                     'ดำเนินการสำเร็จ' &&
-                    project.status[project.status.length - 1].name !==
-                    'งานถูกยกเลิก' &&
-                    project.status[project.status.length - 1].name !==
-                    'ส่งงานแล้ว'
-                  " @click="openExpenses" label="เบิกค่าใช้จ่าย"
+                    project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
+                    project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
+                  " @click="openExpenses(project._id)" label="เบิกค่าใช้จ่าย"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
 
                   <ButtonP v-if="
-                    project.status[project.status.length - 1].name !==
-                    'รอรับงาน' &&
+                    project.status[project.status.length - 1].name !== 'รอรับงาน' &&
                     project.status[project.status.length - 1].name !==
                     'ดำเนินการสำเร็จ' &&
-                    project.status[project.status.length - 1].name !==
-                    'งานถูกยกเลิก' &&
-                    project.status[project.status.length - 1].name !==
-                    'ส่งงานแล้ว'
+                    project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
+                    project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
                   " @click="openDeposit" label="แจ้งฝากเงิน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
 
                   <ButtonP v-if="
-                    project.status[project.status.length - 1].name !==
-                    'รอรับงาน' &&
+                    project.status[project.status.length - 1].name !== 'รอรับงาน' &&
                     project.status[project.status.length - 1].name !==
                     'ดำเนินการสำเร็จ' &&
-                    project.status[project.status.length - 1].name !==
-                    'งานถูกยกเลิก' &&
-                    project.status[project.status.length - 1].name !==
-                    'ส่งงานแล้ว'
+                    project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
+                    project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
                   " @click="openReceipt" label="ใบเสร็จรับเงิน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
 
                   <ButtonP v-if="
-                    project.status[project.status.length - 1].name !==
-                    'รอรับงาน' &&
+                    project.status[project.status.length - 1].name !== 'รอรับงาน' &&
                     project.status[project.status.length - 1].name !==
                     'ดำเนินการสำเร็จ' &&
-                    project.status[project.status.length - 1].name !==
-                    'งานถูกยกเลิก' &&
-                    project.status[project.status.length - 1].name !==
-                    'ส่งงานแล้ว'
+                    project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
+                    project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
                   " @click="completedWork(project)" label="ปิดงาน"
                     class="px-3 py-2 text-red-500 border-2 border-red-500 rounded hover:bg-red-500 hover:text-white" />
                 </div>
               </td>
+
             </tr>
             <tr v-if="paginated.length === 0">
               <td colspan="8">
@@ -726,17 +685,31 @@ import "dayjs/locale/th";
 import CheckLocation from "../etc/CheckLocation.vue";
 import MiniEvents from "../props/MiniEvents.vue";
 import EventReminds from "../props/EventReminds.vue";
+import CheckinLocation from '../CheckinLocation.vue'
 
+const img_surway = ref("");
+const img_process = ref("");
+const img_testing = ref("");
+const img_deliverwork = ref("");
+const img_invoice = ref("");
 
-const img_surway = ref('');
-const img_process = ref('');
-const img_testing = ref('');
-const img_deliverwork = ref('');
-const img_invoice = ref('')
+const currentLocation = ref(null);
+const locationError = ref(null);
+const isLoggingTime = ref(false);
 
-const newInvoice = ref({})
+const projectIdEx = ref('')
 
+const TimeToDay = ref({
+  morningIn: null,
+  afterOut: null,
+  morningInLocation: null,
+  afterOutLocation: null,
+});
 
+const selectTimeInOutId = ref("");
+const selectTimeInOutCode = ref("");
+
+const newInvoice = ref({});
 
 async function handleImageChange(event, type) {
   const file = event.target.files[0];
@@ -744,11 +717,11 @@ async function handleImageChange(event, type) {
 
   const base64 = await convertToBase64(file);
 
-  if (type === 'img_surway') img_surway.value = base64;
-  else if (type === 'img_process') img_process.value = base64;
-  else if (type === 'img_testing') img_testing.value = base64;
-  else if (type === 'img_deliverwork') img_deliverwork.value = base64;
-  else if (type === 'img_invoice') img_invoice.value = base64
+  if (type === "img_surway") img_surway.value = base64;
+  else if (type === "img_process") img_process.value = base64;
+  else if (type === "img_testing") img_testing.value = base64;
+  else if (type === "img_deliverwork") img_deliverwork.value = base64;
+  else if (type === "img_invoice") img_invoice.value = base64;
 }
 
 function convertToBase64(file) {
@@ -756,7 +729,7 @@ function convertToBase64(file) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
+    reader.onerror = (error) => reject(error);
   });
 }
 
@@ -776,15 +749,15 @@ async function uploadImages() {
         img_process: img_process.value,
         img_testing: img_testing.value,
         img_deliverwork: img_deliverwork.value,
-      },
+      }
     );
 
-    alert(' อัปโหลดรูปภาพสำเร็จ');
+    alert(" อัปโหลดรูปภาพสำเร็จ");
     closeDialog();
-    console.log('Upload response:', response.data);
+    console.log("Upload response:", response.data);
   } catch (error) {
-    console.error(' เกิดข้อผิดพลาดในการอัปโหลด:', error);
-    alert('เกิดข้อผิดพลาดในการอัปโหลด');
+    console.error(" เกิดข้อผิดพลาดในการอัปโหลด:", error);
+    alert("เกิดข้อผิดพลาดในการอัปโหลด");
   }
 }
 ///////////////
@@ -810,11 +783,9 @@ const myComponent = {
       currentLocation: "",
       remindEvents: [],
 
-      projectId: '', //  ให้เซตจาก route หรือข้อมูลปัจจุบัน
-
+      projectId: "", //  ให้เซตจาก route หรือข้อมูลปัจจุบัน
     };
   },
-
 
   mounted() {
     this.fetchTimeData();
@@ -855,13 +826,45 @@ const myComponent = {
   },
   getNextDeadline(currentTime) {
     if (currentTime.getHours() >= 18) {
-      return new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate() + 1, 9, 0, 0, 0);
+      return new Date(
+        currentTime.getFullYear(),
+        currentTime.getMonth(),
+        currentTime.getDate() + 1,
+        9,
+        0,
+        0,
+        0
+      );
     } else if (currentTime.getHours() >= 12) {
-      return new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), 18, 0, 0, 0);
+      return new Date(
+        currentTime.getFullYear(),
+        currentTime.getMonth(),
+        currentTime.getDate(),
+        18,
+        0,
+        0,
+        0
+      );
     } else if (currentTime.getHours() >= 9) {
-      return new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), 12, 0, 0, 0);
+      return new Date(
+        currentTime.getFullYear(),
+        currentTime.getMonth(),
+        currentTime.getDate(),
+        12,
+        0,
+        0,
+        0
+      );
     } else {
-      return new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate(), 9, 0, 0, 0);
+      return new Date(
+        currentTime.getFullYear(),
+        currentTime.getMonth(),
+        currentTime.getDate(),
+        9,
+        0,
+        0,
+        0
+      );
     }
   },
 
@@ -916,11 +919,14 @@ const myComponent = {
   },
   async fetchTimeData() {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/time/getme`, {
-        headers: {
-          "auth-token": localStorage.getItem("token"),
-        },
-      });
+      const response = await axios.get(
+        `${import.meta.env.VITE_VUE_APP_DECCAN}/time/getme`,
+        {
+          headers: {
+            "auth-token": localStorage.getItem("token"),
+          },
+        }
+      );
       if (response.data.data) {
         this.TimeToWork = response.data.data.reverse();
       }
@@ -931,11 +937,14 @@ const myComponent = {
 
   async fetchTimeToDay() {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/time/getday`, {
-        headers: {
-          "auth-token": localStorage.getItem("token"),
-        },
-      });
+      const response = await axios.get(
+        `${import.meta.env.VITE_VUE_APP_DECCAN}/time/getday`,
+        {
+          headers: {
+            "auth-token": localStorage.getItem("token"),
+          },
+        }
+      );
       if (response.data.data) {
         this.TimeToDay = response.data.data;
       }
@@ -943,51 +952,121 @@ const myComponent = {
       console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
     }
   },
+};
 
-  async logWorkTime() {
-    try {
-      await Swal.fire({
-        icon: "info",
-        title: "กำลังลงเวลาเข้างาน...",
+const getCurrentLocation = () => {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error("Geolocation is not supported by your browser"));
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        resolve({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      },
+      (error) => {
+        let errorMessage;
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "ไม่ได้รับอนุญาตให้เข้าถึงตำแหน่งปัจจุบัน";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "ไม่สามารถระบุตำแหน่งได้";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "หมดเวลาในการหาตำแหน่ง";
+            break;
+          default:
+            errorMessage = "เกิดข้อผิดพลาดในการระบุตำแหน่ง";
+        }
+        reject(new Error(errorMessage));
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    );
+  });
+};
+
+const logWorkTime = async () => {
+  console.log("asdasd");
+  try {
+    isLoggingTime.value = true;
+    locationError.value = null;
+
+    const location = await getCurrentLocation();
+    currentLocation.value = location;
+
+    // Determine time type (morning in or afternoon out)
+    const now = new Date();
+    const hour = now.getHours();
+    const timeType = hour < 12 ? "ลงชื่อเข้า" : "ลงชื่อออก";
+
+    // Get current project info from component
+    const projectId = selectTimeInOutId.value || "";
+    const projectCode = selectTimeInOutCode.value || "";
+
+    const employeeId = localStorage.getItem("id");
+
+    console.log("projectId : ", projectId);
+    console.log("projectCode : ", projectCode);
+    console.log("employeeId : ", employeeId);
+    console.log("latitude : ", location.latitude);
+    console.log("longitude : ", location.longitude);
+    console.log("timeType : ", timeType);
+
+    // Call API to log time
+    const response = await axios.post(
+      `${import.meta.env.VITE_VUE_APP_DECCAN}/create/log`,
+      {
+        projectId,
+        projectCode,
+        employeeId,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        timeType,
+      }
+    );
+
+    if (response.data.status) {
+      Swal.fire({
+        icon: "success",
+        title: "บันทึกเวลาสำเร็จ",
         showConfirmButton: false,
         timer: 1500,
       });
-
-      const response = await axios.post(`${import.meta.env.VITE_VUE_APP_DECCAN}/time/morning/in`, {}, {
-        headers: {
-          "auth-token": localStorage.getItem("token"),
-        },
-      });
-
-      await Swal.fire({
-        icon: "success",
-        html: `
-            <p>ลงเวลาสำเร็จ</p>
-            <p>เวลา: ${response.data.data.time}</p>
-            <p>ผู้ลงเวลา: ${this.ME.first_name} ${this.ME.last_name}</p>
-          `,
-      });
-
-      this.fetchTimeData();
-      this.fetchTimeToDay();
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        text: "ยังไม่ถึงเวลาลงงานขณะนี้",
-      });
-      console.error("เกิดข้อผิดพลาดในการบันทึกเวลาเข้างาน:", error);
     }
-  },
+  } catch (error) {
+    locationError.value = error.message;
+    Swal.fire({
+      icon: "error",
+      title: "ไม่สามารถบันทึกเวลาได้",
+      text: error.message || "โปรดลองอีกครั้ง",
+      showConfirmButton: true,
+    });
+  } finally {
+    isLoggingTime.value = false;
+  }
 };
-
 
 ///////////////
 const checkinDialog = ref(null);
 
-
-const openCheckin = () => {
+const openCheckin = (id, code) => {
   if (checkinDialog.value) {
     checkinDialog.value.showModal(); // เปิด dialog
+
+    selectTimeInOutCode.value = code;
+    selectTimeInOutId.value = id;
+
+    console.log("code : ", code);
+    console.log("id : ", id);
   }
 
   // เรียกใช้งาน myComponent หลังเปิด dialog
@@ -1022,8 +1101,10 @@ const closeDeposit = () => {
 ////////////
 const expensesDialog = ref(null);
 
-const openExpenses = () => {
+const openExpenses = (id) => {
   expensesDialog.value.showModal();
+
+  projectIdEx.value = id
 };
 
 const closeExpenses = () => {
@@ -1031,7 +1112,7 @@ const closeExpenses = () => {
 };
 ///////////////
 const uploadDialog = ref(null);
-const errorMessage = ref('');
+const errorMessage = ref("");
 
 const openDialog = () => {
   uploadDialog.value.showModal();
@@ -1041,14 +1122,12 @@ const closeDialog = () => {
   uploadDialog.value.close();
 };
 
-
-
 const updateWorks = (project) => {
   if (!project) {
-    errorMessage.value = 'กรุณากรอกข้อมูลให้ครบถ้วน';
+    errorMessage.value = "กรุณากรอกข้อมูลให้ครบถ้วน";
     return;
   }
-  console.log('Updating work:', project);
+  console.log("Updating work:", project);
   closeDialog();
 };
 /////////////
@@ -1061,16 +1140,14 @@ onMounted(async () => {
 });
 
 const itemMe = ref([]);
+
 const getMe = async () => {
   try {
-    const res = await axios.get(
-      `${import.meta.env.VITE_VUE_APP_DECCAN}/getme`,
-      {
-        headers: {
-          "auth-token": localStorage.getItem("token"),
-        },
-      }
-    );
+    const res = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/getme`, {
+      headers: {
+        "auth-token": localStorage.getItem("token"),
+      },
+    });
     console.log(res);
     itemMe.value = res.data.data;
   } catch (e) {
@@ -1081,18 +1158,14 @@ const getMe = async () => {
 const projects = ref([]);
 const projectOrigin = ref([]);
 const getProjectAll = async () => {
+
+  const employeeId = localStorage.getItem("id");
   try {
     loading.value = true;
-    const res = await axios.get(
-      `${import.meta.env.VITE_VUE_APP_DECCAN}/project`,
-      {
-        headers: {
-          "auth-token": localStorage.getItem("token"),
-        },
-      }
-    );
+    const res = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/project/em/${employeeId}`, {
+    });
     console.log(res);
-    const data = res.data.data;
+    const data = res.data;
     // .filter(
     //   (item) => item.projectSubType === itemMe.value.position
     // );
@@ -1111,9 +1184,7 @@ const paginated = computed(() => {
   const endIndex = startIndex + itemsPerPage;
   return projects.value.slice(startIndex, endIndex);
 });
-const totalPages = computed(() =>
-  Math.ceil(projects.value.length / itemsPerPage)
-);
+const totalPages = computed(() => Math.ceil(projects.value.length / itemsPerPage));
 
 const detailEmployee = ref([]);
 const Detailsvisible = ref(false);
@@ -1428,8 +1499,7 @@ const completedWork = async (project) => {
             status: "ส่งงานแล้ว",
           };
           const res = await axios.put(
-            `${import.meta.env.VITE_VUE_APP_DECCAN
-            }/project/${id}/update-office`,
+            `${import.meta.env.VITE_VUE_APP_DECCAN}/project/${id}/update-office`,
             body
           );
           console.log("confirm", res);
@@ -1514,9 +1584,7 @@ const searchProjects = () => {
       (item) =>
         item.code.toLowerCase().includes(searchKey) ||
         item.title.toLowerCase().includes(searchKey) ||
-        item.status[item.status.length - 1].name
-          .toLowerCase()
-          .includes(searchKey)
+        item.status[item.status.length - 1].name.toLowerCase().includes(searchKey)
     );
   }
   let filType = filterType.value;
@@ -1531,9 +1599,7 @@ const searchProjects = () => {
   }
   // console.log(itemMe.value._id);
   if (checkedMe.value === true) {
-    fildata = fildata.filter((item) =>
-      item.employees.includes(itemMe.value._id)
-    );
+    fildata = fildata.filter((item) => item.employees.includes(itemMe.value._id));
   }
   // console.log(fildata);
   projects.value = fildata;
@@ -1570,6 +1636,69 @@ const calculateDays = (date) => {
   const differenceInTime = currentDate.getTime() - itemDate.getTime();
   const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
   return differenceInDays;
+};
+
+const submitInvoice = async () => {
+  closeExpenses()
+  const payload = newInvoice.value;
+
+  const invoiceSubmit = {
+    date: payload.date,
+    title: payload.title,
+    firstname: payload.firstname,
+    lastname: payload.lastname,
+    totalAmount: payload.totalAmount,
+    image: img_invoice.value,
+    projectId: projectIdEx.value,
+    remark: payload.remark,
+  };
+
+  const result = await Swal.fire({
+    title: "คุณแน่ใจหรือไม่?",
+    text: "คุณต้องการส่งใบแจ้งหนี้นี้หรือไม่?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "ใช่, ส่งเลย!",
+    cancelButtonText: "ยกเลิก",
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
+
+  try {
+    Swal.fire({
+      title: "กำลังส่งข้อมูล...",
+      text: "กรุณารอสักครู่",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_VUE_APP_DECCAN}/invoice`,
+      invoiceSubmit
+    );
+
+    // Success Alert (แจ้งเตือนเมื่อสำเร็จ)
+    Swal.fire({
+      title: "ส่งสำเร็จ!",
+      text: "ใบแจ้งหนี้ถูกส่งเรียบร้อยแล้ว",
+      icon: "success",
+    });
+
+    newInvoice.value = {};
+  } catch (error) {
+    console.error("error:", error);
+
+    // Error Alert (แจ้งเตือนเมื่อผิดพลาด)
+    Swal.fire({
+      title: "เกิดข้อผิดพลาด!",
+      text: "ไม่สามารถส่งใบแจ้งหนี้ได้ กรุณาลองใหม่อีกครั้ง",
+      icon: "error",
+    });
+  }
 };
 </script>
 <style scoped>

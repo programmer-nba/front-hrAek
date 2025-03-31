@@ -116,13 +116,13 @@ let routes = [
     path: "/shoppartner/approve",
     name: "shoppartnerapprove",
     component: () =>
-      import("../components/Owner/shoppartner/ShopPartnerOwnerView.vue"),
+      import("../components/Owner/shoppartner/ShoppartnerOwnerView.vue"),
   },
   {
     path: "/onestopservice/approve",
     name: "onestopserviceapprove",
     component: () =>
-      import("../components/Owner/onestopservice/OneStopServiceOwnerView.vue"),
+      import("../components/Owner/onestopservice/onestopserviceOwnerView.vue"),
   },
   {
     path: "/emarket/product/",
@@ -152,6 +152,12 @@ let routes = [
     name: "onestopstopsapprove",
     component: () =>
       import("../components/Owner/onestopshop/onestopshopOwnerView.vue"),
+  },
+  {
+    path: "/expenses",
+    name: "expenses",
+    component: () =>
+      import("../components/Owner/ExpensesView.vue"),
   },
 ];
 

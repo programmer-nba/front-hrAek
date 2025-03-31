@@ -77,11 +77,11 @@ export default {
       console.log("Decoded token:", decode);
 
       if (decode && decode.role) {
-        // console.log('Token Role:', decode.role);
-        // console.log('Token Role main:', decode.role.main);
-        // console.log('Token:', localStorage.getItem("token"));
         console.log("Token user_id:", decode.user_id);
+
+        console.log("Token id:", decode.id);
         localStorage.setItem("srole", decode.role);
+        localStorage.setItem("id", decode.id);
         const data_login = {
           logedIn: true,
           role: decode.role,
