@@ -150,39 +150,40 @@ divdivdiv
         <div class="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
           <div>
             <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">วันที่</label>
-            <a-date-picker
+            <input v-model="deposit.date" type="date"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5" />
           </div>
 
           <div>
             <label for="time" class="block mb-2 text-sm font-medium text-gray-900">เลือกเวลา</label>
             <input id="time" type="time"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" v-model="deposit.time" />
           </div>
 
           <div>
             <label for="editProjectStatus"
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ธนาคาร</label>
-            <select id="editProjectStatus"
+            <select id="editProjectStatus" v-model="deposit.bank"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5">
               <option disabled selected>เลือกธนาคาร</option>
-              <option value="">ธนาคารกรุงเทพ (Bangkok Bank – BBL)</option>
-              <option value="">ธนาคารกรุงไทย (Krungthai Bank – KTB)</option>
-              <option value="">ธนาคารกสิกรไทย (Kasikornbank – KBank)</option>
-              <option value="">ธนาคารไทยพาณิชย์ (Siam Commercial Bank – SCB)</option>
-              <option value="">
+              <option value="ธนาคารกรุงเทพ (Bangkok Bank – BBL)">ธนาคารกรุงเทพ (Bangkok Bank – BBL)</option>
+              <option value="ธนาคารกรุงไทย (Krungthai Bank – KTB)">ธนาคารกรุงไทย (Krungthai Bank – KTB)</option>
+              <option value="ธนาคารกสิกรไทย (Kasikornbank – KBank)">ธนาคารกสิกรไทย (Kasikornbank – KBank)</option>
+              <option value="ธนาคารไทยพาณิชย์ (Siam Commercial Bank – SCB)">ธนาคารไทยพาณิชย์ (Siam Commercial Bank – SCB)</option>
+              <option value="ธนาคารทหารไทยธนชาต (ทีเอ็มบีธนชาต) (TMBThanachart Bank – TTB)">
                 ธนาคารทหารไทยธนชาต (ทีเอ็มบีธนชาต) (TMBThanachart Bank – TTB)
               </option>
-              <option value="">
+              <option value="ธนาคารเกียรตินาคินภัทร (Kiatnakin Phatra Bank – KKP)">
                 ธนาคารเกียรตินาคินภัทร (Kiatnakin Phatra Bank – KKP)
               </option>
-              <option value="">ธนาคารซีไอเอ็มบี ไทย (CIMB Thai Bank – CIMBT)</option>
-              <option value="">ธนาคารยูโอบี (UOB Bank – UOB)</option>
-              <option value="">
+              <option value="ธนาคารซีไอเอ็มบี ไทย (CIMB Thai Bank – CIMBT)">ธนาคารซีไอเอ็มบี ไทย (CIMB Thai Bank – CIMBT)</option>
+              <option value="ธนาคารยูโอบี (UOB Bank – UOB)">ธนาคารยูโอบี (UOB Bank – UOB)</option>
+              <option value="ธนาคารแลนด์ แอนด์ เฮ้าส์ (Land and Houses Bank – LH Bank)">
                 ธนาคารแลนด์ แอนด์ เฮ้าส์ (Land and Houses Bank – LH Bank)
               </option>
-              <option value="">อื่นๆ</option>
+              
             </select>
+           
           </div>
 
           <div>
@@ -190,7 +191,7 @@ divdivdiv
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ชื่อ บัญชี</label>
             <input type="text" id="editProjectCustomer"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="กรอกชื่อ บัญชี" required />
+              placeholder="กรอกชื่อ บัญชี" v-model="deposit.accountName" />
           </div>
 
           <div>
@@ -198,25 +199,25 @@ divdivdiv
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">เลขบัญชี</label>
             <input type="text" id="editProjectCustomer"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="กรอกเลขบัญชี" required />
+              placeholder="กรอกเลขบัญชี" v-model="deposit.accountNumber" />
           </div>
 
           <div>
             <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">จำนวนเงินฝาก</label>
             <input type="text" id="editProjectCustomer"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="กรอกจำนวนเงินฝาก" required />
+              placeholder="กรอกจำนวนเงินฝาก" v-model="deposit.amount" />
           </div>
 
           <div class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">
             <h4 class="text-black">เพิ่มรูปภาพหรือไฟล์สลิป</h4>
-            <input type="file" required />
+            <input type="file" @change="(e) => handleImageChange(e, 'img_deposit')" />
           </div>
 
           <div class="sm:col-span-2">
             <label for="note"
               class="block w-full mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">หมายเหตุ</label>
-            <textarea id="note" placeholder="กรอกหมายเหตุ" rows="4"
+            <textarea v-model="deposit.remark" id="note" placeholder="กรอกหมายเหตุ" rows="4"
               class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block"></textarea>
           </div>
         </div>
@@ -227,7 +228,7 @@ divdivdiv
             ยกเลิก
           </button>
 
-          <button type="submit"
+          <button type="submit" @click="submitdeposit()"
             class="w-1/2 rounded-md bg-[#153E90] px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-[#0E49B5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             บันทึก
           </button>
@@ -443,7 +444,7 @@ divdivdiv
                     'ดำเนินการสำเร็จ' &&
                     project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
                     project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
-                  " @click="openDeposit" label="แจ้งฝากเงิน"
+                  " @click="() => { detailEmployee = project; openDeposit(project._id);}" label="แจ้งฝากเงิน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
 
                   <ButtonP v-if="
@@ -671,6 +672,7 @@ const img_process = ref("");
 const img_testing = ref("");
 const img_deliverwork = ref("");
 const img_invoice = ref("");
+const img_deposit = ref("");
 const receipt = ref("");
 
 const currentLocation = ref(null);
@@ -678,6 +680,7 @@ const locationError = ref(null);
 const isLoggingTime = ref(false);
 
 const projectIdEx = ref('')
+const projectIdDp =ref('')
 
 const TimeToDay = ref({
   morningIn: null,
@@ -691,6 +694,71 @@ const selectTimeInOutCode = ref("");
 
 const newInvoice = ref({});
 
+const deposit =ref({});
+const submitdeposit = async () => {
+  closeDeposit()
+  const payload = deposit.value;
+
+  const depositSubmit = {
+    date: payload.date,
+    time: payload.time,
+    bank: payload.bank,
+    accountName: payload.accountName,
+    accountNumber: payload.accountNumber,
+    amount: payload.amount,
+    image: img_deposit.value,
+    projectId: projectIdDp.value,
+    remark: payload.remark,
+  };
+
+  const result = await Swal.fire({
+    title: "คุณแน่ใจหรือไม่?",
+    text: "คุณต้องการแจ้งฝากเงินหรือไม่?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "ใช่, ส่งเลย!",
+    cancelButtonText: "ยกเลิก",
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
+
+  try {
+    Swal.fire({
+      title: "กำลังส่งข้อมูล...",
+      text: "กรุณารอสักครู่",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_VUE_APP_DECCAN}/deposit`,
+      depositSubmit
+    );
+
+    // Success Alert (แจ้งเตือนเมื่อสำเร็จ)
+    Swal.fire({
+      title: "ส่งสำเร็จ!",
+      text: "ใบแจ้งหนี้ถูกส่งเรียบร้อยแล้ว",
+      icon: "success",
+    });
+
+    deposit.value = {};
+  } catch (error) {
+    console.error("error:", error);
+
+    // Error Alert (แจ้งเตือนเมื่อผิดพลาด)
+    Swal.fire({
+      title: "เกิดข้อผิดพลาด!",
+      text: "ไม่สามารถส่งใบแจ้งหนี้ได้ กรุณาลองใหม่อีกครั้ง",
+      icon: "error",
+    });
+  }
+};
+
 async function handleImageChange(event, type) {
   const file = event.target.files[0];
   if (!file) return;
@@ -702,6 +770,7 @@ async function handleImageChange(event, type) {
   else if (type === "img_testing") img_testing.value = base64;
   else if (type === "img_deliverwork") img_deliverwork.value = base64;
   else if (type === "img_invoice") img_invoice.value = base64;
+  else if (type === "img_deposit")img_deposit.value = base64;
 }
 
 function convertToBase64(file) {
@@ -1072,8 +1141,9 @@ const closeReceipt = () => {
 /////////////
 const depositDialog = ref(null);
 
-const openDeposit = () => {
+const openDeposit = (id) => {
   depositDialog.value.showModal();
+  projectIdDp.value = id;
 };
 
 const closeDeposit = () => {
