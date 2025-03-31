@@ -205,9 +205,14 @@ export default {
           action: "/expenses/history",
           icon: "<i class='pi pi-money-bill' style='font-size: 1.4rem'></i>",
         },
+        // {
+        //   text: "ประวัติใบแจ้งหนี้",
+        //   action: "/invoice/history",
+        //   icon: "<i class='pi pi-file-import' style='font-size: 1.4rem'></i>",
+        // },
         {
-          text: "ประวัติใบแจ้งหนี้",
-          action: "/invoice/history",
+          text: "ประวัติการฝากเงิน",
+          action: "/deposit/history",
           icon: "<i class='pi pi-file-import' style='font-size: 1.4rem'></i>",
         },
         // {

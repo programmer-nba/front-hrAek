@@ -33,6 +33,11 @@ let routes = [
     component: () => import("../components/Employee/InvoiceHisView.vue"),
   },
   {
+    path: "/deposit/history",
+    name: "deposit-history",
+    component: () => import("../components/Employee/DepositHisView.vue"),
+  },
+  {
     path: "/ReportEmployee",
     name: "ReportEmployee",
     component: () =>
