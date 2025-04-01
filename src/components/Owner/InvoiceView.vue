@@ -62,8 +62,10 @@ onMounted(fetchProject);
 
         <!-- No data state -->
         <div v-else-if="invoice.length === 0" class="text-center py-12 bg-white rounded-lg shadow">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <p class="mt-4 text-lg text-gray-600">ไม่พบข้อมูลใบแจ้งหนี้</p>
         </div>
@@ -79,89 +81,115 @@ onMounted(fetchProject);
                             <th class="px-6 py-4 text-center">กระบวนการ</th>
                             <th class="px-6 py-4 text-center">ทดสอบ</th>
                             <th class="px-6 py-4 text-center">ส่งมอบ</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item, index) in invoice" :key="item._id" 
+                        <tr v-for="(item, index) in invoice" :key="item._id"
                             :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
                             <td class="px-6 py-4 border-b border-gray-200">
                                 <div class="font-medium text-gray-900">{{ item.title }}</div>
                             </td>
-                            
+
                             <td class="px-6 py-4 border-b border-gray-200">
                                 <div class="flex flex-col items-center">
-                                    <div v-if="item.img_surway" 
-                                         class="relative mb-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer" 
-                                         @click="openImage(item.img_surway)">
+                                    <div v-if="item.img_surway"
+                                        class="relative mb-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                        @click="openImage(item.img_surway)">
                                         <img :src="item.img_surway" alt="Survey" class="w-20 h-20 object-cover">
-                                        <div class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <span class="text-white text-xs font-medium px-2 py-1 bg-black bg-opacity-50 rounded">ดูรูปภาพ</span>
+                                        <div
+                                            class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <span
+                                                class="text-white text-xs font-medium px-2 py-1 bg-black bg-opacity-50 rounded">ดูรูปภาพ</span>
                                         </div>
                                     </div>
-                                    <span v-else class="w-20 h-20 flex items-center justify-center text-gray-400 border border-dashed border-gray-300 rounded-lg">
+                                    <span v-else
+                                        class="w-20 h-20 flex items-center justify-center text-gray-400 border border-dashed border-gray-300 rounded-lg">
                                         ไม่มีรูปภาพ
                                     </span>
-                                    <span :class="`text-xs font-medium px-2 py-1 rounded-full mt-1 ${getStatusColor(item.img_surway)}`">
+                                    <span
+                                        :class="`text-xs font-medium px-2 py-1 rounded-full mt-1 ${getStatusColor(item.img_surway)}`">
                                         {{ getStatusText(item.img_surway) }}
                                     </span>
                                 </div>
                             </td>
-                            
+
                             <td class="px-6 py-4 border-b border-gray-200">
                                 <div class="flex flex-col items-center">
-                                    <div v-if="item.img_process" 
-                                         class="relative mb-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer" 
-                                         @click="openImage(item.img_process)">
+                                    <div v-if="item.img_process"
+                                        class="relative mb-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                        @click="openImage(item.img_process)">
                                         <img :src="item.img_process" alt="Process" class="w-20 h-20 object-cover">
-                                        <div class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <span class="text-white text-xs font-medium px-2 py-1 bg-black bg-opacity-50 rounded">ดูรูปภาพ</span>
+                                        <div
+                                            class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <span
+                                                class="text-white text-xs font-medium px-2 py-1 bg-black bg-opacity-50 rounded">ดูรูปภาพ</span>
                                         </div>
                                     </div>
-                                    <span v-else class="w-20 h-20 flex items-center justify-center text-gray-400 border border-dashed border-gray-300 rounded-lg">
+                                    <span v-else
+                                        class="w-20 h-20 flex items-center justify-center text-gray-400 border border-dashed border-gray-300 rounded-lg">
                                         ไม่มีรูปภาพ
                                     </span>
-                                    <span :class="`text-xs font-medium px-2 py-1 rounded-full mt-1 ${getStatusColor(item.img_process)}`">
+                                    <span
+                                        :class="`text-xs font-medium px-2 py-1 rounded-full mt-1 ${getStatusColor(item.img_process)}`">
                                         {{ getStatusText(item.img_process) }}
                                     </span>
                                 </div>
                             </td>
-                            
+
                             <td class="px-6 py-4 border-b border-gray-200">
                                 <div class="flex flex-col items-center">
-                                    <div v-if="item.img_testing" 
-                                         class="relative mb-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer" 
-                                         @click="openImage(item.img_testing)">
+                                    <div v-if="item.img_testing"
+                                        class="relative mb-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                        @click="openImage(item.img_testing)">
                                         <img :src="item.img_testing" alt="Testing" class="w-20 h-20 object-cover">
-                                        <div class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <span class="text-white text-xs font-medium px-2 py-1 bg-black bg-opacity-50 rounded">ดูรูปภาพ</span>
+                                        <div
+                                            class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <span
+                                                class="text-white text-xs font-medium px-2 py-1 bg-black bg-opacity-50 rounded">ดูรูปภาพ</span>
                                         </div>
                                     </div>
-                                    <span v-else class="w-20 h-20 flex items-center justify-center text-gray-400 border border-dashed border-gray-300 rounded-lg">
+                                    <span v-else
+                                        class="w-20 h-20 flex items-center justify-center text-gray-400 border border-dashed border-gray-300 rounded-lg">
                                         ไม่มีรูปภาพ
                                     </span>
-                                    <span :class="`text-xs font-medium px-2 py-1 rounded-full mt-1 ${getStatusColor(item.img_testing)}`">
+                                    <span
+                                        :class="`text-xs font-medium px-2 py-1 rounded-full mt-1 ${getStatusColor(item.img_testing)}`">
                                         {{ getStatusText(item.img_testing) }}
                                     </span>
                                 </div>
                             </td>
-                            
+
                             <td class="px-6 py-4 border-b border-gray-200">
                                 <div class="flex flex-col items-center">
-                                    <div v-if="item.img_deliverwork" 
-                                         class="relative mb-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer" 
-                                         @click="openImage(item.img_deliverwork)">
-                                        <img :src="item.img_deliverwork" alt="Deliver Work" class="w-20 h-20 object-cover">
-                                        <div class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <span class="text-white text-xs font-medium px-2 py-1 bg-black bg-opacity-50 rounded">ดูรูปภาพ</span>
+                                    <div v-if="item.img_deliverwork"
+                                        class="relative mb-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                        @click="openImage(item.img_deliverwork)">
+                                        <img :src="item.img_deliverwork" alt="Deliver Work"
+                                            class="w-20 h-20 object-cover">
+                                        <div
+                                            class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <span
+                                                class="text-white text-xs font-medium px-2 py-1 bg-black bg-opacity-50 rounded">ดูรูปภาพ</span>
                                         </div>
                                     </div>
-                                    <span v-else class="w-20 h-20 flex items-center justify-center text-gray-400 border border-dashed border-gray-300 rounded-lg">
+                                    <span v-else
+                                        class="w-20 h-20 flex items-center justify-center text-gray-400 border border-dashed border-gray-300 rounded-lg">
                                         ไม่มีรูปภาพ
                                     </span>
-                                    <span :class="`text-xs font-medium px-2 py-1 rounded-full mt-1 ${getStatusColor(item.img_deliverwork)}`">
+                                    <span
+                                        :class="`text-xs font-medium px-2 py-1 rounded-full mt-1 ${getStatusColor(item.img_deliverwork)}`">
                                         {{ getStatusText(item.img_deliverwork) }}
                                     </span>
                                 </div>
+                            </td>
+                            <td class="px-6 py-4 border-b border-gray-200 text-center">
+                                <button
+                                    v-if="item.img_surway && item.img_process && item.img_testing && item.img_deliverwork"
+                                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                                    @click="sendInvoice(item._id)">
+                                    ส่งใบแจ้งหนี้
+                                </button>
                             </td>
                         </tr>
                     </tbody>

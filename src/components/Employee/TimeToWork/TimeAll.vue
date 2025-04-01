@@ -1,863 +1,336 @@
-<template>
-  <section class="container px-4 mx-auto w-full">
-    <div class="sm:flex sm:items-center sm:justify-between mt-6">
-      <div>
-        <div class="flex items-center gap-x-3 mt-4">
-          <h2 class="text-lg font-medium text-gray-800">เวลาเข้างานทั้งหมด</h2>
+<script setup>
+import { onMounted, ref, computed } from 'vue';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
-          <span
-            class="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full"
-          >
-            {{ Time.length }} รายการ</span
-          >
-        </div>
-      </div>
-    </div>
+const timeinouts = ref([]);
+const isLoading = ref(true);
+const emID = localStorage.getItem('id');
+const searchTerm = ref('');
+const selectedMonth = ref('');
+const selectedType = ref('all');
 
-    <div class="mt-6 md:flex md:items-center md:justify-between">
-      <div
-        v-if="activeType === 'table'"
-        class="inline-flex overflow-hidden bg-white border border-[#7BD3EA] divide-x rounded-lg rtl:flex-row-reverse"
-      >
-        <button
-          @click="showAllItems"
-          :class="{
-            'bg-[#1D24CA] text-white hover:bg-[#0F2167]':
-              activeStatus === 'all',
-          }"
-          class="px-5 py-2 text-xs font-medium text-[#11009E] transition-colors duration-200 sm:text-sm hover:bg-[#B4D4FF]"
-        >
-          วัน
-        </button>
-
-        <button
-          @click="showItemsByPosition('รอผู้จัดการอนุมัติ')"
-          :class="{
-            'bg-[#1D24CA] text-white hover:bg-[#0F2167]':
-              activeStatus === 'รอผู้จัดการอนุมัติ',
-          }"
-          class="px-5 py-2 text-xs font-medium text-[#11009E] transition-colors duration-200 sm:text-sm hover:bg-[#B4D4FF]"
-        >
-          เดือน
-        </button>
-
-        <button
-          @click="showItemsByPosition('อนุมัติแล้ว')"
-          :class="{
-            'bg-[#1D24CA] text-white hover:bg-[#0F2167]':
-              activeStatus === 'อนุมัติแล้ว',
-          }"
-          class="px-5 py-2 text-xs font-medium text-[#11009E] transition-colors duration-200 sm:text-sm hover:bg-[#B4D4FF]"
-        >
-          ปี
-        </button>
-      </div>
-
-      <div class="relative flex items-center mt-4 md:mt-0">
-        <span class="absolute">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-5 h-5 mx-3 text-gray-400"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-            />
-          </svg>
-        </span>
-
-        <input
-          type="text"
-          v-model="searchTerm"
-          placeholder="Search"
-          class="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400/70 pl-11 rtl:pr-11 rtl:pl-5 focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-        />
-      </div>
-      <div
-        class="inline-flex overflow-hidden bg-white border border-[#7BD3EA] divide-x rounded-lg rtl:flex-row-reverse mt-4 sm:mt-0"
-      >
-        <button
-          @click="showDisplay('table')"
-          :class="{
-            'bg-[#1D24CA] text-white hover:bg-[#0F2167]':
-              activeType === 'table',
-          }"
-          class="px-5 py-2 text-xs font-medium text-[#11009E] transition-colors duration-200 sm:text-sm hover:bg-[#B4D4FF]"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 16 16"
-          >
-            <path
-              fill="currentColor"
-              fill-rule="evenodd"
-              d="M4.5 3h7A1.5 1.5 0 0 1 13 4.5v7a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 11.5v-7A1.5 1.5 0 0 1 4.5 3m-3 1.5a3 3 0 0 1 3-3h7a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-7a3 3 0 0 1-3-3zm4.75.75a1 1 0 1 1-2 0a1 1 0 0 1 2 0m1 0A.75.75 0 0 1 8 4.5h2.75a.75.75 0 0 1 0 1.5H8a.75.75 0 0 1-.75-.75M5.25 9a1 1 0 1 0 0-2a1 1 0 0 0 0 2m1 1.75a1 1 0 1 1-2 0a1 1 0 0 1 2 0M8 7.25a.75.75 0 0 0 0 1.5h2.75a.75.75 0 0 0 0-1.5zm-.75 3.5A.75.75 0 0 1 8 10h2.75a.75.75 0 0 1 0 1.5H8a.75.75 0 0 1-.75-.75"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </button>
-
-        <button
-          @click="showDisplay('Cascader')"
-          :class="{
-            'bg-[#1D24CA] text-white hover:bg-[#0F2167]':
-              activeType === 'Cascader',
-          }"
-          class="px-5 py-2 text-xs font-medium text-[#11009E] transition-colors duration-200 sm:text-sm hover:bg-[#B4D4FF]"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 1024 1024"
-          >
-            <path
-              fill="currentColor"
-              d="M128 384v512h768V192H768v32a32 32 0 1 1-64 0v-32H320v32a32 32 0 0 1-64 0v-32H128v128h768v64H128zm192-256h384V96a32 32 0 1 1 64 0v32h160a32 32 0 0 1 32 32v768a32 32 0 0 1-32 32H96a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32h160V96a32 32 0 0 1 64 0v32zm-32 384h64a32 32 0 0 1 0 64h-64a32 32 0 0 1 0-64zm0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64zm192-192h64a32 32 0 0 1 0 64h-64a32 32 0 0 1 0-64zm0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64zm192-192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64zm0 192h64a32 32 0 1 1 0 64h-64a32 32 0 1 1 0-64z"
-            />
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <div v-if="activeType === 'table'" class="flex flex-col mt-6">
-      <div class="overflow-x-auto p-3">
-        <div class="inline-block min-w-full">
-          <div class="overflow-hidden border border-[#0C359E] rounded-lg">
-            <table class="min-w-full divide-y divide-[#0C359E]">
-              <thead>
-                <tr
-                  class="text-sm tracking-wide text-center text-[#DFF5FF] bg-[#0C359E] uppercase border-b border-[#50C4ED]"
-                >
-                  <th class="p-3">วันที่</th>
-
-                  <th class="p-3">เวลาเข้างานเช้า</th>
-                  <th class="p-3">เวลาออกงานเช้า</th>
-
-                  <th class="p-3">เวลาเข้างานบ่าย</th>
-                  <th class="p-3 whitespace-nowrap">เวลาออกงานบ่าย</th>
-
-                  <th class="p-3"></th>
-                </tr>
-              </thead>
-              <template v-if="paginatedItems.length > 0">
-                <!-- {{ console.log(paginatedItems) }} -->
-                <tbody class="divide-y divide-[#0C359E]">
-                  <tr
-                    v-for="(TimeToWork, index) in paginatedItems"
-                    :key="index"
-                    class="text-[#000000]"
-                  >
-                    <td
-                      class="p-2 text-sm text-center border-r border-[#0C359E]"
-                    >
-                      <p class="text-black">{{ formatDate(TimeToWork.day) }}</p>
-                    </td>
-                    <td class="p-2 border-r border-[#0C359E]">
-                      <!-- {{ console.log(TimeToWork) }} -->
-                      <div v-if="TimeToWork.morningIn">
-                        <p class="text-black text-center text-sm">
-                          {{ TimeToWork.morningIn }}
-                        </p>
-                      </div>
-                      <div v-else class="text-black text-center text-sm">
-                        <button
-                          @click="posQuestReTime(TimeToWork, 'เข้างานช่วงเช้า')"
-                        >
-                          <i
-                            class="pi pi-file-edit text-blue-500 hover:text-blue-700"
-                            style="font-size: 30px"
-                          ></i>
-                        </button>
-                      </div>
-                    </td>
-
-                    <td
-                      class="p-2 text-sm text-center border-r border-[#0C359E]"
-                    >
-                      <div v-if="TimeToWork.morningOut">
-                        <p class="text-black">{{ TimeToWork.morningOut }}</p>
-                      </div>
-                      <div v-else class="text-black text-center text-sm">
-                        <button
-                          @click="posQuestReTime(TimeToWork, 'เวลาออกงานเช้า')"
-                        >
-                          <i
-                            class="pi pi-file-edit text-blue-500 hover:text-blue-700"
-                            style="font-size: 30px"
-                          ></i>
-                        </button>
-                      </div>
-                    </td>
-
-                    <td
-                      class="p-2 text-sm text-center border-r border-[#0C359E]"
-                    >
-                      <div v-if="TimeToWork.afterIn">
-                        <p class="text-black">{{ TimeToWork.afterIn }}</p>
-                      </div>
-                      <div v-else class="text-black text-center text-sm">
-                        <button
-                          @click="posQuestReTime(TimeToWork, 'เวลาเข้างานบ่าย')"
-                        >
-                          <i
-                            class="pi pi-file-edit text-blue-500 hover:text-blue-700"
-                            style="font-size: 30px"
-                          ></i>
-                        </button>
-                      </div>
-                    </td>
-                    <td
-                      class="p-2 text-sm text-center border-r border-[#0C359E]"
-                    >
-                      <div v-if="TimeToWork.afterOut">
-                        <p class="text-black">{{ TimeToWork.afterOut }}</p>
-                      </div>
-                      <div v-else class="text-black text-center text-sm">
-                        <button
-                          @click="posQuestReTime(TimeToWork, 'เวลาออกงานบ่าย')"
-                        >
-                          <i
-                            class="pi pi-file-edit text-blue-500 hover:text-blue-700"
-                            style="font-size: 30px"
-                          ></i>
-                        </button>
-                      </div>
-                    </td>
-
-                    <td class="p-2 text-sm whitespace-nowrap">
-                      <p class="text-black text-center">หมายเหตุ</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </template>
-              <template v-else>
-                <tr>
-                  <td colspan="6" class="text-center py-4 text-black">
-                    ไม่มีรายการคำขอ
-                  </td>
-                </tr>
-              </template>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-6 sm:flex sm:items-center sm:justify-between mb-6">
-        <div class="text-sm text-black">
-          หน้า
-          <span class="font-medium text-black"
-            >{{ currentPage }} / {{ totalPages }}</span
-          >
-        </div>
-
-        <div class="flex items-center mt-4 gap-x-4 sm:mt-0">
-          <button
-            @click="prevPage"
-            :disabled="currentPage === 1"
-            class="flex items-center cursor-pointer justify-center w-1/2 px-5 py-2 text-sm text-[#EEF5FF] capitalize transition-colors duration-200 bg-[#4942E4] border rounded-md sm:w-auto gap-x-2 hover:bg-[#11009E]"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-5 h-5 rtl:-sca[#11009E]"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
-              />
-            </svg>
-
-            <span> ก่อนหน้า </span>
-          </button>
-
-          <button
-            @click="nextPage"
-            :disabled="currentPage === totalPages"
-            class="flex items-center cursor-pointer justify-center w-1/2 px-5 py-2 text-sm text-[#EEF5FF] capitalize transition-colors duration-200 bg-[#4942E4] border rounded-md sm:w-auto gap-x-2 hover:bg-[#11009E]"
-          >
-            <span> ถัดไป </span>
-
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-5 h-5 rtl:-scale-x-100"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div v-else-if="activeType === 'Cascader'">
-      <a-calendar :value="value" @update:value="updateValue">
-        <template #dateCellRender="{ current }">
-          <ul class="events">
-            <li v-for="item in TimeCalendar" :key="item.content">
-              <template
-                v-if="current && current.format('YYYY/MM/DD') === item.day"
-              >
-                <div class="flex flex-col">
-                  <a-badge
-                    :status="item.morningIn ? 'success' : 'error'"
-                    :text="
-                      item.morningIn
-                        ? 'เข้างานเช้า ' + item.morningIn
-                        : 'เข้างานเช้า -'
-                    "
-                  />
-                  <a-badge
-                    :status="item.morningOut ? 'success' : 'error'"
-                    :text="
-                      item.morningOut
-                        ? 'ออกงานเช้า ' + item.morningOut
-                        : 'ออกงานเช้า -'
-                    "
-                  />
-                  <a-badge
-                    :status="item.afterIn ? 'success' : 'error'"
-                    :text="
-                      item.afterIn
-                        ? 'เข้างานบ่าย ' + item.afterIn
-                        : 'เข้างานบ่าย -'
-                    "
-                  />
-                  <a-badge
-                    :status="item.afterOut ? 'success' : 'error'"
-                    :text="
-                      item.afterOut
-                        ? 'ออกงานบ่าย ' + item.afterOut
-                        : 'ออกงานบ่าย -'
-                    "
-                  />
-                </div>
-              </template>
-            </li>
-          </ul>
-        </template>
-        <template #monthCellRender="{ current }">
-          <div v-if="current" class="flex flex-col">
-            <template v-if="getDaysWithTime(current)">
-              <a-badge :status="'success'" :text="getDaysWithTime(current)" />
-            </template>
-            <template v-if="getMissingDays(current)">
-              <a-badge :status="'error'" :text="getMissingDays(current)" />
-            </template>
-          </div>
-        </template>
-      </a-calendar>
-    </div>
-
-    <Dialog v-model:visible="showEdit" modal header="ขอแก้ไขเวลา">
-      <div class="p-2 w-full flex flex-col justify-start items-start gap-3">
-        <!-- {{ console.log(selectedEmployee) }} -->
-        <div class="font-semibold">
-          วันที่ : {{ formatDate(selectedEmployee.items.day) }}
-        </div>
-        <div class="font-semibold">เวลา : {{ selectedEmployee.time }}</div>
-        <div class="space-x-2">
-          <a class="font-semibold">ขอเวลาใหม่ :</a>
-          <CalendarP
-            v-model="selectedEmployee.time_new"
-            showTime
-            timeOnly
-            placeholder="ลงเวลา"
-            class="h-8 w-16 border-2 rounded"
-          />
-        </div>
-        <div class="">
-          <div class="font-semibold mb-2">เนื่องจาก :</div>
-          <input
-            v-model="selectedEmployee.remark"
-            placeholder="เหตุ. . ."
-            class="px-2 py-2 border-2 rounded"
-          />
-        </div>
-      </div>
-      <template #footer>
-        <div class="w-full flex justify-center gap-2">
-          <ButtonP
-            label="ส่งคำร้อง"
-            @click="posQuestReTime"
-            class="px-2 py-1 rounded text-white bg-green-500 hover:bg-green-700"
-          />
-          <ButtonP
-            label="ยกเลิก"
-            @click="showEdit = false"
-            class="px-2 py-1 rounded text-white bg-red-500 hover:bg-red-700"
-          />
-        </div>
-      </template>
-    </Dialog>
-  </section>
-</template>
-
-<script>
-import axios from "axios";
-import dayjs from "dayjs";
-import InputText from "primevue/inputtext";
-import Swal from "sweetalert2";
-
-export default {
-  data() {
-    return {
-      Time: [],
-      me: {},
-      searchTerm: "",
-      itemsPerPage: 10,
-      currentPage: 1,
-      activeStatus: "all",
-      missingDates: [],
-      TimeCalendar: [],
-      activeType: "table",
-      value: "",
-
-      selectedEmployee: {},
-      selectedDate: "",
-      showEdit: false,
-      //   showDisplay: false,
-    };
-  },
-  mounted() {
-    this.fetchME();
-    this.fetchTime();
-    this.fetchTimeCalendar();
-  },
-
-  computed: {
-    filteredItems() {
-      if (!this.searchTerm) {
-        return this.Time.filter(
-          (item) =>
-            this.activeStatus === "all" ||
-            item.Status_document === this.activeStatus
-        );
-      } else {
-        const searchTerm = this.searchTerm.toLowerCase();
-        const filteredTime = this.Time.filter((item) => {
-          return (
-            Object.values(item).some((value) => {
-              if (typeof value === "string") {
-                return value.toLowerCase().includes(searchTerm);
-              }
-              return false;
-            }) &&
-            (this.activeStatus === "all" ||
-              item.Status_document === this.activeStatus)
-          );
-        });
-        return filteredTime;
-      }
-    },
-    totalPages() {
-      return Math.ceil(this.filteredItems.length / this.itemsPerPage);
-    },
-    paginatedItems() {
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      const endIndex = this.currentPage * this.itemsPerPage;
-      return this.filteredItems.slice(startIndex, endIndex);
-    },
-  },
-  methods: {
-    getDaysWithTime(current) {
-      if (!current || !current.month) return "";
-
-      const today = new Date();
-      const isThisYear = current.year() === today.getFullYear();
-      const isPastMonth =
-        current.year() === today.getFullYear() &&
-        current.month() <= today.getMonth();
-
-      if (isThisYear && isPastMonth) {
-        const monthData = this.getMonthData(current);
-        return `ลงเวลา ${monthData.daysWithTime} วัน`;
-      } else {
-        return "";
-      }
-    },
-    getMissingDays(current) {
-      if (!current || !current.month) return "";
-
-      const today = new Date();
-      const isThisYear = current.year() === today.getFullYear();
-      const isPastMonth =
-        current.year() === today.getFullYear() &&
-        current.month() <= today.getMonth();
-
-      if (isThisYear && isPastMonth) {
-        const monthData = this.getMonthData(current);
-        return `ขาด ${monthData.missingDays} วัน`;
-      } else {
-        return "";
-      }
-    },
-    getMonthData(current) {
-      if (!current || !current.month)
-        return { daysWithTime: 0, missingDays: 0 };
-
-      const month = current.month();
-      const year = current.year();
-      const daysInMonth = dayjs(`${year}-${month + 1}-01`).daysInMonth();
-
-      const monthData = this.TimeCalendar.filter((item) => {
-        const itemYear = dayjs(item.day).year();
-        const itemMonth = dayjs(item.day).month();
-        return itemYear === year && itemMonth === month;
-      });
-
-      const daysWithTime = monthData.length;
-      const missingDays = daysInMonth - daysWithTime;
-
-      return { daysWithTime, missingDays };
-    },
-
-    async fetchTimeCalendar() {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/time/getme`,
-          {
-            headers: {
-              "auth-token": localStorage.getItem("token"),
-            },
-          }
-        );
-        this.TimeCalendar = response.data.data.reverse();
-        // console.log("เวลา", response.data);
-      } catch (error) {
-        console.error("Error fetching Time:", error);
-      }
-    },
-
-    async fetchTime() {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/time/getme`,
-          {
-            headers: {
-              "auth-token": localStorage.getItem("token"),
-            },
-          }
-        );
-
-        this.Time = response.data.data.reverse();
-        console.log("เวลา", response);
-
-        // ตรวจสอบและแทรกข้อมูลของวันที่ที่ขาดโดยอัตโนมัติ
-        this.insertMissingDates();
-      } catch (error) {
-        console.error("Error fetching Time:", error);
-      }
-    },
-
-    insertMissingDates() {
-      // สร้างอาร์เรย์ของวันที่ที่มีอยู่ในข้อมูลที่ได้รับมา
-      const existingDates = this.Time.map((item) => item.day);
-
-      // กำหนดวันที่เริ่มต้นและสิ้นสุดให้เป็นวันแรกและวันปัจจุบัน
-      const startDate = dayjs().startOf("month");
-      const currentDate = dayjs().startOf("day");
-
-      for (
-        let date = startDate;
-        date.isBefore(currentDate);
-        date = date.add(1, "day")
-      ) {
-        const formattedDate = date.format("YYYY/MM/DD");
-        // ถ้าวันที่นี้ยังไม่มีอยู่ในข้อมูล และเป็นวันที่น้อยกว่าหรือเท่ากับวันปัจจุบัน
-        if (!existingDates.includes(formattedDate)) {
-          // สร้างข้อมูลใหม่สำหรับวันที่นี้และแทรกลงในตาราง
-          const missingData = {
-            day: formattedDate,
-            morningIn: "",
-            morningOut: "",
-            afterIn: "",
-            afterOut: "",
-          };
-          this.Time.push(missingData);
-        }
-      }
-
-      // เรียงลำดับข้อมูลใหม่ให้เรียงตามวันที่
-      this.Time.sort((a, b) => {
-        return dayjs(b.day).diff(dayjs(a.day));
-      });
-
-      this.$nextTick(() => {
-        this.$forceUpdate();
-      });
-    },
-
-    updateValue(newValue) {
-      this.value = newValue;
-    },
-    showDisplay(Type) {
-      this.activeType = Type;
-    },
-    formatDate(dateString) {
-      const date = dayjs(dateString);
-      const thaiDate = date.locale("th").format("DD/MM/YYYY");
-      return thaiDate;
-    },
-
-    getEmployeeName(employeeId) {
-      const employee = this.Employees.find((el) => el._id === employeeId);
-      if (employee) {
-        return `${employee.name_title} ${employee.first_name} ${employee.last_name} `;
-      } else {
-        return "-";
-      }
-    },
-
-    getEmployeePosition(employeeId) {
-      const employee = this.Employees.find((el) => el._id === employeeId);
-      if (employee) {
-        return employee.position;
-      } else {
-        return "-";
-      }
-    },
-
-    async getEmployee() {
-      await axios
-        .get(`${import.meta.env.VITE_VUE_APP_DECCAN}/get`, {
-          headers: {
-            "auth-token": localStorage.getItem("token"),
-          },
-        })
-        .then((res) => {
-          //   console.log("em", res.data.data);
-          this.Employees = res.data.data;
-        })
-        .catch((error) => {
-          console.error("Error fetching Time:", error);
-        });
-    },
-
-    showAllItems() {
-      this.activeStatus = "all";
-      this.currentPage = 1;
-    },
-    showItemsByPosition(Status_document) {
-      this.activeStatus = Status_document;
-      this.currentPage = 1;
-    },
-    nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-      }
-    },
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-      }
-    },
-
-    goToAddRecordPage() {
-      this.$router.push("/Record/AddRecord");
-    },
-    async deleteDocument(_id) {
-      try {
-        await axios.delete(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/document/delete/${_id}`,
-          {
-            headers: {
-              "auth-token": localStorage.getItem("token"),
-            },
-          }
-        );
-
-        Swal.fire({
-          icon: "success",
-          text: "ลบข้อมูลสำเร็จ",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-        this.fetchTime();
-        // console.log(`Item with ID ${_id} deleted successfully.`);
-      } catch (error) {
-        console.error(`Error deleting item with ID ${_id}:`, error);
-        Swal.fire({
-          icon: "error",
-          text: error.response.data.message,
-          timer: 2000,
-          showConfirmButton: false,
-        });
-      }
-    },
-    async fetchME() {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/getme `,
-          {
-            headers: {
-              "auth-token": localStorage.getItem("token"),
-            },
-          }
-        );
-        this.me = response.data.data;
-        // console.log(response.data.data._id);
-        this.fetchTime();
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    },
-    formatDateTimeThai(dateTime) {
-      return dayjs(dateTime).locale("th").format("DD/MM/YYYY HH:mm:ss");
-    },
-    async posQuestReTime(items, time) {
-      // this.selectedEmployee = items;
-      try {
-        if ((items, time)) {
-          this.selectedEmployee = { items, time };
-          //   console.log(this.selectedEmployee);
-          this.showEdit = true;
-        } else {
-          const time = new Date(this.selectedEmployee.time_new);
-          const formattedTime = time.toLocaleTimeString("th-TH"); // หรือแยกชั่วโมง นาที วินาที ตามที่คุณต้องการ
-
-          const selectedDate = new Date(this.selectedEmployee.items.day);
-          const day = selectedDate.getDate().toString().padStart(2, "0");
-          const month = (selectedDate.getMonth() + 1)
-            .toString()
-            .padStart(2, "0");
-          const year = selectedDate.getFullYear().toString();
-
-          const data = {
-            employee_id: this.me._id,
-            employee_number: this.me.employee_number,
-            firstname: this.me.first_name,
-            lastname: this.me.last_name,
-            time: formattedTime,
-            day: day,
-            mount: month,
-            year: year,
-            time_line: this.selectedEmployee.time, //เข้างานช่วงเช้า, พักเที่ยง, เข้างานช่วงบ่าย, ลงเวลาออกงาน
-            remark: this.selectedEmployee.remark || "",
-          };
-
-          //   console.log(data);
-          if (data.time === "Invalid Date" || data.remark === "") {
-            Swal.fire({
-              title: "โปรดลงเวลาและเหตุคำร้อง",
-              icon: "error",
-              confirmButtonText: "ตกลง",
-              timer: 2500,
-            });
-            return;
-          }
-          // console.log(data);
-          // return;
-          const response = await axios.post(
-            `${import.meta.env.VITE_VUE_APP_DECCAN}/request/time/create`,
-            data,
-            {
-              headers: {
-                "auth-token": localStorage.getItem("token"),
-              },
-            }
-          );
-
-          console.log("แก้ไข", response);
-          Swal.fire({
-            title: "ขอเวลาใหม่เรียบร้อย",
-            icon: "success",
-            confirmButtonText: "ตกลง",
-            timer: 2500,
-          });
-          //   this.getOT();
-          //   this.getdata();
-          //   this.getCurrentDateThai();
-          this.showEdit = false;
-        }
-      } catch (error) {
-        console.log(error);
-        Swal.fire({
-          title: "error",
-          icon: "error",
-          confirmButtonText: "ตกลง",
-          timer: 2500,
-        });
-      }
-    },
-  },
+const fetchTimeinout = async () => {
+  isLoading.value = true;
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/timeinout/employee/${emID}`);
+    timeinouts.value = response.data.data;
+    for (let timeinout of timeinouts.value) {
+      fetchProjectID(timeinout);
+    }
+  } catch (error) {
+    console.error("Error fetching logs:", error);
+    Swal.fire({
+      icon: "error",
+      title: "ไม่สามารถโหลดข้อมูลได้",
+      text: error.message || "โปรดลองอีกครั้ง",
+    });
+  } finally {
+    isLoading.value = false;
+  }
 };
+
+const fetchProjectID = async (timeinout) => {
+  if (!timeinout.projectId) return;
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/project/${timeinout.projectId}`);
+    timeinout.projectName = response.data.data.title;
+  } catch (error) {
+    console.error("Error fetching employee name:", error);
+    timeinout.projectName = "ไม่พบข้อมูล";
+  }
+};
+
+// คำนวณเดือนที่มีข้อมูล
+const availableMonths = computed(() => {
+  const months = new Set();
+  timeinouts.value.forEach(item => {
+    const date = new Date(item.createdAt);
+    const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    months.add(monthYear);
+  });
+  return Array.from(months).sort().reverse();
+});
+
+// จัดรูปแบบเดือนสำหรับแสดงผล
+const formatMonthDisplay = (monthStr) => {
+  if (!monthStr) return '';
+  const [year, month] = monthStr.split('-');
+  const thaiMonths = [
+    'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+  ];
+  return `${thaiMonths[parseInt(month) - 1]} ${parseInt(year) + 543}`;
+};
+
+// กรองข้อมูลตามเงื่อนไข
+const filteredTimeinouts = computed(() => {
+  let result = timeinouts.value;
+  
+  // กรองตามประเภท
+  if (selectedType.value !== 'all') {
+    result = result.filter(item => item.type === selectedType.value);
+  }
+  
+  // กรองตามเดือน
+  if (selectedMonth.value) {
+    result = result.filter(item => {
+      const date = new Date(item.createdAt);
+      const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      return monthYear === selectedMonth.value;
+    });
+  }
+  
+  // กรองตามคำค้นหา
+  if (searchTerm.value) {
+    const search = searchTerm.value.toLowerCase();
+    result = result.filter(item => 
+      (item.projectName && item.projectName.toLowerCase().includes(search)) ||
+      (item.location && item.location.toLowerCase().includes(search))
+    );
+  }
+  
+  return result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+});
+
+// จัดรูปแบบวันที่
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  return date.toLocaleDateString('th-TH', options);
+};
+
+// สถิติการเข้างาน
+const attendanceStats = computed(() => {
+  const stats = {
+    totalDays: 0,
+    checkIn: 0,
+    checkOut: 0
+  };
+  
+  // กรองเฉพาะข้อมูลตามเดือนที่เลือก
+  let data = timeinouts.value;
+  if (selectedMonth.value) {
+    data = data.filter(item => {
+      const date = new Date(item.createdAt);
+      const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      return monthYear === selectedMonth.value;
+    });
+  }
+  
+  // นับจำนวนวันที่ไม่ซ้ำกัน
+  const uniqueDays = new Set();
+  data.forEach(item => {
+    const date = new Date(item.createdAt).toLocaleDateString();
+    uniqueDays.add(date);
+    if (item.type === 'เข้างาน') stats.checkIn++;
+    if (item.type === 'ออกงาน') stats.checkOut++;
+  });
+  
+  stats.totalDays = uniqueDays.size;
+  return stats;
+});
+
+onMounted(async () => {
+  await fetchTimeinout();
+  console.log('timeinout : ', timeinouts.value);
+  // เลือกเดือนปัจจุบันเป็นค่าเริ่มต้น
+  if (availableMonths.value.length > 0) {
+    selectedMonth.value = availableMonths.value[0];
+  }
+});
 </script>
 
-<style>
-.Btn {
-  background: linear-gradient(-45deg, #0c359e, #0b60b0, #0c359e, #0b60b0);
-  background-size: 400% 400%;
-}
-
-.BtnEdit {
-  background: linear-gradient(-45deg, #faa300, #ffc700, #faa300, #ffc700);
-  background-size: 400% 400%;
-}
-
-.BtnEdit:hover {
-  animation: gradient 5s ease infinite;
-}
-
-.Btn:hover {
-  animation: gradient 5s ease infinite;
-}
-
-/* Button's gradient animation */
-@keyframes gradient {
-  0% {
-    background-position: 0 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0 50%;
-  }
-}
-</style>
+<template>
+  <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8">
+    <div class="container mx-auto px-4">
+      <!-- หัวข้อ -->
+      <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500 mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">บันทึกเวลาเข้า-ออกงาน</h1>
+            <p class="text-gray-600">รายงานเวลาการเข้าทำงานของคุณ</p>
+          </div>
+          
+          <!-- สถิติการเข้างาน -->
+          <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
+            <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>{{ attendanceStats.totalDays }} วัน</span>
+            </div>
+            
+            <div class="bg-green-100 text-green-800 px-4 py-2 rounded-lg flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              </svg>
+              <span>เข้างาน {{ attendanceStats.checkIn }} ครั้ง</span>
+            </div>
+            
+            <div class="bg-red-100 text-red-800 px-4 py-2 rounded-lg flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span>ออกงาน {{ attendanceStats.checkOut }} ครั้ง</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- ตัวกรองและค้นหา -->
+      <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- ค้นหา -->
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <input
+              v-model="searchTerm"
+              type="text"
+              class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              placeholder="ค้นหาโปรเจกต์หรือสถานที่..."
+            />
+          </div>
+          
+          <!-- เลือกเดือน -->
+          <div>
+            <select 
+              v-model="selectedMonth" 
+              class="w-full py-2 px-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            >
+              <option value="">ทุกเดือน</option>
+              <option v-for="month in availableMonths" :key="month" :value="month">
+                {{ formatMonthDisplay(month) }}
+              </option>
+            </select>
+          </div>
+          
+          <!-- เลือกประเภท -->
+          <div>
+            <div class="flex space-x-2">
+              <button 
+                @click="selectedType = 'all'" 
+                :class="`flex-1 py-2 px-3 rounded-lg transition-colors ${selectedType === 'all' ? 'bg-gray-700 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'}`"
+              >
+                ทั้งหมด
+              </button>
+              <button 
+                @click="selectedType = 'เข้างาน'" 
+                :class="`flex-1 py-2 px-3 rounded-lg transition-colors ${selectedType === 'เข้างาน' ? 'bg-green-600 text-white' : 'bg-green-100 hover:bg-green-200 text-green-800'}`"
+              >
+                เข้างาน
+              </button>
+              <button 
+                @click="selectedType = 'ออกงาน'" 
+                :class="`flex-1 py-2 px-3 rounded-lg transition-colors ${selectedType === 'ออกงาน' ? 'bg-red-600 text-white' : 'bg-red-100 hover:bg-red-200 text-red-800'}`"
+              >
+                ออกงาน
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- ตารางข้อมูล -->
+      <div v-if="isLoading" class="bg-white rounded-xl shadow-md p-10 text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-700 mx-auto"></div>
+        <p class="text-gray-600 mt-4 text-lg">กำลังโหลดข้อมูล...</p>
+      </div>
+      
+      <div v-else-if="filteredTimeinouts.length > 0" class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-gradient-to-r from-green-600 to-green-500 text-gray-500">
+                <th class="px-6 py-4 text-left font-semibold text-sm tracking-wider">วันที่</th>
+                <th class="px-6 py-4 text-left font-semibold text-sm tracking-wider">โปรเจกต์</th>
+                <th class="px-6 py-4 text-left font-semibold text-sm tracking-wider">สถานที่</th>
+                <th class="px-6 py-4 text-left font-semibold text-sm tracking-wider">เวลา</th>
+                <th class="px-6 py-4 text-left font-semibold text-sm tracking-wider">ประเภท</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(timeinout, index) in filteredTimeinouts" :key="index" 
+                  class="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4">
+                  <div class="text-sm text-gray-900 font-medium">{{ formatDate(timeinout.createdAt) }}</div>
+                </td>
+                <td class="px-6 py-4">
+                  <span v-if="timeinout.projectName" 
+                        class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">
+                    {{ timeinout.projectName }}
+                  </span>
+                  <span v-else class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs animate-pulse">
+                    กำลังโหลด...
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm text-gray-700">{{ timeinout.location }}</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="text-sm text-gray-900 font-medium">{{ timeinout.time }}</div>
+                </td>
+                <td class="px-6 py-4">
+                  <span 
+                    :class="{
+                      'bg-green-100 text-green-800 border border-green-300 px-3 py-1 rounded-full text-xs font-medium': timeinout.type === 'เข้างาน',
+                      'bg-red-100 text-red-800 border border-red-300 px-3 py-1 rounded-full text-xs font-medium': timeinout.type === 'ออกงาน'
+                    }">
+                    {{ timeinout.type }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div v-else class="bg-white rounded-xl shadow-md p-10 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-300 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p class="text-gray-500 mt-4 text-lg">ไม่พบข้อมูลการเข้า-ออกงาน</p>
+        <p class="text-gray-400 mt-2">ลองเปลี่ยนตัวกรองหรือค้นหาด้วยคำอื่น</p>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped>
-.events {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+
+* {
+  font-family: 'Prompt', sans-serif;
 }
 
-.events .ant-badge-status {
-  overflow: hidden;
-  white-space: nowrap;
-  width: 100%;
-  text-overflow: ellipsis;
-  font-size: 12px;
+/* Animation styles */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
-.notes-month {
-  text-align: center;
-  font-size: 28px;
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
-
-.notes-month section {
-  font-size: 28px;
+.animate-pulse {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 </style>
