@@ -1,10 +1,9 @@
-divdivdiv
 <template>
   <!-- Dialog ที่จะเปิดเมื่อคลิก -->
   <dialog ref="uploadDialog" header="อัปโหลดไฟล์" position="right"
     class="px-2 sm:px-2 py-1 sm:py-1 bg-white rounded-xl shadow-lg">
     <div class="mx-10 py-2 space-y-2">
-      <h2 class="text-lg font-semibold text-gray-800">อัปโหลดไฟล์</h2>
+      <h2 class="text-lg text-center font-semibold text-gray-800">อัปโหลดไฟล์</h2>
       <button @click="closeDialog" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800">
         ✕
       </button>
@@ -38,9 +37,13 @@ divdivdiv
       </div>
 
       <!-- ปุ่มยืนยัน -->
-      <div>
-        <button @click="uploadImages" type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
-          ขอใบแจ้งหนี้
+      <div class="w-full mt-3">
+        <button @click="uploadImagesInvoice" type="submit"
+          class="w-full bg-green-500 text-white rounded hover:bg-green-600">
+          <div class="flex justify-center">
+            <p v-if="position === 'พนักงานภาคสนาม'" class="mt-3">ขอใบแจ้งหนี้</p>
+            <p v-if="position === 'ช่างเทคนิค'" class="mt-3">วางบิล</p>
+          </div>
         </button>
 
         <!-- ข้อความแสดงข้อผิดพลาด -->
@@ -442,15 +445,16 @@ divdivdiv
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
 
                   <ButtonP v-if="
+                    position !== 'ช่างเทคนิค' &&
                     project.status[project.status.length - 1].name !== 'รอรับงาน' &&
-                    project.status[project.status.length - 1].name !==
-                    'ดำเนินการสำเร็จ' &&
+                    project.status[project.status.length - 1].name !== 'ดำเนินการสำเร็จ' &&
                     project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
                     project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
                   " @click="() => { detailEmployee = project; openDeposit(project._id); }" label="แจ้งฝากเงิน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
 
                   <ButtonP v-if="
+                    position !== 'ช่างเทคนิค' &&
                     project.status[project.status.length - 1].name !== 'รอรับงาน' &&
                     project.status[project.status.length - 1].name !==
                     'ดำเนินการสำเร็จ' &&
@@ -695,6 +699,8 @@ const TimeToDay = ref({
 const selectTimeInOutId = ref("");
 const selectTimeInOutCode = ref("");
 
+const position = localStorage.getItem('position')
+
 const newInvoice = ref({});
 
 const deposit = ref({});
@@ -777,7 +783,7 @@ async function handleImageChange(event, type) {
   else if (type === "img_deliverwork") img_deliverwork.value = base64;
   else if (type === "img_invoice") img_invoice.value = base64;
   else if (type === "img_deposit") img_deposit.value = base64;
-  else if (type === "img_receipt") img_receipt.value = base64; 
+  else if (type === "img_receipt") img_receipt.value = base64;
 }
 
 function convertToBase64(file) {
@@ -817,6 +823,62 @@ async function uploadImages() {
   }
 }
 
+async function uploadImagesInvoice() {
+  closeDialog()
+  const employeeID = localStorage.getItem("id");
+  const position = localStorage.getItem("position");
+
+  const confirmResult = await Swal.fire({
+    title: "ยืนยันการอัปโหลด?",
+    text: "คุณแน่ใจหรือไม่ว่าต้องการอัปโหลดรูปภาพ?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "ใช่, อัปโหลดเลย!",
+    cancelButtonText: "ยกเลิก",
+  });
+
+  if (!confirmResult.isConfirmed) {
+    return;
+  }
+
+  try {
+    const id = detailEmployee.value?._id;
+    if (!id) {
+      Swal.fire("เกิดข้อผิดพลาด", "ไม่พบ ID โปรเจคที่จะอัปโหลด", "error");
+      return;
+    }
+
+    Swal.fire({
+      title: "กำลังอัปโหลด...",
+      text: "กรุณารอสักครู่",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_VUE_APP_DECCAN}/invoiceem`,
+      {
+        projectID: id,
+        employeeID,
+        position,
+        img_surway: img_surway.value,
+        img_process: img_process.value,
+        img_testing: img_testing.value,
+        img_deliverwork: img_deliverwork.value,
+      }
+    );
+
+    Swal.fire("สำเร็จ!", "อัปโหลดรูปภาพสำเร็จ", "success");
+    closeDialog();
+    console.log("Upload response:", response.data);
+  } catch (error) {
+    console.error("เกิดข้อผิดพลาดในการอัปโหลด:", error);
+    Swal.fire("เกิดข้อผิดพลาด", "อัปโหลดไม่สำเร็จ", "error");
+  }
+}
+
 async function uploadImagesReceipt() {
   try {
     const id = detailEmployee.value?._id;
@@ -825,7 +887,7 @@ async function uploadImagesReceipt() {
       return;
     }
 
-    console.log('id' , id)
+    console.log('id', id)
 
     const response = await axios.put(
       `${import.meta.env.VITE_VUE_APP_DECCAN}/project/upload/receipt/${id}`,
@@ -834,7 +896,7 @@ async function uploadImagesReceipt() {
       }
     );
 
-    console.log( 'res : ', response)
+    console.log('res : ', response)
 
     alert(" อัปโหลดรูปภาพสำเร็จ");
     closeReceipt();
@@ -1245,7 +1307,7 @@ const getProjectAll = async () => {
     loading.value = true;
     const res = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/project/em/${employeeId}`, {
     });
-    console.log('res : ' , res);
+    console.log('res : ', res);
     const data = res.data;
     // .filter(
     //   (item) => item.projectSubType === itemMe.value.position

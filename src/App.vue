@@ -82,6 +82,8 @@ export default {
         console.log("Token id:", decode.id);
         localStorage.setItem("srole", decode.role);
         localStorage.setItem("id", decode.id);
+        localStorage.setItem("position", decode.position);
+
         const data_login = {
           logedIn: true,
           role: decode.role,
