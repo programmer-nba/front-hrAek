@@ -16,8 +16,7 @@ const fetchDeposit = async () => {
     try {
         const response = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/deposit/${emID}`);
         deposits.value = response.data.data;
-        
-        // ดึงชื่อโปรเจกต์สำหรับแต่ละ deposit
+
         for (let deposit of deposits.value) {
             fetchProjectName(deposit);
         }
@@ -45,7 +44,6 @@ const fetchProjectName = async (deposit) => {
     }
 };
 
-// เพิ่มฟังก์ชันสำหรับรีเซ็ตการกรอง
 const resetFilters = () => {
     startDate.value = '';
     endDate.value = '';
@@ -70,7 +68,6 @@ const formatNumber = (num) => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-// เพิ่ม computed property สำหรับการกรองข้อมูล
 const filteredDeposits = computed(() => {
     let result = [...deposits.value];
     
@@ -91,7 +88,6 @@ const filteredDeposits = computed(() => {
     return result;
 });
 
-// เพิ่ม computed property สำหรับคำนวณยอดรวม
 const totalAmount = computed(() => {
     const a = filteredDeposits.value.reduce((sum, deposit) => sum + Number(deposit.amount), 0);
     return a;
@@ -124,7 +120,6 @@ onMounted(async () => {
             </div>
         </div>
         
-        <!-- Filter Controls -->
         <div class="bg-white p-4 mb-6 rounded-lg shadow-md">
             <h2 class="text-lg font-semibold mb-3 text-gray-700">กรองข้อมูล</h2>
             <div class="flex flex-wrap gap-4">
@@ -157,7 +152,6 @@ onMounted(async () => {
             </div>
         </div>
 
-        <!-- Table -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="min-w-full">

@@ -3,23 +3,83 @@ import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-const invoice = ref([]);
-const isLoading = ref(true);
+const employeeInvoices = ref([]);
 
-const fetchProject = async () => {
+const isLoading = ref(true);
+const modalInvoice = ref(null);
+const selectedFile = ref(null);
+const selectedProject = ref(null);
+const selectedFileBase64 = ref(null);
+
+const openInvoice = (project) => {
+    selectedProject.value = project;
+    modalInvoice.value.showModal();
+};
+
+const closeInvoice = () => {
+    modalInvoice.value.close();
+    selectedFile.value = null;
+};
+
+const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+        selectedFileBase64.value = reader.result;
+    };
+    reader.onerror = (error) => {
+        console.error("Error reading file:", error);
+    };
+};
+
+const fetchEmployeeInvoices = async () => {
     isLoading.value = true;
     try {
-        const response = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/project`);
-        invoice.value = response.data.data;
+        const response = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/invoiceem`);
+        employeeInvoices.value = response.data.data;
+
+        for (let invoice of employeeInvoices.value) {
+            fetchProjectName(invoice)
+            fetchEmployeeID(invoice)
+        }
     } catch (error) {
-        console.error("Error fetching logs:", error);
+        console.error("Error fetching employee invoices:", error);
         Swal.fire({
             icon: "error",
-            title: "ไม่สามารถโหลดข้อมูลได้",
+            title: "โหลดข้อมูลไม่สำเร็จ",
             text: error.message || "โปรดลองอีกครั้ง",
         });
     } finally {
         isLoading.value = false;
+    }
+};
+
+const fetchEmployeeID = async (invoice) => {
+    if (!invoice.employeeID) return;
+
+    try {
+        const response = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/getid/${invoice.employeeID}`);
+        invoice.employeeName = response.data.data.first_name;
+        invoice.employeeLastname = response.data.data.last_name;
+        invoice.employeePosition = response.data.data.position;
+    } catch (error) {
+        console.error("Error fetching employee name:", error);
+        invoice.employeeName = "ไม่พบข้อมูล";
+    }
+};
+
+const fetchProjectName = async (invoice) => {
+    if (!invoice.projectID) return;
+
+    try {
+        const response = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/project/${invoice.projectID}`);
+        invoice.projectName = response.data.data.title;
+    } catch (error) {
+        console.error("Error fetching project name:", error);
+        invoice.projectName = "ไม่พบข้อมูล";
     }
 };
 
@@ -35,15 +95,45 @@ const openImage = (imageUrl) => {
     }
 };
 
-const getStatusColor = (imageExists) => {
-    return imageExists ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500';
+
+const submitInvoice = async () => {
+    if (!selectedFileBase64.value) {
+        Swal.fire({
+            icon: "warning",
+            title: "กรุณาเลือกไฟล์ก่อนอัปโหลด",
+        });
+        return;
+    }
+
+    const emID = localStorage.getItem('id')
+
+    try {
+        await axios.post(`${import.meta.env.VITE_VUE_APP_DECCAN}/invoicepj`, {
+            projectId: selectedProject.value,
+            img_invoice: selectedFileBase64.value,
+            employeeID: emID
+        });
+
+        Swal.fire({
+            icon: "success",
+            title: "อัปโหลดไฟล์สำเร็จ!",
+        });
+
+        closeInvoice();
+        fetchEmployeeInvoices();
+    } catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: "อัปโหลดไฟล์ไม่สำเร็จ",
+            text: error.message || "โปรดลองอีกครั้ง",
+        });
+    }
 };
 
-const getStatusText = (imageExists) => {
-    return imageExists ? 'เสร็จสิ้น' : 'รอดำเนินการ';
-};
-
-onMounted(fetchProject);
+onMounted(async () => {
+    await fetchEmployeeInvoices()
+    console.log('employeeInvoices', employeeInvoices.value)
+});
 </script>
 
 <template>
@@ -54,29 +144,14 @@ onMounted(fetchProject);
             <p class="text-center text-gray-600 mt-3">ติดตามความคืบหน้าของโครงการต่างๆ ได้ที่นี่</p>
         </div>
 
-        <!-- Loading state -->
-        <div v-if="isLoading" class="flex justify-center items-center py-20">
-            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
-            <span class="ml-3 text-lg text-gray-600">กำลังโหลดข้อมูล...</span>
-        </div>
-
-        <!-- No data state -->
-        <div v-else-if="invoice.length === 0" class="text-center py-12 bg-white rounded-lg shadow">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <p class="mt-4 text-lg text-gray-600">ไม่พบข้อมูลใบแจ้งหนี้</p>
-        </div>
-
-        <!-- Data table -->
-        <div v-else class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="bg-white rounded-lg shadow overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full border-collapse">
                     <thead>
                         <tr class="bg-green-600 text-white">
                             <th class="px-6 py-4 text-left">โครงการ</th>
+                            <th class="px-6 py-4 text-left">ผู้ส่ง</th>
+                            <th class="px-6 py-4 text-left">ตำแหน่ง</th>
                             <th class="px-6 py-4 text-center">สำรวจ</th>
                             <th class="px-6 py-4 text-center">กระบวนการ</th>
                             <th class="px-6 py-4 text-center">ทดสอบ</th>
@@ -85,116 +160,60 @@ onMounted(fetchProject);
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item, index) in invoice" :key="item._id"
-                            :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'">
-                            <td class="px-6 py-4 border-b border-gray-200">
-                                <div class="font-medium text-gray-900">{{ item.title }}</div>
+                        <tr v-for="invoice in employeeInvoices" :key="invoice.projectID" class="border-b">
+                            <td class="px-6 py-4">{{ invoice.projectName }}</td>
+                            <td class="px-6 py-4">
+                                <p class="mt-3">{{ invoice.employeeName }} {{ invoice.employeeName }}</p>
                             </td>
-
-                            <td class="px-6 py-4 border-b border-gray-200">
-                                <div class="flex flex-col items-center">
-                                    <div v-if="item.img_surway"
-                                        class="relative mb-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                                        @click="openImage(item.img_surway)">
-                                        <img :src="item.img_surway" alt="Survey" class="w-20 h-20 object-cover">
-                                        <div
-                                            class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <span
-                                                class="text-white text-xs font-medium px-2 py-1 bg-black bg-opacity-50 rounded">ดูรูปภาพ</span>
-                                        </div>
-                                    </div>
-                                    <span v-else
-                                        class="w-20 h-20 flex items-center justify-center text-gray-400 border border-dashed border-gray-300 rounded-lg">
-                                        ไม่มีรูปภาพ
-                                    </span>
-                                    <span
-                                        :class="`text-xs font-medium px-2 py-1 rounded-full mt-1 ${getStatusColor(item.img_surway)}`">
-                                        {{ getStatusText(item.img_surway) }}
-                                    </span>
+                            <td class="px-6 py-4">
+                                <p class="mt-3">{{ invoice.employeePosition }}</p>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <img v-if="invoice.img_surway" @click="openImage(invoice.img_surway)"
+                                    class="w-16 h-16 object-cover cursor-pointer border rounded-lg"
+                                    :src="invoice.img_surway" alt="สำรวจ">
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <img v-if="invoice.img_process" @click="openImage(invoice.img_process)"
+                                    class="w-16 h-16 object-cover cursor-pointer border rounded-lg"
+                                    :src="invoice.img_process" alt="กระบวนการ">
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <img v-if="invoice.img_testing" @click="openImage(invoice.img_testing)"
+                                    class="w-16 h-16 object-cover cursor-pointer border rounded-lg"
+                                    :src="invoice.img_testing" alt="ทดสอบ">
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <img v-if="invoice.img_deliverwork" @click="openImage(invoice.img_deliverwork)"
+                                    class="w-16 h-16 object-cover cursor-pointer border rounded-lg"
+                                    :src="invoice.img_deliverwork" alt="ส่งมอบ">
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <div v-if="invoice.employeePosition !== 'ช่างเทคนิค'">
+                                    <button @click="openInvoice(invoice.projectID)"
+                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">ส่งใบแจ้งหนี้</button>
                                 </div>
-                            </td>
-
-                            <td class="px-6 py-4 border-b border-gray-200">
-                                <div class="flex flex-col items-center">
-                                    <div v-if="item.img_process"
-                                        class="relative mb-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                                        @click="openImage(item.img_process)">
-                                        <img :src="item.img_process" alt="Process" class="w-20 h-20 object-cover">
-                                        <div
-                                            class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <span
-                                                class="text-white text-xs font-medium px-2 py-1 bg-black bg-opacity-50 rounded">ดูรูปภาพ</span>
-                                        </div>
-                                    </div>
-                                    <span v-else
-                                        class="w-20 h-20 flex items-center justify-center text-gray-400 border border-dashed border-gray-300 rounded-lg">
-                                        ไม่มีรูปภาพ
-                                    </span>
-                                    <span
-                                        :class="`text-xs font-medium px-2 py-1 rounded-full mt-1 ${getStatusColor(item.img_process)}`">
-                                        {{ getStatusText(item.img_process) }}
-                                    </span>
-                                </div>
-                            </td>
-
-                            <td class="px-6 py-4 border-b border-gray-200">
-                                <div class="flex flex-col items-center">
-                                    <div v-if="item.img_testing"
-                                        class="relative mb-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                                        @click="openImage(item.img_testing)">
-                                        <img :src="item.img_testing" alt="Testing" class="w-20 h-20 object-cover">
-                                        <div
-                                            class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <span
-                                                class="text-white text-xs font-medium px-2 py-1 bg-black bg-opacity-50 rounded">ดูรูปภาพ</span>
-                                        </div>
-                                    </div>
-                                    <span v-else
-                                        class="w-20 h-20 flex items-center justify-center text-gray-400 border border-dashed border-gray-300 rounded-lg">
-                                        ไม่มีรูปภาพ
-                                    </span>
-                                    <span
-                                        :class="`text-xs font-medium px-2 py-1 rounded-full mt-1 ${getStatusColor(item.img_testing)}`">
-                                        {{ getStatusText(item.img_testing) }}
-                                    </span>
-                                </div>
-                            </td>
-
-                            <td class="px-6 py-4 border-b border-gray-200">
-                                <div class="flex flex-col items-center">
-                                    <div v-if="item.img_deliverwork"
-                                        class="relative mb-2 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                                        @click="openImage(item.img_deliverwork)">
-                                        <img :src="item.img_deliverwork" alt="Deliver Work"
-                                            class="w-20 h-20 object-cover">
-                                        <div
-                                            class="absolute inset-0 bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <span
-                                                class="text-white text-xs font-medium px-2 py-1 bg-black bg-opacity-50 rounded">ดูรูปภาพ</span>
-                                        </div>
-                                    </div>
-                                    <span v-else
-                                        class="w-20 h-20 flex items-center justify-center text-gray-400 border border-dashed border-gray-300 rounded-lg">
-                                        ไม่มีรูปภาพ
-                                    </span>
-                                    <span
-                                        :class="`text-xs font-medium px-2 py-1 rounded-full mt-1 ${getStatusColor(item.img_deliverwork)}`">
-                                        {{ getStatusText(item.img_deliverwork) }}
-                                    </span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-center">
-                                <button
-                                    v-if="item.img_surway && item.img_process && item.img_testing && item.img_deliverwork"
-                                    class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                                    @click="sendInvoice(item._id)">
-                                    ส่งใบแจ้งหนี้
-                                </button>
                             </td>
                         </tr>
                     </tbody>
+
                 </table>
             </div>
         </div>
+
     </div>
+
+    <dialog ref="modalInvoice" class="p-6 rounded-lg shadow-xl bg-white w-1/3">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">อัปโหลดไฟล์แนบ</h2>
+        <p class="text-sm text-gray-600 mb-3">กรุณาเลือกไฟล์ที่ต้องการอัปโหลด</p>
+
+        <input type="file" @change="handleFileUpload" class="mb-4 w-full border p-2 rounded-lg">
+
+        <div class="flex justify-end gap-2">
+            <button @click="closeInvoice"
+                class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">ยกเลิก</button>
+            <button @click="submitInvoice"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">อัปโหลด</button>
+        </div>
+    </dialog>
 </template>

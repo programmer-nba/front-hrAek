@@ -245,7 +245,7 @@ onMounted(async () => {
         <div class="overflow-x-auto">
           <table class="w-full border-collapse">
             <thead>
-              <tr class="bg-gradient-to-r from-green-600 to-green-500 text-gray-500">
+              <tr class="bg-gradient-to-r from-green-600 to-green-500 text-white">
                 <th class="px-6 py-4 text-left font-semibold text-sm tracking-wider">วันที่</th>
                 <th class="px-6 py-4 text-left font-semibold text-sm tracking-wider">โปรเจกต์</th>
                 <th class="px-6 py-4 text-left font-semibold text-sm tracking-wider">สถานที่</th>
