@@ -16,6 +16,7 @@ const isModalOpen = ref(false);
 const isLoggingTime = ref(false);
 const locationError = ref("");
 const hasCheckedInToday = ref(false);
+const hasCheckedOutToday = ref(false);
 
 const openModal = () => {
     isModalOpen.value = true;
@@ -28,7 +29,13 @@ const closeModal = () => {
 const checkIfCheckedInToday = () => {
     const today = dayjs().format("YYYY-MM-DD");
     hasCheckedInToday.value = timeinout.value.some(log => 
-        log.type === "checkin" && 
+        log.type === "เข้างาน" && 
+        log.projectId === props.projectId && 
+        dayjs(log.createdAt).format("YYYY-MM-DD") === today
+    );
+
+    hasCheckedOutToday.value = timeinout.value.some(log => 
+        log.type === "ออกงาน" && 
         log.projectId === props.projectId && 
         dayjs(log.createdAt).format("YYYY-MM-DD") === today
     );
@@ -57,11 +64,21 @@ const CheckInCheckOut = async (timeType) => {
     if (isLoggingTime.value) return;
     isLoggingTime.value = true;
 
-    if (timeType === "checkin" && hasCheckedInToday.value) {
+    if (timeType === "เข้างาน" && hasCheckedInToday.value) {
         Swal.fire({
             icon: "warning",
             title: "คุณได้เช็คอินโปรเจคนี้แล้ววันนี้",
             text: "ไม่สามารถเช็คอินซ้ำได้",
+        });
+        isLoggingTime.value = false;
+        return;
+    }
+
+    if (timeType === "ออกงาน" && hasCheckedOutToday.value) {
+        Swal.fire({
+            icon: "warning",
+            title: "คุณได้เช็คเอาต์แล้ววันนี้",
+            text: "ไม่สามารถเช็คเอาต์ซ้ำได้",
         });
         isLoggingTime.value = false;
         return;
@@ -102,7 +119,7 @@ const CheckInCheckOut = async (timeType) => {
                         timer: 1500,
                     });
 
-                    // โหลดข้อมูลใหม่เพื่ออัปเดตสถานะเช็คอิน
+                    // โหลดข้อมูลใหม่เพื่ออัปเดตสถานะเช็คอินและเช็คเอาต์
                     await fetchTimeLogs();
                 }
             } catch (error) {
@@ -147,18 +164,20 @@ onMounted(async() => {
         <div class="bg-white p-6 rounded-lg shadow-lg w-80 text-center relative z-50">
             <h2 class="text-lg font-bold text-gray-700 mb-4">เลือกประเภทการเช็คอิน</h2>
             <div class="flex">
-                <button @click="CheckInCheckOut('checkin')" 
+                <button @click="CheckInCheckOut('เข้างาน')" 
                     :disabled="hasCheckedInToday"
                     :class="hasCheckedInToday ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'"
                     class="w-full py-4 my-2 text-white rounded">
-                    {{ hasCheckedInToday ? "เช็คอินแล้ววันนี้" : "ลงชื่อเข้างาน" }}
+                    {{ hasCheckedInToday ? "เข้างานแล้ววันนี้" : "ลงชื่อเข้างาน" }}
                 </button>
 
                 <div class="border-1 m-2"></div>
 
-                <button @click="CheckInCheckOut('checkout')" 
-                    class="w-full py-4 my-2 text-white bg-red-500 rounded hover:bg-red-600">
-                    ลงชื่อออกงาน
+                <button @click="CheckInCheckOut('ออกงาน')" 
+                    :disabled="hasCheckedOutToday"
+                    :class="hasCheckedOutToday ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600'"
+                    class="w-full py-4 my-2 text-white rounded">
+                    {{ hasCheckedOutToday ? "ออกงานแล้ววันนี้" : "ลงชื่อออกงาน" }}
                 </button>
             </div>
 

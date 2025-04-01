@@ -252,12 +252,12 @@ divdivdiv
         <h4 class="text-black">รูปที่ 1</h4>
       </div>
       <div class="mx-10 py-2 space-y-2">
-        <input type="file" @change="(e) => handleImageChange(e, 'receipt')" />
+        <input type="file" @change="(e) => handleImageChange(e, 'img_receipt')" />
       </div>
 
       <!-- ปุ่มยืนยัน -->
       <div>
-        <button @click="uploadImages" type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
+        <button @click="uploadImagesReceipt" type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
           ยืนยัน
         </button>
 
@@ -676,7 +676,7 @@ const img_testing = ref("");
 const img_deliverwork = ref("");
 const img_invoice = ref("");
 const img_deposit = ref("");
-const receipt = ref("");
+const img_receipt = ref("");
 
 const currentLocation = ref(null);
 const locationError = ref(null);
@@ -777,6 +777,7 @@ async function handleImageChange(event, type) {
   else if (type === "img_deliverwork") img_deliverwork.value = base64;
   else if (type === "img_invoice") img_invoice.value = base64;
   else if (type === "img_deposit") img_deposit.value = base64;
+  else if (type === "img_receipt") img_receipt.value = base64; 
 }
 
 function convertToBase64(file) {
@@ -804,12 +805,39 @@ async function uploadImages() {
         img_process: img_process.value,
         img_testing: img_testing.value,
         img_deliverwork: img_deliverwork.value,
-        receipt: receipt.value,
       }
     );
 
     alert(" อัปโหลดรูปภาพสำเร็จ");
     closeDialog();
+    console.log("Upload response:", response.data);
+  } catch (error) {
+    console.error(" เกิดข้อผิดพลาดในการอัปโหลด:", error);
+    alert("เกิดข้อผิดพลาดในการอัปโหลด");
+  }
+}
+
+async function uploadImagesReceipt() {
+  try {
+    const id = detailEmployee.value?._id;
+    if (!id) {
+      alert("ไม่พบ ID โปรเจคที่จะอัปโหลด");
+      return;
+    }
+
+    console.log('id' , id)
+
+    const response = await axios.put(
+      `${import.meta.env.VITE_VUE_APP_DECCAN}/project/upload/receipt/${id}`,
+      {
+        receipt: img_receipt.value,
+      }
+    );
+
+    console.log( 'res : ', response)
+
+    alert(" อัปโหลดรูปภาพสำเร็จ");
+    closeReceipt();
     console.log("Upload response:", response.data);
   } catch (error) {
     console.error(" เกิดข้อผิดพลาดในการอัปโหลด:", error);
@@ -1051,7 +1079,6 @@ const getCurrentLocation = () => {
 };
 
 const logWorkTime = async () => {
-  console.log("asdasd");
   try {
     isLoggingTime.value = true;
     locationError.value = null;
@@ -1059,12 +1086,10 @@ const logWorkTime = async () => {
     const location = await getCurrentLocation();
     currentLocation.value = location;
 
-    // Determine time type (morning in or afternoon out)
     const now = new Date();
     const hour = now.getHours();
     const timeType = hour < 12 ? "ลงชื่อเข้า" : "ลงชื่อออก";
 
-    // Get current project info from component
     const projectId = selectTimeInOutId.value || "";
     const projectCode = selectTimeInOutCode.value || "";
 
@@ -1077,7 +1102,6 @@ const logWorkTime = async () => {
     console.log("longitude : ", location.longitude);
     console.log("timeType : ", timeType);
 
-    // Call API to log time
     const response = await axios.post(
       `${import.meta.env.VITE_VUE_APP_DECCAN}/create/log`,
       {
