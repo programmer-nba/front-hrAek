@@ -206,6 +206,8 @@ export default {
         // ถ้าเป็นช่างเทคนิค ให้ซ่อนใบเสร็จรับเงิน
         if (position === "ช่างเทคนิค" && menu.text === "ใบเสร็จรับเงิน") return false;
 
+        if (position === "ช่างเทคนิค" && menu.text === "ใบแจ้งหนี้") return false;
+
         // กรณีอื่นๆ ให้แสดงเมนู
         return true;
       });

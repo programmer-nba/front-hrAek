@@ -69,12 +69,26 @@
 
     <Dialog v-model:visible="showAddProjectModal" :modal="true" class="w-1/2" header="เพิ่มโปรเจคใหม่">
       <form class="px-4 sm:px-10 mt-2 sm:mt-5">
-        <div>
-          <label for="projectTitle"
-            class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ชื่อโปรเจค</label>
-          <input v-model="newProject.title" type="text" id="projectTitle"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-            placeholder="" required />
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="projectTitle"
+              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ชื่อโปรเจค</label>
+            <input v-model="newProject.title" type="text" id="projectTitle"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
+              placeholder="" required />
+          </div>
+          <div>
+            <label for="sizeSelect" class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">
+              ขนาด
+            </label>
+            <select v-model="newProject.size" id="sizeSelect"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5">
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+          </div>
         </div>
         <div class="grid gap-3 sm:gap-6 mb-3 sm:mb-6 md:grid-cols-2">
 
@@ -168,7 +182,7 @@
       <form class="px-4 sm:px-10 mt-2 sm:mt-5">
         <div class="grid gap-3 sm:gap-6 mb-3 sm:mb-6 md:grid-cols-2">
           <!-- Position -->
-          <div>
+          <!-- <div>
             <label for="editProjectPosition"
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ตำแหน่งงาน</label>
             <select v-model="editedProject.position" @change="fetchEmployeesForEditedProject" id="editProjectPosition"
@@ -178,7 +192,7 @@
               <option value="GRP">Graphic</option>
               <option value="DEV">Programmer</option>
             </select>
-          </div>
+          </div> -->
 
           <!-- Employee -->
           <div v-if="employeeDropdownVisible && employees.length">
@@ -205,13 +219,13 @@
           </div>
 
           <!-- Progress -->
-          <div>
+          <!-- <div>
             <label for="editProjectProgress"
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ความคืบหน้า</label>
             <input v-model="editedProject.progress" type="number" id="editProjectProgress"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
               placeholder="" required />
-          </div>
+          </div> -->
 
           <!-- Due Date -->
           <div>
@@ -223,7 +237,7 @@
           </div>
 
           <!-- Type -->
-          <div>
+          <!-- <div>
             <label for="editProjectType"
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ประเภทโครงการ</label>
             <select v-model="editedProject.type_code" id="editProjectType"
@@ -234,7 +248,7 @@
                 {{ type.type_name }}
               </option>
             </select>
-          </div>
+          </div> -->
 
           <!-- Sub Type -->
           <div>
@@ -255,7 +269,7 @@
           </div>
 
           <!-- Status -->
-          <div>
+          <!-- <div>
             <label for="editProjectStatus"
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">สถานะ</label>
             <select v-model="editedProject.status.status_name" id="editProjectStatus"
@@ -267,7 +281,7 @@
               <option value="โปรเจ็ครอการอนุมัติ">โปรเจ็ครอการอนุมัติ</option>
               <option value="โปรเจ็คถูกระงับ">โปรเจ็คถูกระงับ</option>
             </select>
-          </div>
+          </div> -->
 
           <div v-if="editedProject.status.status_name === 'โปรเจ็คเสร็จลุล่วง'">
             <label for="editProjectDueDate"
@@ -305,7 +319,7 @@
       </form>
     </Dialog>
 
-    <div class="flex flex-wrap -mx-3 bg-cyan-200 h-full sm:h-screen">
+    <div class="flex flex-wrap -mx-3 bg-white h-full sm:h-screen">
       <div class="w-full max-w-full px-3 mb-6 mx-auto">
         <div
           class="relative flex-[1_auto] flex flex-col break-words min-w-0 bg-clip-border rounded-[.95rem] bg-zinc-100 m-5">
@@ -361,8 +375,9 @@
                   class="w-full my-0 align-middle text-slate-600 border-neutral-200 border-collapse container table table-auto">
                   <thead class="align-bottom">
                     <tr class="font-semibold text-sm text-center text-black">
-                      <th class="p-4 text-center min-w-[100px]">รหัส</th>
-                      <th class="p-4 text-center min-w-[100px]">หัวข้อ</th>
+                      <th class="p-4 text-center min-w-[100px]">รหัสโปรเจกต์</th>
+                      <th class="p-4 text-center min-w-[100px]">ชื่อโปรเจกต์</th>
+                      <th class="p-4 text-center min-w-[100px]">ขนาดโปรเจกต์</th>
                       <th class="p-4 text-center min-w-[100px]">
                         <div class="flex justify-center">
                           <button class="bg-white hover:text-purple-500 text-sm" @click="seeName = !seeName">
@@ -385,11 +400,21 @@
                         <span class="font-semibold text-light-inverse text-md/normal">{{ project.code }}</span>
                       </td>
                       <td class="p-3">
-                        <div class="flex items-center">
-                          <div class="flex flex-col justify-start">
+                        <div class="flex items-center justify-center">
+                          <div class="flex flex-col justify-center">
                             <span
                               class="font-semibold transition-colors duration-200 ease-in-out text-secondary-inverse hover:text-primary">
                               {{ project.title }}
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="p-3">
+                        <div class="flex items-center justify-center">
+                          <div class="flex flex-col justify-center">
+                            <span
+                              class="font-semibold transition-colors duration-200 ease-in-out text-secondary-inverse hover:text-primary">
+                              {{ project.size }}
                             </span>
                           </div>
                         </div>
@@ -519,14 +544,17 @@
         <span class="rounded-full px-2.5 text-white" :class="selectedEmployees.length ? 'bg-red-500' : 'bg-gray-500'">{{
           selectedEmployees.length }}</span>
       </p>
-      <div class="flex overflow-x-auto bg-white">
+      <p class="text-red-500 text-sm">คำเตือน : เลือกพนักได้แค่ 1 ครั้ง โปรดตรวจรายชื่อพนักงานก่อนบันทึก</p>
+      <div class="flex overflow-x-auto bg-white gap-x-2">
+
         <div v-for="(selected, index) in selectedEmployees" :key="selected._id">
+
           <div
             class="flex justify-between hover:line-through w-[200px] hover:bg-red-200 text-xs border rounded shadow-sm py-2 px-3 items-center cursor-pointer"
             @click="selectedEmployees.splice(index, 1)">
             <div class="flex items-center gap-x-2">
-              <Image v-if="selected.imageUrl" :src="selected.imageUrl" :alt="selected.image"
-                imageClass="w-[40px] h-[40px] rounded-full" />
+              <!-- <Image v-if="selected.imageUrl" :src="selected.imageUrl" :alt="selected.image"
+                imageClass="w-[40px] h-[40px] rounded-full" /> -->
               <div>
                 <p class="m-0 px-0 py-1 text-left">
                   {{ selected.name_title }}{{ selected.first_name }}
@@ -535,9 +563,9 @@
                 </p>
                 <small :class="[
                   'text-xs px-2 rounded',
-                  selected?.position?.toLowerCase().includes('programmer')
+                  selected?.position?.toLowerCase().includes('ช่างเทคนิค')
                     ? 'bg-sky-200'
-                    : selected?.position?.toLowerCase().includes('graphic')
+                    : selected?.position?.toLowerCase().includes('พนักงานภาคสนาม')
                       ? 'bg-pink-200'
                       : selected?.position?.toLowerCase().includes('marketting')
                         ? 'bg-yellow-200'
@@ -1267,7 +1295,8 @@ export default {
         district: payload.district,
         province: payload.province,
         postcode: payload.postcode,
-        remark: payload.remark
+        remark: payload.remark,
+        size: payload.size
       }
 
       try {

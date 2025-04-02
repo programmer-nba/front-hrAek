@@ -388,10 +388,10 @@
             <label for="position" class="block text-sm font-bold mb-2">Position</label>
             <select v-model="editedEmployee.position" id="position"
               class="form-select w-full h-10 border-2 rounded-xl border-gray-700">
-              <option value="programmer">Programmer</option>
-              <option value="graphic">Graphic Designer</option>
-              <option value="accounting">Accountant</option>
-              <option value="lawyer">lawyer</option>
+              <option value="manager">Manager</option>
+              <option value="owner">Owner</option>
+              <option value="ช่างเทคนิค">ช่างเทคนิค</option>
+              <option value="พนักงานภาคสนาม">พนักงานภาคสนาม</option>
             </select>
           </div>
         </div>
@@ -403,7 +403,7 @@
       </form>
     </Dialog>
 
-    <div class="bg-cyan-200 h-full">
+    <div class="bg-white h-full">
       <div class="">
         <h1 class="text-5xl font-bold mb-4 px-14">ข้อมูลพนักงาน</h1>
         <div class="grid grid-cols-1 gap-2 px-14 ">
@@ -424,7 +424,7 @@
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <input v-model="searchKeyword" class="peer h-full w-full outline-none text-sm text-gray-700 pr-2"
+              <input v-model="searchKeyword" class="peer h-full  w-full outline-none text-sm text-gray-700 pr-2"
                 type="text" id="search" placeholder="ค้นหาตามชื่อ" />
             </div>
           </div>
@@ -436,13 +436,10 @@
             <select v-model="selectedRole" @change="filterByRole" id="roleFilter"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
               <option value="">ทั้งหมด</option>
-              <option value="programmer">Programmer</option>
-              <option value="graphic">Graphic Designer</option>
-              <option value="accounting">Accountant</option>
-              <option value="lawyer">Lawyer</option>
               <option value="manager">Manager</option>
               <option value="owner">Owner</option>
-              <option value="hr">HR</option>
+              <option value="ช่างเทคนิค">ช่างเทคนิค</option>
+              <option value="พนักงานภาคสนาม">พนักงานภาคสนาม</option>
             </select>
           </form>
 
@@ -710,6 +707,7 @@ export default {
 
       return paginatedEmployees;
     },
+
     totalPages() {
       const totalEmployees = this.selectedRole
         ? this.employees.filter(
@@ -854,6 +852,8 @@ export default {
           }
         );
         this.employees = response.data.data.reverse();
+
+        console.log('employees : ' , this.employees)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
