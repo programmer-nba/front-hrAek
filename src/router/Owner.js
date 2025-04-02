@@ -171,6 +171,18 @@ let routes = [
     component: () =>
       import("../components/Owner/DepositView.vue"),
   },
+  {
+    path: "/receipt",
+    name: "receipt",
+    component: () =>
+      import("../components/Owner/ReceiptView.vue"),
+  },
+  {
+    path: "/timeinout/history",
+    name: "timeinout-history",
+    component: () =>
+      import("../components/Owner/TimeinOut.vue"),
+  },
 ];
 
 const router = createRouter({
