@@ -18,8 +18,8 @@
       <div class="flex items-center mr-5">
         <div class="mr-5">
           <img :src="me.image
-              ? 'https://drive.google.com/thumbnail?id=' + me.image
-              : ''
+            ? 'https://drive.google.com/thumbnail?id=' + me.image
+            : ''
             " v-if="me.image" class="w-16 h-16 object-cover rounded-full" />
           <span v-else
             class="w-16 h-16 flex items-center text-sm justify-center text-gray-400 bg-gray-200 rounded-full">ไม่มีรูปภาพ</span>
@@ -51,12 +51,12 @@
           (menuItem.active !== false || head) &&
           (menuItem.active !== false || head)
         " @click="handleMenuItemClick(menuItem)" :class="{
-            'bg-[#F4E869] text-[#001B79]':
-              menuItem.showSubmenu || menuItem.isActive,
-            'hover:bg-[#F8DE22] hover:text-[#001B79]': !menuItem.showSubmenu,
-            'bg-[#F4E869] text-[#001B79]': menuItem.isActive,
-            ' text-white ': !menuItem.isActive && !menuItem.showSubmenu,
-          }" class="flex items-center w-full space-x-2 group hover:bg-[#F7FD04] hover:text-[#001B79] rounded-lg">
+          'bg-[#F4E869] text-[#001B79]':
+            menuItem.showSubmenu || menuItem.isActive,
+          'hover:bg-[#F8DE22] hover:text-[#001B79]': !menuItem.showSubmenu,
+          'bg-[#F4E869] text-[#001B79]': menuItem.isActive,
+          ' text-white ': !menuItem.isActive && !menuItem.showSubmenu,
+        }" class="flex items-center w-full space-x-2 group hover:bg-[#F7FD04] hover:text-[#001B79] rounded-lg">
           <span :style="{
             background: menuItem.showSubmenu ? '#F8DE22' : '',
             color: menuItem.showSubmenu ? '#001B79' : '',
@@ -65,7 +65,7 @@
             <div v-html="menuItem.icon"></div>
           </span>
           <span :class="{ 'text-[#001B79]': menuItem.showSubmenu }" class="font-medium text-base">{{ menuItem.text
-            }}</span>
+          }}</span>
 
           <span class="ml-10">
             <svg v-if="menuItem.submenu" width="24" height="24" fill="currentColor" viewBox="0 0 20 20" :class="{
@@ -119,8 +119,6 @@ import { useStore } from "vuex";
 // import Icon from "../Amin_Icon.vue";
 import axios from "axios";
 
-const position = localStorage.getItem('position');
-
 export default {
   components: {
     // Icon,
@@ -133,6 +131,7 @@ export default {
       isMobile: false,
       isSubmenuOpen: false,
       selectedMenuItem: null,
+      position: localStorage.getItem('position'),
       menuItems: [
         {
           text: "งานของฉัน",
@@ -158,7 +157,6 @@ export default {
           text: "ใบเสร็จรับเงิน",
           action: "/receipt/history",
           icon: "<i class='pi pi-file' style='font-size: 1.4rem'></i>",
-          visible: position === "พนักงานภาคสนาม",
         },
         {
           text: "ประวัติการฝากเงิน",
@@ -201,11 +199,16 @@ export default {
     },
     fillteredMenuItems() {
       const position = this.$store.getters.position;
-      if (position !== "lawyer") {
-        return this.menuItems.filter((menu) => menu.action !== "/home/lawyer");
-      } else {
-        return this.menuItems;
-      }
+
+      return this.menuItems.filter(menu => {
+        if (position === "lawyer") return true;
+
+        // ถ้าเป็นช่างเทคนิค ให้ซ่อนใบเสร็จรับเงิน
+        if (position === "ช่างเทคนิค" && menu.text === "ใบเสร็จรับเงิน") return false;
+
+        // กรณีอื่นๆ ให้แสดงเมนู
+        return true;
+      });
     },
   },
   mounted() {
