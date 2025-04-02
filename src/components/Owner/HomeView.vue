@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-cyan-800 !h-[140vh] mobileL:h-[100vh] py-10 px-2">
+  <div class="bg-white !h-[140vh] mobileL:h-[100vh] py-10 px-2">
     <MiniDatas :projects="projects" :employees="employees" :events="events" />
     <div class="flex justify-center">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-3">
         <ProjectMiniTable class="my-3 max-w-2xl h-[450px]" @project="emitProjectHandle" />
         <MiniEvents class="my-3 w-full max-w-2xl h-[450px]" :employees="employees" @event="emitEventHandle" />
       </div>

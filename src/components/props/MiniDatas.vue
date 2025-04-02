@@ -1,7 +1,7 @@
 <template>
     <!-- express boxes -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 w-full items-center justify-center">
-        <div class="flex justify-around items-center p-2 bg-white rounded-md shadow-xl border-l-4 border-blue-300">
+        <div class="h-16 sm:h-24 flex justify-around items-center p-2 bg-white rounded-md shadow-xl border-l-4 border-blue-300">
           <svg class="h-10 w-10 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -13,7 +13,8 @@
             {{ employees.length }}
           </div>
         </div>
-        <div class="flex justify-around items-center p-2 bg-white rounded-md shadow-xl border-l-4 border-purple-300">
+
+        <div class="h-16 sm:h-24 flex justify-around items-center p-2 bg-white rounded-md shadow-xl border-l-4 border-purple-300">
           <svg class="h-10 w-10 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path
@@ -28,7 +29,8 @@
             {{ filterOngoingProjects.length }}
           </div>
         </div>
-        <div class="flex justify-around items-center p-2 bg-white rounded-md shadow-xl border-l-4 border-amber-300">
+
+        <div class=" h-16 sm:h-24 flex justify-around items-center p-2 bg-white rounded-md shadow-xl border-l-4 border-amber-300">
           <svg class="h-10 w-10 text-yellow-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
             stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" />
@@ -45,7 +47,8 @@
             {{ calculateMonthlyAppointments }}
           </div>
         </div>
-        <div class="flex justify-around items-center p-2 bg-white rounded-md shadow-xl border-l-4 border-green-300">
+
+        <div class="h-16 sm:h-24 flex justify-around items-center p-2 bg-white rounded-md shadow-xl border-l-4 border-green-300">
           <svg class="h-10 w-10 text-green-400" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
             stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" />

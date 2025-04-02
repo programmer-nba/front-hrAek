@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded p-3 flex flex-col items-center">
+  <div class="bg-white rounded p-3 flex flex-col items-center shadow-md">
     <div class="flex justify-between items-center py-2 w-full">
       <p class="m-0 text-lg font-bold">
         นัดหมาย

@@ -2,57 +2,39 @@
   <div class="bg-cyan-200 h-full">
     <div class="flex items-center justify-center text-[#9e9cb6]">
       <section class="w-full relative bg-[#79E0EE]/60 rounded-[6px]">
-        <div class="absolute text-[#1D267D] bg-yellow-400 rounded-[4px] top-0 right-0 px-2 py-1 text-xs font-bold roll-in-blurred-right"> {{ ME.employee_number }}
+        <div
+          class="absolute text-[#1D267D] bg-yellow-400 rounded-[4px] top-0 right-0 px-2 py-1 text-xs font-bold roll-in-blurred-right">
+          {{ ME.employee_number }}
         </div>
         <div class="flex justify-center">
           <div class="flex items-center gap-x-5 px-3 w-fit">
-            <img :src="getImageUrl(ME.image)" class="rounded-full w-[75px] h-[75px] mx-auto my-3 p-0 object-cover border-[#231f39] shadow-[0px_27px_16px_-11px_rgba(31,27,56,0.25)] transition-all duration-150 ease-in hover:scale-105 cursor-pointer slide-in-elliptic-top-fwd"/>
+            <img :src="getImageUrl(ME.image)"
+              class="rounded-full w-[75px] h-[75px] mx-auto my-3 p-0 object-cover border-[#231f39] shadow-[0px_27px_16px_-11px_rgba(31,27,56,0.25)] transition-all duration-150 ease-in hover:scale-105 cursor-pointer slide-in-elliptic-top-fwd" />
             <div class="w-full">
               <h1 class="text-xl font-bold text-[#11009E]"> {{ ME.first_name }} {{ ME.last_name }}</h1>
               <p class="font-semibold text-[#11009E]"> {{ ME.position }}</p>
             </div>
           </div>
         </div>
-        
+
         <div class="flex items-center justify-center gap-2 w-[80%] mx-auto">
-          <button @click="logWorkTime" class="border border-[#231f39] rounded-[4px] py-3 px-5 text-white bg-[#231f39] transition-all duration-150 ease-in hover:bg-[#472e99]"> ลงเวลาเข้างาน
+          <button @click="logWorkTime('เข้างาน')"
+            class="border border-[#231f39] rounded-[4px] py-3 px-5 text-white bg-[#231f39] transition-all duration-150 ease-in hover:bg-[#472e99]">
+            ลงเวลาเข้างาน
           </button>
         </div>
 
-        <div class="text-center flex justify-center">
-          <p class="text-xs text-cyan-900 font-bold scale-50 origin-top">
-            <a-statistic-countdown :value="deadline" :value-style="valueStyle"> {{ workPeriod }}</a-statistic-countdown>
-          </p>
-        </div>
-
-        <div class="flex divide-x divide-gray-200 p-4 -mt-12 mb-3 bg-[#11009E]">
+        <div class="flex divide-x divide-gray-200 p-4 mb-3 mt-3 bg-[#11009E]">
           <div class="flex-1 w-0">
             <div class="flex flex-col justify-center items-center">
               <h4 class="text-xs font-semibold text-white"> เวลาเข้างานช่วงเช้า</h4>
               <h1 class="text-lg text-white"> {{ TimeToDay.morningIn ? TimeToDay.morningIn : "-" }}</h1>
             </div>
 
-            <!-- <div class="flex flex-col justify-center items-center">
-              <h4 class="text-xs font-semibold text-white">
-                เวลาออกงานช่วงเช้า
-              </h4>
-              <h1 class="text-lg text-white">
-                {{ TimeToDay.morningOut ? TimeToDay.morningOut : "-" }}
-              </h1>
-            </div> -->
 
           </div>
           <div class="-ml-px flex w-0 flex-1">
             <div class="flex-1 w-0">
-
-              <!-- <div class="flex flex-col justify-center items-center">
-                <h4 class="text-xs font-semibold text-white">
-                  เวลาเข้างานช่วงบ่าย
-                </h4>
-                <h1 class="text-lg text-white">
-                  {{ TimeToDay.afterIn ? TimeToDay.afterIn : "-" }}
-                </h1>
-              </div> -->
 
               <div class="flex flex-col justify-center items-center">
                 <h4 class="text-xs font-semibold text-white"> เวลาออกงาน</h4>
@@ -104,6 +86,7 @@ export default {
         color: "#146C94", // กำหนดสีข้อความเป็นสีขาว
         fontSize: "48px", // กำหนดขนาดข้อความใหญ่ขึ้น
       },
+      timeinout: [],
       currentLocation: "",
       employeesData: [], // เก็บข้อมูลพนักงานทั้งหมดจาก API
       chartData: {
@@ -132,6 +115,11 @@ export default {
       selectedEmployee: "",
       projects: [],
       events: [],
+      locationError: '',
+      hasCheckedInToday: false,
+      hasCheckedOutToday: false,
+      isLoggingTime: true,
+      employeeId: localStorage.getItem("id"),
       isLoading: false,
       documents: [],
       Apporvedocuments: [],
@@ -139,14 +127,9 @@ export default {
   },
   mounted() {
     this.getdata();
-    this.fetchEventData();
-    this.fetchArguments();
-    this.fetchTimeInOut();
-    this.fetchTimeData();
-    this.fetchTimeToDay();
-    this.fetchMe();
     this.fetchDocument();
     this.fetchDataApporveDocumemt();
+    this.fetchTimeLogs()
     console.log(new Date());
     const currentTime = new Date();
     let startCountdown;
@@ -199,60 +182,6 @@ export default {
 
     this.deadline = startCountdown;
 
-    setInterval(() => {
-      if (this.deadline <= 0) {
-        // เวลาหมดลง
-        // กำหนดค่า deadline ใหม่
-        if (currentTime.getHours() >= 18) {
-          startCountdown = new Date(
-            currentTime.getFullYear(),
-            currentTime.getMonth(),
-            currentTime.getDate() + 1,
-            9,
-            0,
-            0,
-            0
-          );
-        } else if (
-          currentTime.getHours() >= 12 &&
-          currentTime.getHours() <= 18
-        ) {
-          startCountdown = new Date(
-            currentTime.getFullYear(),
-            currentTime.getMonth(),
-            currentTime.getDate(),
-            18,
-            0,
-            0,
-            0
-          );
-        } else if (currentTime.getHours() >= 9) {
-          startCountdown = new Date(
-            currentTime.getFullYear(),
-            currentTime.getMonth(),
-            currentTime.getDate(),
-            12,
-            0,
-            0,
-            0
-          );
-        } else {
-          startCountdown = new Date(
-            currentTime.getFullYear(),
-            currentTime.getMonth(),
-            currentTime.getDate(),
-            9,
-            0,
-            0,
-            0
-          );
-        }
-
-        this.deadline = startCountdown;
-
-        this.fetchTimeData();
-      }
-    }, 1000);
   },
   computed: {
     workPeriodLabel() {
@@ -281,45 +210,10 @@ export default {
       });
       return uniqueEmployeeIds.size;
     },
-    onTimeMorning() {
-      // นับจำนวนพนักงานที่เข้างานช่วงเช้าตรงเวลา
-      return this.employeesData.filter((employee) => {
-        return (
-          employee.time_line === "เข้างานช่วงเช้า" &&
-          this.isOnTime(employee.time, "เข้างานช่วงเช้า")
-        );
-      }).length;
-    },
-    lateMorning() {
-      // นับจำนวนพนักงานที่เข้างานช่วงเช้าสาย
-      return this.employeesData.filter((employee) => {
-        return (
-          employee.time_line === "เข้างานช่วงเช้า" &&
-          !this.isOnTime(employee.time, "เข้างานช่วงเช้า")
-        );
-      }).length;
-    },
-    onTimeAfternoon() {
-      // นับจำนวนพนักงานที่เข้างานช่วงบ่ายตรงเวลา
-      return this.employeesData.filter((employee) => {
-        return (
-          employee.time_line === "เข้างานช่วงบ่าย" &&
-          this.isOnTime(employee.time, "เข้างานช่วงบ่าย")
-        );
-      }).length;
-    },
-    lateAfternoon() {
-      // นับจำนวนพนักงานที่เข้างานช่วงบ่ายสาย
-      return this.employeesData.filter((employee) => {
-        return (
-          employee.time_line === "เข้างานช่วงบ่าย" &&
-          !this.isOnTime(employee.time, "เข้างานช่วงบ่าย")
-        );
-      }).length;
-    },
+
   },
   methods: {
-    emitEventHandle (val) {
+    emitEventHandle(val) {
       this.events = val
     },
     async fetchDocument() {
@@ -379,132 +273,91 @@ export default {
 
     formatDate(dateString) {
       const date = dayjs(dateString);
-      // จัดรูปแบบวันที่เป็น "วัน เดือน ปี" แบบไทย
       const thaiDate = date.locale("th").format("D MMMM YYYY");
       return thaiDate;
     },
 
-    isToday(date) {
-      const today = new Date();
-      const inputDate = new Date(date);
+    async fetchTimeLogs() {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/timeinout/employee/${this.employeeId}`);
+        if (response.data.status) {
+          this.timeinout = response.data.data;
 
-      return (
-        today.getDate() === inputDate.getDate() &&
-        today.getMonth() === inputDate.getMonth() &&
-        today.getFullYear() === inputDate.getFullYear()
+          console.log('tineinout : ', this.timeinout)
+        } else {
+          this.timeinout = [];
+        }
+      } catch (error) {
+        console.error("Error fetching logs:", error);
+        Swal.fire({
+          icon: "error",
+          title: "ไม่สามารถโหลดข้อมูลได้",
+          text: error.message || "โปรดลองอีกครั้ง",
+        });
+      }
+    },
+
+    async logWorkTime(timeType) {
+      console.log('timeType', timeType)
+      if (!navigator.geolocation) {
+        Swal.fire({
+          icon: "error",
+          title: "อุปกรณ์ไม่รองรับการระบุตำแหน่ง",
+          text: "ไม่สามารถดึงพิกัดได้",
+        });
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            const response = await axios.post(
+              `${import.meta.env.VITE_VUE_APP_DECCAN}/create/log`,
+              {
+                projectId: 'เข้างาน',
+                projectCode: 'เข้างาน',
+                employeeId: this.employeeId,
+                timeType,
+                latitude,
+                longitude,
+              }
+            );
+
+            if (response.data.status) {
+              Swal.fire({
+                icon: "success",
+                title: "บันทึกเวลาสำเร็จ",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+
+              await fetchTimeLogs();
+            }
+          } catch (error) {
+            Swal.fire({
+              icon: "error",
+              title: "ไม่สามารถบันทึกเวลาได้",
+              text: error.message || "โปรดลองอีกครั้ง",
+              showConfirmButton: true,
+            });
+          } finally {
+            this.isLoggingTime = false;
+          }
+        },
+        (error) => {
+          this.locationError = error.message;
+          Swal.fire({
+            icon: "error",
+            title: "ไม่สามารถดึงพิกัดได้",
+            text: error.message || "โปรดลองอีกครั้ง",
+          });
+          this.isLoggingTime = false;
+        }
       );
     },
 
-    /* getme */
-    async fetchMe() {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/getme`,
-          {
-            headers: {
-              "auth-token": localStorage.getItem("token"),
-            },
-          }
-        );
-        console.log("getme", response.data.data);
-
-        if (response.data.data) {
-          this.ME = response.data.data;
-        } else {
-          console.error("ไม่พบข้อมูลgetme");
-        }
-      } catch (error) {
-        console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
-      }
-    },
-
-    /* ประวัติการเข้างาน */
-    async fetchTimeData() {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/time/getme`,
-          {
-            headers: {
-              "auth-token": localStorage.getItem("token"),
-            },
-          }
-        );
-        console.log("ประวัติการเข้างาน", response.data.data);
-
-        if (response.data.data) {
-          this.TimeToWork = response.data.data.reverse();
-        } else {
-          console.error("ไม่พบข้อมูลเวลาเข้างาน");
-        }
-      } catch (error) {
-        console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
-      }
-    },
-
-    /* ประวัติการเข้างานวันนี้ */
-    async fetchTimeToDay() {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/time/getday`,
-          {
-            headers: {
-              "auth-token": localStorage.getItem("token"),
-            },
-          }
-        );
-        console.log("ประวัติการเข้างานวันนี้", response.data.data);
-
-        if (response.data.data) {
-          this.TimeToDay = response.data.data;
-        } else {
-          console.error("ไม่พบข้อมูลเวลาเข้างาน");
-        }
-      } catch (error) {
-        console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
-      }
-    },
-
-    async logWorkTime() {
-      try {
-        await Swal.fire({
-          icon: "info",
-          title: "กำลังลงเวลาเข้างาน...",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-
-        const response = await axios.post(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/time/morning/in`,
-          {},
-          {
-            headers: {
-              "auth-token": localStorage.getItem("token"),
-            },
-          }
-        );
-
-        Swal.close();
-
-        await Swal.fire({
-          icon: "success",
-          html: `
-                <p>ลงเวลาสำเร็จ</p>
-                <p>เวลา: ${response.data.data.time}</p>
-                <p>ผู้ลงเวลา: ${this.ME.first_name} ${this.ME.last_name}</p>
-            `,
-        });
-
-        this.fetchTimeData();
-
-        this.fetchTimeToDay();
-      } catch (error) {
-        Swal.fire({
-          icon: "error",
-          text: error.response.data.message,
-        });
-        console.error("เกิดข้อผิดพลาดในการบันทึกเวลาเข้างาน:", error);
-      }
-    },
     isOnTime(time, timeLine) {
       const [hour, minute, second] = time.split(":").map(Number);
       if (timeLine === "เข้างานช่วงเช้า") {
@@ -520,111 +373,6 @@ export default {
       }
       return false; // สำหรับเวลาลงเวลาออกงาน
     },
-    async fetchTimeInOut() {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/time/admin/getall`,
-          {
-            headers: {
-              "auth-token": localStorage.getItem("token"),
-            },
-          }
-        );
-        // เก็บข้อมูลพนักงานทั้งหมดจาก API
-        this.employeesData = response.data.data;
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    },
-    calculateMonthlyAppointments1() {
-      if (!this.eventData) return 0; // ตรวจสอบว่า this.eventData มีค่า undefined หรือไม่
-      const currentMonth = dayjs().month();
-      const currentYear = dayjs().year();
-
-      return this.eventData.filter((event) => {
-        const eventMonth = dayjs(event.due_date).month();
-        const eventYear = dayjs(event.due_date).year();
-        const isScheduled = event.type === "success";
-
-        return (
-          eventMonth === currentMonth &&
-          eventYear === currentYear &&
-          isScheduled
-        );
-      }).length;
-    },
-    calculateMonthlyAppointments() {
-      if (!this.eventData) return 0; // ตรวจสอบว่า this.eventData มีค่า undefined หรือไม่
-      const currentMonth = dayjs().month();
-      const currentYear = dayjs().year();
-
-      return this.eventData.filter((event) => {
-        const eventMonth = dayjs(event.due_date).month();
-        const eventYear = dayjs(event.due_date).year();
-        const isScheduled = event.type === "warning";
-
-        return (
-          eventMonth === currentMonth &&
-          eventYear === currentYear &&
-          isScheduled
-        );
-      }).length;
-    },
-    async fetchArguments() {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/agreement/getall`,
-          {
-            headers: {
-              "auth-token": localStorage.getItem("token"),
-            },
-          }
-        );
-
-        // Count the number of each status
-        const data = response.data.data;
-        const acceptedCount = data.filter(
-          (argument) => argument.argument_status === "ยอมรับ"
-        ).length;
-        const rejectedCount = data.filter(
-          (argument) => argument.argument_status === "ปฏิเสธ"
-        ).length;
-        const pendingCount = data.filter(
-          (argument) => argument.argument_status === "รอการตอบรับ"
-        ).length;
-
-        // Update chartData with the counts
-        this.chartData.datasets[0].data = [
-          acceptedCount,
-          rejectedCount,
-          pendingCount,
-        ];
-      } catch (error) {
-        console.error("Error fetching arguments:", error);
-      }
-    },
-
-    async fetchEventData() {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/event/getevent`,
-          {
-            headers: {
-              "auth-token": localStorage.getItem("token"),
-            },
-          }
-        )
-        this.eventData = response.data.events;
-        this.eventData.forEach((event) => {
-          event.due_date = dayjs(event.due_date)
-            .locale("th")
-            .format("YYYY-MM-DD");
-        });
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    },
-
     async getdata() {
       try {
         const response = await axios.get(
@@ -634,6 +382,8 @@ export default {
           }
         );
         this.employees = response.data.data.reverse();
+
+        console.log("asd : ", this.employees)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -644,107 +394,16 @@ export default {
         this.currentPage--; // ลดหน้าลง 1
       }
     },
-    // ฟังก์ชันเมื่อคลิกที่ปุ่มหน้าถัดไป
+
     nextPage() {
       if (this.currentPage < this.totalPages) {
         this.currentPage++; // เพิ่มหน้าขึ้น 1
       }
     },
-
-    async fetchEmployeesForEditedProject() {
-      // Reset employees array and selectedEmployee
-      this.employees = [];
-      this.selectedEmployee = "";
-
-      // Get the selected job position from editedProject
-      const selectedPosition = this.editedProject.position;
-
-      if (selectedPosition === "GRP" || selectedPosition === "DEV") {
-        try {
-          const response = await axios.get(
-            `${import.meta.env.VITE_VUE_APP_DECCAN}/get`,
-            {
-              headers: { "auth-token": localStorage.getItem("token") },
-            }
-          );
-          // Filter employees based on selected job position
-          if(!response.data.data) {
-            return this.employees = []
-          }
-          this.employees = response.data.data.filter((employee) =>
-            employee.employee_number.startsWith(selectedPosition)
-          );
-          // Show the dropdown if there are employees available
-          this.employeeDropdownVisible = this.employees.length > 0;
-
-          // Set the selected employee if it matches the edited project's employee ID
-          if (
-            this.employees.find(
-              (employee) => employee._id === this.editedProject.employee_id
-            )
-          ) {
-            this.selectedEmployee = this.editedProject.employee_id;
-          }
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      } else {
-        // Hide the dropdown if no job position is selected
-        this.employeeDropdownVisible = false;
-      }
-    },
-
-    calculateRemainingDays(dueDate, statusName, startDate, finishDate) {
-      // Check if status_name is "โปรเจ็คเสร็จลุล่วง"
-      if (statusName === "โปรเจ็คเสร็จลุล่วง") {
-        // Parse startDate and finishDate using dayjs
-        const start = dayjs(startDate);
-        const finish = dayjs(finishDate);
-
-        // Calculate difference between finish date and start date
-        const projectDuration = finish.diff(start, "day");
-
-        return `ใช้เวลาทำ${projectDuration} วัน`;
-      }
-
-      // Parse dueDate using dayjs
-      const due = dayjs(dueDate);
-
-      // Calculate difference between due date and current date
-      const diffDays = due.diff(dayjs(), "day");
-
-      // Check if past due
-      if (diffDays < 0) {
-        // Calculate number of days overdue
-        const daysOverdue = Math.abs(diffDays);
-        return `เกินกำหนด ${daysOverdue} วัน`;
-      } else {
-        // Return number of days left or 'ครบกำหนด' if due today
-        return diffDays > 0 ? `${diffDays} วัน` : "ครบกำหนดวันนี้";
-      }
-    },
-    calculateProjectDuration(project) {
-      // Check if the project status is "โปรเจ็คเสร็จลุล่วง"
-      if (project.status.status_name === "โปรเจ็คเสร็จลุล่วง") {
-        // Parse start_date and finnish_date using dayjs
-        const startDate = dayjs(project.start_date);
-        const finnishDate = dayjs(project.finnish_date);
-
-        // Calculate difference in days between start_date and finnish_date
-        const projectDuration = finnishDate.diff(startDate, "day");
-
-        return `โปรเจ็คใช้เวลา ${projectDuration} วัน`;
-      } else {
-        return "โปรเจ็คยังไม่เสร็จลุล่วง";
-      }
-    },
-   
     emitProjectHandle(val) {
       this.projects = val || []
     }
   },
 };
 </script>
-<style>
-
-</style>
+<style></style>

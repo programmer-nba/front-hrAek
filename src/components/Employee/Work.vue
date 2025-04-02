@@ -740,21 +740,22 @@
                   <ButtonP v-if="
                     position !== 'ช่างเทคนิค' &&
                     project.status[project.status.length - 1].name !== 'รอรับงาน' &&
-                    project.status[project.status.length - 1].name !== 'ดำเนินการสำเร็จ' &&
-                    project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
-                    project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
-                  " @click="() => { detailEmployee = project; openDeposit(project._id); }" label="แจ้งฝากเงิน"
-                    class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
-
-                  <ButtonP v-if="
-                    position !== 'ช่างเทคนิค' &&
-                    project.status[project.status.length - 1].name !== 'รอรับงาน' &&
                     project.status[project.status.length - 1].name !==
                     'ดำเนินการสำเร็จ' &&
                     project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
                     project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
                   " @click="() => { detailEmployee = project; openReceipt(); }" label="ใบเสร็จรับเงิน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
+
+                    <ButtonP v-if="
+                    position !== 'ช่างเทคนิค' &&
+                    project.status[project.status.length - 1].name !== 'รอรับงาน' &&
+                    project.status[project.status.length - 1].name !== 'ดำเนินการสำเร็จ' &&
+                    project.status[project.status.length - 1].name !== 'งานถูกยกเลิก' &&
+                    project.status[project.status.length - 1].name !== 'ส่งงานแล้ว'
+                  " @click="() => { detailEmployee = project; openDeposit(project._id); }" label="แจ้งฝากเงิน"
+                    class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
+
 
                   <ButtonP v-if="
                     project.status[project.status.length - 1].name !== 'รอรับงาน' &&
