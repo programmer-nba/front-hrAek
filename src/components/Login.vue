@@ -104,181 +104,254 @@
 
                 </div>
 
-                <Dialog v-model:visible="isRegister" class="w-1/2" header="กรอกข้อมูลเพื่อสมัครสมาชิก">
-                  <form class="px-4 sm:px-10 mt-2 sm:mt-5">
+                <Dialog v-model:visible="isRegister" class="w-[50%]" header="กรอกข้อมูลเพื่อสมัครสมาชิก">
+                  <div class="bg-white shadow-lg rounded-lg p-6">
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-6 text-center">สมัครสมาชิกใหม่</h2>
+                    <form class="px-4 sm:px-8 mt-2 sm:mt-5">
+                      <!-- แบ่งส่วนข้อมูลส่วนตัว -->
+                      <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-blue-600 mb-4 pb-2 border-b border-blue-200">
+                          ข้อมูลการสมัคร</h3>
+                        <div class="grid gap-4 sm:gap-6 md:grid-cols-2">
+                          <div>
+                            <label for="role" class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> ตำแหน่งงานที่สมัคร
+                            </label>
+                            <Dropdown v-model="selectedSubPosition" :options="subForPosition" filter
+                              placeholder="เลือกตำแหน่ง"
+                              class="w-full text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                              <template #value="slotProps">
+                                <div v-if="slotProps.value" class="flex items-center p-2">
+                                  <div>{{ slotProps.value.label }}</div>
+                                </div>
+                                <span v-else class="p-2 text-gray-400">
+                                  {{ slotProps.placeholder }}
+                                </span>
+                              </template>
+                              <template #option="slotProps">
+                                <div class="flex items-center p-2 hover:bg-blue-50">
+                                  <div>{{ slotProps.option.label }}</div>
+                                </div>
+                              </template>
+                            </Dropdown>
+                          </div>
+                        </div>
+                      </div>
 
-                    <div class="grid gap-3 sm:gap-6 mb-3 sm:mb-6 md:grid-cols-2">
-                      <div>
-                        <label for="role"
-                          class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*ตำแหน่งงานที่สมัคร</label>
-                        <Dropdown v-model="selectedSubPosition" :options="subForPosition" filter
-                          placeholder="เลือกตำแหน่ง"
-                          class="no-rounded w-full mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner">
-                          <template #value="slotProps">
-                            <div v-if="slotProps.value" class="flex align-items-center">
-                              <div ref="inputField" placeholder="Focus on me">
-                                {{ slotProps.value.label }}
-                              </div>
+                      <!-- ข้อมูลส่วนตัว -->
+                      <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-blue-600 mb-4 pb-2 border-b border-blue-200">ข้อมูลส่วนตัว
+                        </h3>
+                        <div class="grid gap-4 sm:gap-6 md:grid-cols-2">
+                          <div>
+                            <label for="role" class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> คำนำหน้า
+                            </label>
+                            <Dropdown v-model="selectedTitle" :options="subForTitle" filter placeholder="เลือกคำนำหน้า"
+                              class="w-full text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                              <template #value="slotProps">
+                                <div v-if="slotProps.value" class="flex items-center p-2">
+                                  <div>{{ slotProps.value.label }}</div>
+                                </div>
+                                <span v-else class="p-2 text-gray-400">
+                                  {{ slotProps.placeholder }}
+                                </span>
+                              </template>
+                              <template #option="slotProps">
+                                <div class="flex items-center p-2 hover:bg-blue-50">
+                                  <div>{{ slotProps.option.label }}</div>
+                                </div>
+                              </template>
+                            </Dropdown>
+                          </div>
+
+                          <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> ชื่อ
+                            </label>
+                            <input type="text" v-model="first_name" placeholder="ชื่อจริง"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                          </div>
+
+                          <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> นามสกุล
+                            </label>
+                            <input type="text" v-model="last_name" placeholder="นามสกุล"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                          </div>
+
+                          <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> เบอร์โทรศัพท์
+                            </label>
+                            <input type="tel" v-model="tel" placeholder="เบอร์มือถือ 10 หลัก"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                          </div>
+
+                          <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> อีเมล
+                            </label>
+                            <input type="email" v-model="email" placeholder="example@mail.com"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                            <p v-if="email && !validateEmail(email)" class="text-red-500 text-xs mt-1">
+                              กรุณากรอกอีเมลในรูปแบบที่ถูกต้อง
+                            </p>
+                          </div>
+
+                          <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> เลขบัตรประชาชน
+                            </label>
+                            <input type="text" v-model="iden_number"
+                              @input="iden_number = iden_number.replace(/[^0-9]/g, '').slice(0, 13)"
+                              placeholder="เลข 13 หลัก"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                            <p v-if="iden_number && !validateIdCard(iden_number)" class="text-red-500 text-xs mt-1">
+                              กรุณากรอกเลขบัตรประชาชน 13 หลัก
+                            </p>
+                          </div>
+
+                          <div>
+                            <label for="datePicker" class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> เกิดวันที่
+                            </label>
+                            <input type="date" v-model="birthday"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- ที่อยู่ -->
+                      <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-blue-600 mb-4 pb-2 border-b border-blue-200">
+                          ที่อยู่ตามบัตรประชาชน</h3>
+                        <div class="grid gap-4 sm:gap-6 md:grid-cols-2">
+                          <div class="md:col-span-2">
+                            <label class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> ที่อยู่เลขที่/หมู่บ้าน
+                            </label>
+                            <input type="text" v-model="address" placeholder="บ้านเลขที่ หมู่บ้าน ซอย ถนน"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                          </div>
+
+                          <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> จังหวัด
+                            </label>
+                            <Dropdown v-model="editedMe.province" :options="item_province" filter
+                              @change="chooseProvince" optionValue="name_th" optionLabel="name_th"
+                              placeholder="เลือกจังหวัด"
+                              class="w-full text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                          </div>
+
+                          <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> อำเภอ/เขต
+                            </label>
+                            <Dropdown v-model="editedMe.district" :options="item_amphure" filter @change="chooseAmphure"
+                              optionValue="name_th" optionLabel="name_th" placeholder="เลือกอำเภอ"
+                              class="w-full text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                          </div>
+
+                          <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> ตำบล/แขวง
+                            </label>
+                            <Dropdown v-model="editedMe.subdistrict" :options="item_tambon" filter
+                              @change="chooseDistrict" optionValue="name_th" optionLabel="name_th"
+                              placeholder="เลือกตำบล"
+                              class="w-full text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                          </div>
+
+                          <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> รหัสไปรษณีย์
+                            </label>
+                            <input v-model="editedMe.postcode" placeholder="รหัสไปรษณีย์"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- เอกสารแนบ -->
+                      <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-blue-600 mb-4 pb-2 border-b border-blue-200">
+                          เอกสารประกอบการสมัคร</h3>
+                        <div class="grid gap-4 sm:gap-6 md:grid-cols-2">
+                          <div>
+                            <label for="iden-file" class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> สำเนาบัตรประชาชน
+                            </label>
+                            <div v-if="!image_iden" class="flex items-center justify-center w-full">
+                              <label for="iden-file"
+                                class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                  <svg class="w-8 h-8 mb-4 text-gray-500" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                  </svg>
+                                  <p class="mb-2 text-sm text-gray-500"><span
+                                      class="font-semibold">คลิกเพื่ออัปโหลด</span></p>
+                                </div>
+                                <input id="iden-file" type="file" class="hidden"
+                                  @change="(e) => handleFileChange(e, 'image_iden')" />
+                              </label>
                             </div>
-                            <span v-else>
-                              {{ slotProps.placeholder }}
-                            </span>
-                          </template>
-                          <template #option="slotProps">
-                            <div class="flex gap-2 items-center">
-                              <div>{{ slotProps.option.label }}</div>
+                            <div v-else class="flex justify-center">
+                              <img :src="this.image_iden" alt="image_iden" class="w-full max-w-[200px] h-auto">
                             </div>
-                          </template>
-                        </Dropdown>
-                      </div>
+                          </div>
 
-                      <div>
-                        <label for="role"
-                          class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*คำนำหน้า</label>
-                        <Dropdown v-model="selectedTitle" :options="subForTitle" filter placeholder="เลือกคำนำหน้า"
-                          class="no-rounded w-full mt-2 text-gray-700 bg-gray-200 appearance-none focus:outline-none focus:bg-gray-300 focus:shadow-inner">
-                          <template #value="slotProps">
-                            <div v-if="slotProps.value" class="flex align-items-center">
-                              <div ref="inputField2" placeholder="Focus on me">
-                                {{ slotProps.value.label }}
-                              </div>
+                          <div>
+                            <label for="bank-file" class="block mb-2 text-sm font-medium text-gray-700">
+                              <span class="text-red-500">*</span> สำเนาหน้าสมุดบัญชีธนาคาร
+                            </label>
+                            <div v-if="!image_bank" class="flex items-center justify-center w-full">
+                              <label for="bank-file"
+                                class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                  <svg class="w-8 h-8 mb-4 text-gray-500" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                  </svg>
+                                  <p class="mb-2 text-sm text-gray-500"><span
+                                      class="font-semibold">คลิกเพื่ออัปโหลด</span></p>
+                                </div>
+                                <input id="bank-file" type="file" class="hidden"
+                                  @change="(e) => handleFileChange(e, 'image_bank')" />
+                              </label>
                             </div>
-                            <span v-else>
-                              {{ slotProps.placeholder }}
-                            </span>
-                          </template>
-                          <template #option="slotProps">
-                            <div class="flex gap-2 items-center">
-                              <div>{{ slotProps.option.label }}</div>
+                            <div v-else class="flex justify-center">
+                              <img :src="image_bank" alt="image_bank" class="w-full max-w-[200px] h-auto">
                             </div>
-                          </template>
-                        </Dropdown>
+                          </div>
+                        </div>
                       </div>
 
-                      <div>
-                        <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*ชื่อ</label>
-                        <input type="text" id="" v-model="first_name"
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5" />
+                      <div class="flex items-center justify-between mt-8">
+                        <div class="text-xs text-gray-500">
+                          <span class="text-red-500">*</span> หมายถึงข้อมูลที่จำเป็นต้องกรอก
+                        </div>
+                        <div class="flex space-x-4">
+                          <button type="button" @click="isRegister = false"
+                            class="px-6 py-2.5 bg-gray-200 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                            ยกเลิก
+                          </button>
+                          <button type="button" @click="SubmitRegister()"
+                            class="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+                            สมัครสมาชิก
+                          </button>
+                        </div>
                       </div>
-
-                      <div>
-                        <label
-                          class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*นามสกุล</label>
-                        <input type="text" id=""
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-                          v-model="last_name" />
-                      </div>
-
-                      <div>
-                        <label
-                          class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*เบอร์โทรศัพท์</label>
-                        <input type="text" id=""
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-                          v-model="tel" />
-                      </div>
-
-                      <!-- <div>
-            <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*ไอดีชื่อผู้ใช้ (Username)</label>
-            <input  type="text" id="" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5" v-model="userid"/>
-          </div>
-
-          <div>
-            <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*รหัสผ่าน (Password)</label>
-            <input  type="password" id="" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"  v-model="user_password"/>
-          </div>
-
-          <div>
-            <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*ยืนยันรหัสผ่าน</label>
-            <input type="password" id="" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"  v-model="user_password" />
-          </div>  -->
-
-                      <div>
-                        <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*อีเมล</label>
-                        <input type="email" id=""
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-                          v-model="email" />
-                      </div>
-
-                      <div>
-                        <label
-                          class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*เลขบัตรประชาชน</label>
-                        <input type="text" id=""
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-                          v-model="iden_number" />
-                      </div>
-
-                      <div>
-                        <label for="datePicker"
-                          class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">เกิดวันที่:</label>
-                        <input type="date" id="" v-model="birthday">
-                      </div>
-
-                      <div>
-                        <label
-                          class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*ที่อยู่ตามบัตรประชาชน</label>
-                        <input type="text" id=""
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-                          v-model="address" />
-                      </div>
-
-                      <div>
-                        <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">จังหวัด</label>
-
-                        <Dropdown v-model="editedMe.province" :options="item_province" filter @change="chooseProvince"
-                          optionValue="name_th" optionLabel="name_th" placeholder="เลือกจังหวัด"
-                          class="no-rounded w-full bg-gray-200 rounded-lg mt-2 ring-1 ring-inset focus:outline-none shadow-[#1363DF] ring-[#85F4FF] focus:ring-2 focus:ring-inset focus:ring-[#47B5FF] shadow-sm border-0" />
-                      </div>
-
-                      <div>
-                        <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">อำเภอ</label>
-
-                        <Dropdown v-model="editedMe.district" :options="item_amphure" filter @change="chooseAmphure"
-                          optionValue="name_th" optionLabel="name_th" placeholder="เลือกอำเภอ"
-                          class="no-rounded w-full bg-gray-200 rounded-lg mt-2 ring-1 ring-inset focus:outline-none shadow-[#1363DF] ring-[#85F4FF] focus:ring-2 focus:ring-inset focus:ring-[#47B5FF] shadow-sm border-0" />
-                      </div>
-
-                      <div>
-                        <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ตำบล</label>
-
-                        <Dropdown v-model="editedMe.subdistrict" :options="item_tambon" filter @change="chooseDistrict"
-                          optionValue="name_th" optionLabel="name_th" placeholder="เลือกตำบล"
-                          class="no-rounded w-full bg-gray-200 rounded-lg mt-2 ring-1 ring-inset focus:outline-none shadow-[#1363DF] ring-[#85F4FF] focus:ring-2 focus:ring-inset focus:ring-[#47B5FF] shadow-sm border-0" />
-                      </div>
-
-                      <div>
-                        <label
-                          class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*รหัสไปรษณีย์</label>
-
-                        <input v-model="editedMe.postcode" :disabled="isDisabled"
-                          class="w-full bg-gray-200 rounded-lg mt-2 ring-1 ring-inset focus:outline-none shadow-[#1363DF] ring-[#85F4FF] focus:ring-2 focus:ring-inset focus:ring-[#47B5FF] shadow-sm p-3 border-0"
-                          type="text" />
-                      </div>
-
-                      <div>
-                        <label for="file-upload"
-                          class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*แนบสำเนาบัตรประชาชน</label>
-                        <input id="file-upload" type="file" @change="handleFileChange" @click="fileType = 'iden'" />
-                      </div>
-
-                      <div>
-                        <label
-                          class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">*แนบหน้าสมุดบัญชีธนาคาร</label>
-                        <input id="file-upload" type="file" @change="handleFileChange" @click="fileType = 'bank'" />
-                      </div>
-
-                    </div>
-
-                    <div class="flex justify-end">
-                      <button @click="SubmitRegister()" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
-                        สมัครสมาชิก
-                      </button>
-                      <!-- type="button" -->
-                    </div>
-
-
-                  </form>
+                    </form>
+                  </div>
                 </Dialog>
-                <!-- สิ้นสุดส่วนของการสมัครสมาชิก -->
               </div>
             </div>
           </div>
@@ -315,6 +388,10 @@ export default {
       role: "",
       selectedSubPosition: "",
       selectedTitle: "",
+      email: "",
+      password: "",
+      first_name: "",
+      last_name: "",
 
       item_province: [],
       item_amphure: [],
@@ -341,6 +418,46 @@ export default {
 
 
   methods: {
+    validatePhoneNumber(phone) {
+      const regex = /^[0-9]{10}$/;
+      return regex.test(phone);
+    },
+
+    validateEmail(email) {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return regex.test(email);
+    },
+
+    validateIdCard(id) {
+      const regex = /^[0-9]{13}$/;
+      return regex.test(id);
+    },
+
+    formatPhoneNumber(phone) {
+      return phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+    },
+    resetForm() {
+      this.iden_number = "";
+      this.first_name = "";
+      this.last_name = "";
+      this.tel = "";
+      this.email = "";
+      this.address = "";
+      this.birthday = "";
+      this.editedMe = {};
+      this.selectedSubPosition = "";
+      this.selectedTitle = "";
+      this.image_iden = null;
+      this.image_bank = null;
+    },
+    convertToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+    },
     async login() {
       try {
         if (!this.userid || !this.password) {
@@ -426,40 +543,46 @@ export default {
         console.error("Error loading data:", error);
       }
     },
-    handleFileChange(event) {
+    async handleFileChange(event, type) {
       const file = event.target.files[0];
       if (!file) return;
 
-      // สมมุติว่าใช้ fileType เพื่อบอกว่าจะเก็บเข้า image_iden หรือ image_bank
-      if (this.fileType === 'iden') {
-        this.image_iden = file;
-      } else if (this.fileType === 'bank') {
-        this.image_bank = file;
+      const base64 = await this.convertToBase64(file);
+
+      console.log('base64 : ', base64)
+
+      if (type === "image_bank") {
+        this.image_bank = base64;
+      } else if (type === "image_iden") {
+        this.image_iden = base64;
       }
     },
 
+
     async SubmitRegister() {
+
+      if (!this.validateEmail(this.email)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'อีเมลไม่ถูกต้อง',
+          text: 'กรุณากรอกอีเมลในรูปแบบที่ถูกต้อง (เช่น example@mail.com)'
+        });
+        return;
+      }
+
+      if (!this.validateIdCard(this.iden_number)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'เลขบัตรประชาชนไม่ถูกต้อง',
+          text: 'กรุณากรอกเลขบัตรประชาชน 13 หลัก (ตัวเลขเท่านั้น)'
+        });
+        return;
+      }
+
       try {
-        // ตรวจสอบว่า $refs.inputField มีค่า (ไม่เป็น undefined หรือ null)
         let position = this.$refs.inputField ? this.$refs.inputField.innerText : '';
         let title = this.$refs.inputField2 ? this.$refs.inputField2.innerText : '';
 
-        const convertToBase64 = (file) =>
-          new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = reject;
-          });
-
-        const imageIdenBase64 = this.image_iden
-          ? await convertToBase64(this.image_iden)
-          : null;
-
-        const imageBankBase64 = this.image_bank
-          ? await convertToBase64(this.image_bank)
-          : null;
-        // สร้างข้อมูลที่ต้องการส่ง
         let data = {
           iden_number: this.iden_number,
           first_name: this.first_name,
@@ -470,39 +593,61 @@ export default {
           email: this.email,
           address: this.address,
           birthday: this.birthday,
-          provice: this.editedMe.province,  // ใช้ province ที่ผู้ใช้เลือก
-          district: this.editedMe.district,  // ใช้ district ที่ผู้ใช้เลือก
-          subdistrict: this.editedMe.subdistrict,  // ใช้ subdistrict ที่ผู้ใช้เลือก
-          postcode: this.editedMe.postcode,  // ใช้ postcode ที่ผู้ใช้เลือก
-          position: position, // ใช้ค่าจาก inputField 
-          name_title: title,// ใช้ค่าจาก inputField2
-          image_iden: imageIdenBase64,
-          image_bank: imageBankBase64,
+          provice: this.editedMe.province,
+          district: this.editedMe.district,
+          subdistrict: this.editedMe.subdistrict,
+          postcode: this.editedMe.postcode,
+          position: this.selectedSubPosition ? this.selectedSubPosition.value : '',
+          name_title: title,
+          image_iden: this.image_iden,
+          image_bank: this.image_bank,
           role: "employee",
         };
 
-        // ส่งข้อมูลไปยัง API
-        const response = await axios.post(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/post`,
-          data,
-          {
-            headers: {
-              "auth-token": localStorage.getItem("token"),
-            },
-          }
-        );
-
-        // แสดงข้อความแจ้งเตือนเมื่อบันทึกสำเร็จ
-        Swal.fire({
-          icon: "success",
-          text: "เพิ่มสำเร็จ",
-          showConfirmButton: false,
-          timer: 1500,
+        const result = await Swal.fire({
+          title: "ยืนยันการลงทะเบียน?",
+          text: "กรุณาตรวจสอบข้อมูลให้ถูกต้องก่อนยืนยัน",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยืนยัน",
+          cancelButtonText: "ยกเลิก",
+          showLoaderOnConfirm: true,
+          preConfirm: async () => {
+            try {
+              const response = await axios.post(
+                `${import.meta.env.VITE_VUE_APP_DECCAN}/post`,
+                data,
+                {
+                  headers: {
+                    "auth-token": localStorage.getItem("token"),
+                  },
+                }
+              );
+              return response.data;
+            } catch (error) {
+              Swal.showValidationMessage(
+                `เกิดข้อผิดพลาด: ${error.response?.data?.message || "ไม่สามารถบันทึกข้อมูลได้"}`
+              );
+            }
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
         });
+
+        if (result.isConfirmed) {
+          Swal.fire({
+            icon: "success",
+            text: "เพิ่มสำเร็จ",
+            showConfirmButton: false,
+            timer: 3000,
+          });
+
+          this.isRegister = false
+
+          this.resetForm
+        }
       } catch (error) {
         console.error("Error saving data:", error);
 
-        // แสดงข้อความแจ้งเตือนเมื่อเกิดข้อผิดพลาด
         Swal.fire({
           icon: "error",
           text: error.response?.data?.message || "เกิดข้อผิดพลาด",
@@ -583,6 +728,7 @@ export default {
     },
 
   },
+
 };
 </script>
 

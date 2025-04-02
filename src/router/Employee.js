@@ -38,6 +38,11 @@ let routes = [
     component: () => import("../components/Employee/DepositHisView.vue"),
   },
   {
+    path: "/receipt/history",
+    name: "receipt-history",
+    component: () => import("../components/Employee/ReceiptHisView.vue"),
+  },
+  {
     path: "/ReportEmployee",
     name: "ReportEmployee",
     component: () =>

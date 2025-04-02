@@ -1,53 +1,143 @@
 <template>
   <!-- Dialog ที่จะเปิดเมื่อคลิก -->
   <dialog ref="uploadDialog" header="อัปโหลดไฟล์" position="right"
-    class="px-2 sm:px-2 py-1 sm:py-1 bg-white rounded-xl shadow-lg">
-    <div class="mx-10 py-2 space-y-2">
-      <h2 class="text-lg text-center font-semibold text-gray-800">อัปโหลดไฟล์</h2>
-      <button @click="closeDialog" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800">
-        ✕
-      </button>
-      <!-- ข้อความหัวข้อสำหรับแต่ละขั้นตอน -->
-      <div class="flex sm:justify-start justify-center">
-        <h4 class="text-black">1. เพิ่มไฟล์สำรวจพื้นที่</h4>
-      </div>
-      <div class="mx-10 py-2 space-y-2">
-        <input type="file" @change="(e) => handleImageChange(e, 'img_surway')" />
+    class="px-4 sm:px-6 py-6 sm:py-8 bg-white rounded-2xl shadow-xl border border-gray-100 max-w-md w-full">
+    <div class="space-y-6">
+      <!-- Header with close button -->
+      <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+        <h2 class="text-xl font-bold text-gray-800">อัปโหลดไฟล์งาน</h2>
+        <button @click="closeDialog" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
-      <div class="flex sm:justify-start justify-center">
-        <h4 class="text-black">2. เพิ่มภาพขั้นตอนการทำงาน</h4>
-      </div>
-      <div class="mx-10 py-2 space-y-2">
-        <input type="file" @change="(e) => handleImageChange(e, 'img_process')" />
-      </div>
-
-      <div class="flex sm:justify-start justify-center">
-        <h4 class="text-black">3. เพิ่มภาพการทดสอบ</h4>
-      </div>
-      <div class="mx-10 py-2 space-y-2">
-        <input type="file" @change="(e) => handleImageChange(e, 'img_testing')" />
-      </div>
-
-      <div class="flex sm:justify-start justify-center">
-        <h4 class="text-black">4. เพิ่มภาพส่งมอบงาน</h4>
-      </div>
-      <div class="mx-10 py-2 space-y-2">
-        <input type="file" @change="(e) => handleImageChange(e, 'img_deliverwork')" />
-      </div>
-
-      <!-- ปุ่มยืนยัน -->
-      <div class="w-full mt-3">
-        <button @click="uploadImagesInvoice" type="submit"
-          class="w-full bg-green-500 text-white rounded hover:bg-green-600">
-          <div class="flex justify-center">
-            <p v-if="position === 'พนักงานภาคสนาม'" class="mt-3">ขอใบแจ้งหนี้</p>
-            <p v-if="position === 'ช่างเทคนิค'" class="mt-3">วางบิล</p>
+      <div class="space-y-6">
+        <div class="space-y-3">
+          <div class="flex items-center">
+            <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-medium mr-3">
+              1</div>
+            <h4 class="text-lg font-medium text-gray-700">เพิ่มไฟล์สำรวจพื้นที่</h4>
           </div>
+
+          <div v-if="!img_surway"
+            class="border-2 border-dashed border-gray-300 rounded-lg pt-3 text-center hover:border-green-400 transition-colors">
+            <input type="file" @change="(e) => handleImageChange(e, 'img_surway')" class="hidden" id="surveyInput" />
+            <label for="surveyInput" class="cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-400" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <p class="mt-1 text-sm text-gray-500">เลือกไฟล์</p>
+            </label>
+          </div>
+          <div v-else class="flex justify-center">
+            <img :src="img_surway" alt="img_surway" class="w-full max-w-[200px] h-auto">
+          </div>
+        </div>
+
+        <!-- Section 2 - Process -->
+        <div class="space-y-3">
+          <div class="flex items-center">
+            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium mr-3">2
+            </div>
+            <h4 class="text-lg font-medium text-gray-700">เพิ่มภาพขั้นตอนการทำงาน</h4>
+          </div>
+
+          <div v-if="!img_process"
+            class="border-2 border-dashed border-gray-300 rounded-lg pt-3 text-center hover:border-blue-400 transition-colors">
+            <input type="file" @change="(e) => handleImageChange(e, 'img_process')" class="hidden" id="processInput" />
+            <label for="processInput" class="cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-400" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p class="mt-1 text-sm text-gray-500">เลือกไฟล์</p>
+            </label>
+          </div>
+          <div v-else class="flex justify-center">
+            <img :src="img_process" alt="img_process" class="w-full max-w-[200px] h-auto">
+          </div>
+        </div>
+
+        <!-- Section 3 - Testing -->
+        <div class="space-y-3">
+          <div class="flex items-center">
+            <div
+              class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white font-medium mr-3">3
+            </div>
+            <h4 class="text-lg font-medium text-gray-700">เพิ่มภาพการทดสอบ</h4>
+          </div>
+
+          <div v-if="!img_testing"
+            class="border-2 border-dashed border-gray-300 rounded-lg pt-3 text-center hover:border-purple-400 transition-colors">
+            <input type="file" @change="(e) => handleImageChange(e, 'img_testing')" class="hidden" id="testingInput" />
+            <label for="testingInput" class="cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-400" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+              </svg>
+              <p class="mt-1 text-sm text-gray-500">เลือกไฟล์</p>
+            </label>
+          </div>
+          <div v-else class="flex justify-center">
+            <img :src="img_testing" alt="img_testing" class="w-full max-w-[200px] h-auto">
+          </div>
+
+        </div>
+
+        <!-- Section 4 - Delivery -->
+        <div class="space-y-3">
+          <div class="flex items-center">
+            <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white font-medium mr-3">
+              4</div>
+            <h4 class="text-lg font-medium text-gray-700">เพิ่มภาพส่งมอบงาน</h4>
+          </div>
+
+          <div v-if="!img_deliverwork"
+            class="border-2 border-dashed border-gray-300 rounded-lg pt-3 text-center hover:border-amber-400 transition-colors">
+            <input type="file" @change="(e) => handleImageChange(e, 'img_deliverwork')" class="hidden"
+              id="deliveryInput" />
+            <label for="deliveryInput" class="cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-gray-400" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+              <p class="mt-1 text-sm text-gray-500">เลือกไฟล์</p>
+            </label>
+          </div>
+
+          <div v-else class="flex justify-center">
+            <img :src="img_deliverwork" alt="img_deliverwork" class="w-full max-w-[200px] h-auto">
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit button -->
+      <div class="pt-4">
+        <button @click="uploadImagesInvoice" type="submit"
+          class="w-full bg-green-500 text-white py-3 rounded-lg font-medium hover:bg-green-600 transition-colors shadow-md flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+          <span v-if="position === 'พนักงานภาคสนาม'">ขอใบแจ้งหนี้</span>
+          <span v-if="position === 'ช่างเทคนิค'">ส่งงาน</span>
         </button>
 
-        <!-- ข้อความแสดงข้อผิดพลาด -->
-        <div v-if="errorMessage" class="text-red-500 mt-2">
+        <!-- Error message -->
+        <div v-if="errorMessage" class="text-red-500 mt-3 text-sm flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
           {{ errorMessage }}
         </div>
       </div>
@@ -56,82 +146,178 @@
 
   <dialog ref="expensesDialog" header="เบิกค่าใช้จ่าย" position="right"
     class="px-2 sm:px-2 py-1 sm:py-1 bg-white rounded-xl shadow-lg">
-    <div class="bg-[#EAFDFC] px-6 py-12 sm:py-24 lg:px-8 min-h-screen">
-      <div class="mx-auto max-w-2xl text-center">
-        <button @click="closeExpenses" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800">
-          ✕
+    <div class="bg-gradient-to-b from-[#EAFDFC] to-[#D9F1F0] px-6 py-12 sm:py-16 lg:px-8 min-h-screen relative">
+      <!-- Header with decorative elements -->
+      <div class="mx-auto max-w-2xl text-center relative">
+        <div class="absolute -top-8 -left-8 w-16 h-16 rounded-full bg-blue-100 opacity-50"></div>
+        <div class="absolute -bottom-8 -right-8 w-20 h-20 rounded-full bg-blue-100 opacity-50"></div>
+
+        <button @click="closeExpenses"
+          class="absolute top-0 right-0 text-gray-500 hover:text-gray-800 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
-        <h2 class="text-3xl font-bold tracking-tight text-[#0002A1] sm:text-4xl">
+
+        <h2 class="text-3xl font-bold tracking-tight text-[#0002A1] sm:text-4xl mb-2">
           ขอเบิกค่าใช้จ่าย
         </h2>
+        <p class="text-sm text-gray-600">กรอกข้อมูลให้ครบถ้วนเพื่อขอเบิกค่าใช้จ่าย</p>
       </div>
-      <div class="mx-auto mt-16 max-w-xl sm:mt-20">
-        <div class="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
-          <div>
-            <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">วันที่</label>
-            <input v-model="newInvoice.date" type="date"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5" />
+
+      <div class="mx-auto mt-10 max-w-xl sm:mt-14 bg-white p-6 rounded-xl shadow-md">
+        <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+          <div class="group">
+            <label
+              class="block mb-1 text-sm font-medium text-gray-900 group-hover:text-blue-800 transition-colors">วันที่</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                </svg>
+              </div>
+              <input v-model="newInvoice.date" type="date"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 transition-all hover:border-blue-300" />
+            </div>
           </div>
 
-          <div>
+          <div class="group">
             <label for="editProjectStatus"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ประเภท</label>
-            <select v-model="newInvoice.title" id="editProjectStatus"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="กรอกชื่อ">
-              <option disabled selected></option>
-              <option value="ค่าที่พัก">ค่าที่พัก</option>
-              <option value="ค่าน้ำมัน">ค่าน้ำมัน</option>
-              <option value="ค่าเบี้ยเลี้ยง">ค่าเบี้ยเลี้ยง</option>
-              <option value="อื่นๆ">อื่นๆ</option>
-            </select>
+              class="block mb-1 text-sm font-medium text-gray-900 group-hover:text-blue-800 transition-colors">ประเภท</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                </svg>
+              </div>
+              <select v-model="newInvoice.title" id="editProjectStatus"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 transition-all hover:border-blue-300">
+                <option disabled selected value="">เลือกประเภทค่าใช้จ่าย</option>
+                <option value="ค่าที่พัก">ค่าที่พัก</option>
+                <option value="ค่าน้ำมัน">ค่าน้ำมัน</option>
+                <option value="ค่าเบี้ยเลี้ยง">ค่าเบี้ยเลี้ยง</option>
+                <option value="อื่นๆ">อื่นๆ</option>
+              </select>
+            </div>
           </div>
 
-          <div>
-            <label for="editProjectCustomer"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ชื่อ ผู้รับเงิน</label>
-            <input v-model="newInvoice.firstname" type="text" id="editProjectCustomer"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="กรอกชื่อ" required />
+          <div class="group">
+            <label for="firstname"
+              class="block mb-1 text-sm font-medium text-gray-900 group-hover:text-blue-800 transition-colors">ชื่อ
+              ผู้รับเงิน</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <input v-model="newInvoice.firstname" type="text" id="firstname"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 transition-all hover:border-blue-300"
+                placeholder="กรอกชื่อ" required />
+            </div>
           </div>
 
-          <div>
-            <label for="editProjectCustomer"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">นามสกุล ผู้รับเงิน</label>
-            <input v-model="newInvoice.lastname" type="text" id="editProjectCustomer"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="กรอกนามสกุล" required />
+          <div class="group">
+            <label for="lastname"
+              class="block mb-1 text-sm font-medium text-gray-900 group-hover:text-blue-800 transition-colors">นามสกุล
+              ผู้รับเงิน</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <input v-model="newInvoice.lastname" type="text" id="lastname"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 transition-all hover:border-blue-300"
+                placeholder="กรอกนามสกุล" required />
+            </div>
           </div>
 
-          <div>
-            <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">จำนวนเงิน</label>
-            <input v-model="newInvoice.totalAmount" type="text" id="editProjectCustomer"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="กรอกจำนวนเงิน" required />
+          <div class="group">
+            <label for="amount"
+              class="block mb-1 text-sm font-medium text-gray-900 group-hover:text-blue-800 transition-colors">จำนวนเงิน</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <input v-model="newInvoice.totalAmount" type="text" id="amount"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 transition-all hover:border-blue-300"
+                placeholder="กรอกจำนวนเงิน" required />
+            </div>
           </div>
 
-          <div class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">
-            <h4 class="text-black">เพิ่มรูปภาพหรือไฟล์</h4>
-            <input type="file" @change="(e) => handleImageChange(e, 'img_invoice')" />
+          <div class="group">
+            <label
+              class="block mb-1 text-sm font-medium text-gray-900 group-hover:text-blue-800 transition-colors">เพิ่มรูปภาพหรือไฟล์</label>
+            <div v-if="!img_invoice" class="flex items-center justify-center w-full">
+              <label for="fileUpload"
+                class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg class="w-8 h-8 mb-2 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 20 16">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                  </svg>
+                  <p class="mb-1 text-xs text-gray-500"><span class="font-semibold">คลิกเพื่อเลือกไฟล์</span></p>
+                  <p class="text-xs text-gray-500">รองรับ PNG, JPG หรือ PDF</p>
+                </div>
+                <input id="fileUpload" type="file" @change="(e) => handleImageChange(e, 'img_invoice')"
+                  class="hidden" />
+              </label>
+            </div>
+            <div class="flex justify-center" v-else>
+              <img :src="img_invoice" alt="ImgInvoice" class="w-24 h-24">
+            </div>
+
           </div>
 
-          <div class="sm:col-span-2">
+          <div class="sm:col-span-2 group">
             <label for="note"
-              class="block w-full mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">หมายเหตุ</label>
-            <textarea v-model="newInvoice.remark" id="note" placeholder="กรอกหมายเหตุ" rows="4"
-              class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block"></textarea>
+              class="block mb-1 text-sm font-medium text-gray-900 group-hover:text-blue-800 transition-colors">หมายเหตุ</label>
+            <div class="relative">
+              <div class="absolute top-3 left-3 pointer-events-none">
+                <svg class="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </div>
+              <textarea v-model="newInvoice.remark" id="note" placeholder="กรอกหมายเหตุ (ถ้ามี)" rows="3"
+                class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 p-2.5 transition-all hover:border-blue-300"></textarea>
+            </div>
           </div>
         </div>
+
         <div class="mt-6 flex justify-between gap-4">
           <button @click="closeExpenses" type="button"
-            class="w-1/2 text-red-500 inline-flex items-center justify-center bg-white hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-lg border border-red-200 text-lg px-5 py-2.5 hover:text-white focus:z-10">
-            <i class="pi pi-times h-4 w-4 mr-2 -ml-0.5"> </i>
+            class="w-1/2 text-red-500 inline-flex items-center justify-center bg-white hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-lg border border-red-200 text-sm px-5 py-2.5 hover:text-white focus:z-10 transition-all">
+            <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
             ยกเลิก
           </button>
 
           <button type="submit" @click="submitInvoice()"
-            class="w-1/2 rounded-md bg-[#153E90] px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-[#0E49B5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            บันทึก
+            class="w-1/2 rounded-lg bg-gradient-to-r from-[#153E90] to-[#0E49B5] px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:from-[#0E49B5] hover:to-[#0A3D9C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all">
+            <span class="flex items-center justify-center">
+              <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              บันทึก
+            </span>
           </button>
         </div>
       </div>
@@ -140,102 +326,208 @@
 
   <dialog ref="depositDialog" header="แจ้งฝากเงิน" position="right"
     class="px-2 sm:px-2 py-1 sm:py-1 bg-white rounded-xl shadow-lg">
-    <div class="bg-[#EAFDFC] px-6 py-12 sm:py-24 lg:px-8 min-h-screen">
-      <div class="mx-auto max-w-2xl text-center">
-        <button @click="closeDeposit" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800">
-          ✕
+    <div class="bg-gradient-to-br from-[#EAFDFC] to-[#e0f7ff] px-6 py-12 sm:py-16 lg:px-8 min-h-screen">
+      <div class="mx-auto max-w-2xl text-center relative">
+        <button @click="closeDeposit"
+          class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 transition-all duration-300 bg-white rounded-full p-2 shadow-md">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path
+              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+          </svg>
         </button>
-        <h2 class="text-3xl font-bold tracking-tight text-[#0002A1] sm:text-4xl">
-          แจ้งฝากเงิน
-        </h2>
+        <div class="mb-8">
+          <div class="flex justify-center mb-4">
+            <div class="bg-[#0002A1] p-4 rounded-full shadow-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 16 16">
+                <path
+                  d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z" />
+              </svg>
+            </div>
+          </div>
+          <h2 class="text-3xl font-bold tracking-tight text-[#0002A1] sm:text-4xl drop-shadow-sm">
+            แจ้งฝากเงิน
+          </h2>
+          <p class="mt-2 text-gray-600">กรุณากรอกข้อมูลให้ครบถ้วนเพื่อแจ้งการฝากเงินของท่าน</p>
+        </div>
       </div>
-      <div class="mx-auto mt-16 max-w-xl sm:mt-20">
-        <div class="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
+
+      <div class="mx-auto mt-8 max-w-xl sm:mt-12 bg-white p-6 rounded-xl shadow-lg">
+        <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
           <div>
-            <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">วันที่</label>
-            <input v-model="deposit.date" type="date"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5" />
+            <label class="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-700">วันที่</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#0002A1" viewBox="0 0 16 16">
+                  <path
+                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
+                </svg>
+              </div>
+              <input v-model="deposit.date" type="date"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5" />
+            </div>
           </div>
 
           <div>
-            <label for="time" class="block mb-2 text-sm font-medium text-gray-900">เลือกเวลา</label>
-            <input id="time" type="time"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              v-model="deposit.time" />
+            <label for="time" class="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-700">เลือกเวลา</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#0002A1" viewBox="0 0 16 16">
+                  <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
+                  <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
+                </svg>
+              </div>
+              <input id="time" type="time"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+                v-model="deposit.time" />
+            </div>
           </div>
 
           <div>
             <label for="editProjectStatus"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ธนาคาร</label>
-            <select id="editProjectStatus" v-model="deposit.bank"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5">
-              <option disabled selected>เลือกธนาคาร</option>
-              <option value="ธนาคารกรุงเทพ (Bangkok Bank – BBL)">ธนาคารกรุงเทพ (Bangkok Bank – BBL)</option>
-              <option value="ธนาคารกรุงไทย (Krungthai Bank – KTB)">ธนาคารกรุงไทย (Krungthai Bank – KTB)</option>
-              <option value="ธนาคารกสิกรไทย (Kasikornbank – KBank)">ธนาคารกสิกรไทย (Kasikornbank – KBank)</option>
-              <option value="ธนาคารไทยพาณิชย์ (Siam Commercial Bank – SCB)">ธนาคารไทยพาณิชย์ (Siam Commercial Bank –
-                SCB)</option>
-              <option value="ธนาคารทหารไทยธนชาต (ทีเอ็มบีธนชาต) (TMBThanachart Bank – TTB)">
-                ธนาคารทหารไทยธนชาต (ทีเอ็มบีธนชาต) (TMBThanachart Bank – TTB)
-              </option>
-              <option value="ธนาคารเกียรตินาคินภัทร (Kiatnakin Phatra Bank – KKP)">
-                ธนาคารเกียรตินาคินภัทร (Kiatnakin Phatra Bank – KKP)
-              </option>
-              <option value="ธนาคารซีไอเอ็มบี ไทย (CIMB Thai Bank – CIMBT)">ธนาคารซีไอเอ็มบี ไทย (CIMB Thai Bank –
-                CIMBT)</option>
-              <option value="ธนาคารยูโอบี (UOB Bank – UOB)">ธนาคารยูโอบี (UOB Bank – UOB)</option>
-              <option value="ธนาคารแลนด์ แอนด์ เฮ้าส์ (Land and Houses Bank – LH Bank)">
-                ธนาคารแลนด์ แอนด์ เฮ้าส์ (Land and Houses Bank – LH Bank)
-              </option>
-
-            </select>
-
+              class="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-700">ธนาคาร</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#0002A1" viewBox="0 0 16 16">
+                  <path
+                    d="M8 0a1 1 0 0 1 1 1v5.268l4.562-2.634a1 1 0 1 1 1 1.732L10 8l4.562 2.634a1 1 0 1 1-1 1.732L9 9.732V15a1 1 0 1 1-2 0V9.732l-4.562 2.634a1 1 0 1 1-1-1.732L6 8 1.438 5.366a1 1 0 0 1 1-1.732L7 6.268V1a1 1 0 0 1 1-1z" />
+                </svg>
+              </div>
+              <select id="editProjectStatus" v-model="deposit.bank"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5">
+                <option disabled selected>เลือกธนาคาร</option>
+                <option value="ธนาคารกรุงเทพ (Bangkok Bank – BBL)">ธนาคารกรุงเทพ (Bangkok Bank – BBL)</option>
+                <option value="ธนาคารกรุงไทย (Krungthai Bank – KTB)">ธนาคารกรุงไทย (Krungthai Bank – KTB)</option>
+                <option value="ธนาคารกสิกรไทย (Kasikornbank – KBank)">ธนาคารกสิกรไทย (Kasikornbank – KBank)</option>
+                <option value="ธนาคารไทยพาณิชย์ (Siam Commercial Bank – SCB)">ธนาคารไทยพาณิชย์ (Siam Commercial Bank –
+                  SCB)</option>
+                <option value="ธนาคารทหารไทยธนชาต (ทีเอ็มบีธนชาต) (TMBThanachart Bank – TTB)">ธนาคารทหารไทยธนชาต
+                  (ทีเอ็มบีธนชาต) (TMBThanachart Bank – TTB)</option>
+                <option value="ธนาคารเกียรตินาคินภัทร (Kiatnakin Phatra Bank – KKP)">ธนาคารเกียรตินาคินภัทร (Kiatnakin
+                  Phatra Bank – KKP)</option>
+                <option value="ธนาคารซีไอเอ็มบี ไทย (CIMB Thai Bank – CIMBT)">ธนาคารซีไอเอ็มบี ไทย (CIMB Thai Bank –
+                  CIMBT)</option>
+                <option value="ธนาคารยูโอบี (UOB Bank – UOB)">ธนาคารยูโอบี (UOB Bank – UOB)</option>
+                <option value="ธนาคารแลนด์ แอนด์ เฮ้าส์ (Land and Houses Bank – LH Bank)">ธนาคารแลนด์ แอนด์ เฮ้าส์ (Land
+                  and Houses Bank – LH Bank)</option>
+              </select>
+            </div>
           </div>
 
           <div>
             <label for="editProjectCustomer"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ชื่อ บัญชี</label>
-            <input type="text" id="editProjectCustomer"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="กรอกชื่อ บัญชี" v-model="deposit.accountName" />
+              class="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-700">ชื่อบัญชี</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#0002A1" viewBox="0 0 16 16">
+                  <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                </svg>
+              </div>
+              <input type="text" id="editProjectCustomer"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+                placeholder="กรอกชื่อบัญชี" v-model="deposit.accountName" />
+            </div>
           </div>
 
           <div>
-            <label for="editProjectCustomer"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">เลขบัญชี</label>
-            <input type="text" id="editProjectCustomer"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="กรอกเลขบัญชี" v-model="deposit.accountNumber" />
+            <label for="accountNumber"
+              class="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-700">เลขบัญชี</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#0002A1" viewBox="0 0 16 16">
+                  <path
+                    d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z" />
+                  <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z" />
+                </svg>
+              </div>
+              <input type="text" id="accountNumber"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+                placeholder="กรอกเลขบัญชี" v-model="deposit.accountNumber" />
+            </div>
           </div>
 
           <div>
-            <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">จำนวนเงินฝาก</label>
-            <input type="text" id="editProjectCustomer"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="กรอกจำนวนเงินฝาก" v-model="deposit.amount" />
+            <label for="amount"
+              class="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-700">จำนวนเงินฝาก</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#0002A1" viewBox="0 0 16 16">
+                  <path
+                    d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718H4zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73l.348.086z" />
+                </svg>
+              </div>
+              <input type="text" id="amount"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+                placeholder="กรอกจำนวนเงินฝาก" v-model="deposit.amount" />
+            </div>
           </div>
 
-          <div class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">
-            <h4 class="text-black">เพิ่มรูปภาพหรือไฟล์สลิป</h4>
-            <input type="file" @change="(e) => handleImageChange(e, 'img_deposit')" />
+          <div class="sm:col-span-2">
+            <label
+              class="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-700">เพิ่มรูปภาพหรือไฟล์สลิป</label>
+            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
+              <div v-if="!img_deposit" class="space-y-1 text-center">
+                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48"
+                  aria-hidden="true">
+                  <path
+                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <div class="flex text-sm text-gray-600">
+                  <label for="file-upload"
+                    class="relative cursor-pointer bg-white rounded-md font-medium text-[#0002A1] hover:text-blue-800 focus-within:outline-none">
+                    <span>อัปโหลดไฟล์</span>
+                    <input id="file-upload" type="file" class="sr-only"
+                      @change="(e) => handleImageChange(e, 'img_deposit')">
+                  </label>
+                  <p class="pl-1">หรือลากและวาง</p>
+                </div>
+              </div>
+              <div class="flex justify-center" v-else>
+                <img :src="img_deposit" alt="img_deposit" class="w-full h-[300px]">
+              </div>
+            </div>
           </div>
 
           <div class="sm:col-span-2">
             <label for="note"
-              class="block w-full mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">หมายเหตุ</label>
-            <textarea v-model="deposit.remark" id="note" placeholder="กรอกหมายเหตุ" rows="4"
-              class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block"></textarea>
+              class="block w-full mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-700">หมายเหตุ</label>
+            <div class="relative">
+              <div class="absolute top-3 left-3 flex items-start pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#0002A1" viewBox="0 0 16 16">
+                  <path
+                    d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
+                  <path
+                    d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z" />
+                  <path
+                    d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z" />
+                </svg>
+              </div>
+              <textarea v-model="deposit.remark" id="note" placeholder="กรอกหมายเหตุ (ถ้ามี)" rows="4"
+                class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 pt-2 pr-3"></textarea>
+            </div>
           </div>
         </div>
-        <div class="mt-6 flex justify-between gap-4">
+
+        <div class="mt-8 flex justify-between gap-4">
           <button @click="closeDeposit" type="button"
-            class="w-1/2 text-red-500 inline-flex items-center justify-center bg-white hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-lg border border-red-200 text-lg px-5 py-2.5 hover:text-white focus:z-10">
-            <i class="pi pi-times h-4 w-4 mr-2 -ml-0.5"> </i>
+            class="w-1/2 text-red-500 inline-flex items-center justify-center bg-white hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-lg border border-red-200 text-sm px-5 py-2.5 hover:text-white focus:z-10 transition-all duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="bi bi-x-circle mr-2" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+              <path
+                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+            </svg>
             ยกเลิก
           </button>
 
           <button type="submit" @click="submitdeposit()"
-            class="w-1/2 rounded-md bg-[#153E90] px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-[#0E49B5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            class="w-1/2 rounded-lg bg-gradient-to-r from-[#153E90] to-[#0E49B5] px-5 py-2.5 text-center text-sm font-semibold text-white shadow-md hover:from-[#0E49B5] hover:to-[#0002A1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="bi bi-check-circle inline-block mr-2" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+              <path
+                d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+            </svg>
             บันทึก
           </button>
         </div>
@@ -259,8 +551,9 @@
       </div>
 
       <!-- ปุ่มยืนยัน -->
-      <div>
-        <button @click="uploadImagesReceipt" type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
+      <div class="w-full">
+        <button @click="uploadImagesReceipt" type="submit"
+          class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
           ยืนยัน
         </button>
 
@@ -751,7 +1044,6 @@ const submitdeposit = async () => {
       depositSubmit
     );
 
-    // Success Alert (แจ้งเตือนเมื่อสำเร็จ)
     Swal.fire({
       title: "ส่งสำเร็จ!",
       text: "ใบแจ้งหนี้ถูกส่งเรียบร้อยแล้ว",
@@ -880,32 +1172,57 @@ async function uploadImagesInvoice() {
 }
 
 async function uploadImagesReceipt() {
+  closeReceipt()
+  const employeeID = localStorage.getItem("id");
+  const position = localStorage.getItem("position");
+  const id = detailEmployee.value?._id;
+
+  if (!id) {
+    Swal.fire("ข้อผิดพลาด", "ไม่พบ ID โปรเจคที่จะอัปโหลด", "error");
+    return;
+  }
+
+  const result = await Swal.fire({
+    title: "ยืนยันการอัปโหลด?",
+    text: "คุณต้องการอัปโหลดรูปภาพใบเสร็จหรือไม่?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "ใช่, อัปโหลดเลย!",
+    cancelButtonText: "ยกเลิก",
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
+
+  Swal.fire({
+    title: "กำลังอัปโหลด...",
+    text: "กรุณารอสักครู่",
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    },
+  });
+
   try {
-    const id = detailEmployee.value?._id;
-    if (!id) {
-      alert("ไม่พบ ID โปรเจคที่จะอัปโหลด");
-      return;
-    }
-
-    console.log('id', id)
-
-    const response = await axios.put(
-      `${import.meta.env.VITE_VUE_APP_DECCAN}/project/upload/receipt/${id}`,
+    const response = await axios.post(
+      `${import.meta.env.VITE_VUE_APP_DECCAN}/receipt`,
       {
+        projectID: id,
+        employeeID,
+        position,
         receipt: img_receipt.value,
       }
     );
 
-    console.log('res : ', response)
-
-    alert(" อัปโหลดรูปภาพสำเร็จ");
-    closeReceipt();
+    Swal.fire("สำเร็จ!", "อัปโหลดรูปภาพสำเร็จ", "success");
     console.log("Upload response:", response.data);
   } catch (error) {
-    console.error(" เกิดข้อผิดพลาดในการอัปโหลด:", error);
-    alert("เกิดข้อผิดพลาดในการอัปโหลด");
+    Swal.fire("เกิดข้อผิดพลาด", "ไม่สามารถอัปโหลดรูปภาพได้", "error");
+    console.error("เกิดข้อผิดพลาดในการอัปโหลด:", error);
   }
 }
+
 ///////////////
 const myComponent = {
   components: {

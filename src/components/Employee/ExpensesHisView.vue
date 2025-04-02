@@ -159,7 +159,7 @@ onMounted(async () => {
         <!-- Header -->
         <div class="mb-6">
             <h1 class="text-2xl font-bold text-gray-800 text-center">ประวัติการเบิก</h1>
-            <div class="h-1 w-24 bg-blue-500 mx-auto mt-2 rounded-full"></div>
+            <div class="h-1 w-24 bg-green-500 mx-auto mt-2 rounded-full"></div>
         </div>
 
         <!-- Search and Filter -->

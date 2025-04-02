@@ -181,7 +181,7 @@ export default {
           submenu: [
             { text: "เพิ่มข้อมูลพนักงาน", path: "/addemployee" },
             // { text: "ตั้งค่าพนักงาน", path: "/setting-employee" },
-            { text: "ประวัติลงเวลาพนักงาน", path: "/Employee_Time" },
+            { text: "ประวัติลงเวลาพนักงาน", path: "/timeinout/history" },
           ],
           icon: "<i class='pi pi-users' style='font-size: 1.4rem'></i>",
         },
@@ -230,6 +230,11 @@ export default {
         {
           text: "ใบแจ้งหนี้",
           action: "/invoice",
+          icon: "<i class='pi pi-file' style='font-size: 1.4rem'></i>",
+        },
+        {
+          text: "ใบเสร็จ",
+          action: "/receipt",
           icon: "<i class='pi pi-file-import' style='font-size: 1.4rem'></i>",
         },
         {

@@ -19,8 +19,8 @@
         <div class="mr-5">
           <div class="inline-block relative shrink-0 cursor-pointer rounded-[.95rem]">
             <img :src="ME.image
-                ? 'https://drive.google.com/thumbnail?id=' + ME.image
-                : ''
+              ? 'https://drive.google.com/thumbnail?id=' + ME.image
+              : ''
               " v-if="ME.image" class="w-16 h-16 object-cover rounded-full" />
             <span v-else
               class="w-16 h-16 flex items-center text-sm justify-center text-gray-400 bg-gray-200 rounded-full">ไม่มีรูปภาพ</span>
@@ -77,7 +77,7 @@
           </span>
 
           <span :class="{ 'text-[#001B79]': menuItem.showSubmenu }" class="font-medium text-base">{{ menuItem.text
-            }}</span>
+          }}</span>
 
           <span class="ml-10">
             <svg v-if="menuItem.submenu" width="24" height="24" fill="currentColor" viewBox="0 0 20 20" :class="{
@@ -190,19 +190,27 @@ export default {
         //   icon: "<i class='pi pi-chart-pie' style='font-size: 1.4rem'></i>",
         // },
 
+        // {
+        //   text: "บันทึกทั้งหมด",
+        //   submenu: [
+        //     {
+        //       text: "เพิ่มบันทึกข้อความ",
+        //       path: "/Record/AddRecord",
+        //     },
+        //     { text: "บันทึกข้อความทั้งหมด", path: "/Record/RecordView" },
+        //     { text: "การอนุมัติเอกสาร", path: "/Record/ApproveRecord" },
+        //   ],
+        //   icon: "<i class='pi pi-book' style='font-size: 1.4rem'></i>",
+        // },
         {
-          text: "บันทึกทั้งหมด",
+          text: "พนักงาน",
           submenu: [
-            {
-              text: "เพิ่มบันทึกข้อความ",
-              path: "/Record/AddRecord",
-            },
-            { text: "บันทึกข้อความทั้งหมด", path: "/Record/RecordView" },
-            { text: "การอนุมัติเอกสาร", path: "/Record/ApproveRecord" },
+            { text: "เพิ่มข้อมูลพนักงาน", path: "/addemployee" },
+            // { text: "ตั้งค่าพนักงาน", path: "/setting-employee" },
+            { text: "ประวัติลงเวลาพนักงาน", path: "/timeinout/history" },
           ],
-          icon: "<i class='pi pi-book' style='font-size: 1.4rem'></i>",
+          icon: "<i class='pi pi-users' style='font-size: 1.4rem'></i>",
         },
-
         // {
         //   text: "บันทึกใบลา",
         //   submenu: [
@@ -244,6 +252,11 @@ export default {
         {
           text: "ใบแจ้งหนี้",
           action: "/invoice",
+          icon: "<i class='pi pi-file-import' style='font-size: 1.4rem'></i>",
+        },
+        {
+          text: "ใบเสร็จ",
+          action: "/receipt",
           icon: "<i class='pi pi-file-import' style='font-size: 1.4rem'></i>",
         },
         {

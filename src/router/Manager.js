@@ -101,6 +101,23 @@ let routes = [
     component: () =>
       import("../components/Owner/DepositView.vue"),
   },
+  {
+    path: "/timeinout/history",
+    name: "timeinout-history",
+    component: () =>
+      import("../components/Owner/TimeinOut.vue"),
+  },
+  {
+    path: "/addemployee",
+    name: "addemployee",
+    component: () => import("../components/Owner/addemployee.vue"),
+  },
+  {
+    path: "/receipt",
+    name: "receipt",
+    component: () =>
+      import("../components/Owner/ReceiptView.vue"),
+  },
 ];
 
 const router = createRouter({
