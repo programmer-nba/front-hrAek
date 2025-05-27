@@ -1,7 +1,7 @@
 <template>
   <div class="bg-cyan-200 h-full">
     <div class="flex items-center justify-center text-[#9e9cb6]">
-      <section class="w-full relative bg-[#79E0EE]/60 rounded-[6px]">
+      <!-- <section class="w-full relative bg-[#79E0EE]/60 rounded-[6px]">
         <div
           class="absolute text-[#1D267D] bg-yellow-400 rounded-[4px] top-0 right-0 px-2 py-1 text-xs font-bold roll-in-blurred-right">
           {{ ME.employee_number }}
@@ -43,7 +43,7 @@
             </div>
           </div>
         </div>
-      </section>
+      </section> -->
     </div>
     <MiniDatas :projects="projects" :employees="employees" :events="events" />
     <div class="flex flex-wrap justify-center gap-x-2 items-start">

@@ -104,7 +104,7 @@
 
                 </div>
 
-                <Dialog v-model:visible="isRegister" class="w-[50%]" header="กรอกข้อมูลเพื่อสมัครสมาชิก">
+                <Dialog v-model:visible="isRegister" class="" header="กรอกข้อมูลเพื่อสมัครสมาชิก">
                   <div class="bg-white shadow-lg rounded-lg p-6">
                     <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-6 text-center">สมัครสมาชิกใหม่</h2>
                     <form class="px-4 sm:px-8 mt-2 sm:mt-5">
@@ -334,10 +334,12 @@
                         </div>
                       </div>
 
+                      <div class="text-xs text-gray-500 flex justify-center">
+                        <span class="text-red-500">*</span> หมายถึงข้อมูลที่จำเป็นต้องกรอก
+                      </div>
+
                       <div class="flex items-center justify-between mt-8">
-                        <div class="text-xs text-gray-500">
-                          <span class="text-red-500">*</span> หมายถึงข้อมูลที่จำเป็นต้องกรอก
-                        </div>
+
                         <div class="flex space-x-4">
                           <button type="button" @click="isRegister = false"
                             class="px-6 py-2.5 bg-gray-200 text-gray-700 font-medium rounded-lg text-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300">
@@ -543,18 +545,58 @@ export default {
         console.error("Error loading data:", error);
       }
     },
+    async resizeImage(file, maxWidth, maxHeight, quality = 0.7) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            // ปรับขนาดให้พอดีกับขนาดสูงสุดที่กำหนด โดยคงสัดส่วนเดิม
+            if (width > maxWidth || height > maxHeight) {
+              const ratio = Math.min(maxWidth / width, maxHeight / height);
+              width = width * ratio;
+              height = height * ratio;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // แปลงเป็น base64 ด้วยคุณภาพที่กำหนด
+            const resizedImage = canvas.toDataURL('image/jpeg', quality);
+            resolve(resizedImage);
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    },
     async handleFileChange(event, type) {
       const file = event.target.files[0];
       if (!file) return;
 
-      const base64 = await this.convertToBase64(file);
+      try {
+        // กำหนดขนาดสูงสุดที่ต้องการ (เช่น 800x800 พิกเซล)
+        const maxSize = 800;
+        const resizedImage = await this.resizeImage(file, maxSize, maxSize);
 
-      console.log('base64 : ', base64)
-
-      if (type === "image_bank") {
-        this.image_bank = base64;
-      } else if (type === "image_iden") {
-        this.image_iden = base64;
+        if (type === "image_bank") {
+          this.image_bank = resizedImage;
+        } else if (type === "image_iden") {
+          this.image_iden = resizedImage;
+        }
+      } catch (error) {
+        console.error('Error resizing image:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'เกิดข้อผิดพลาด',
+          text: 'ไม่สามารถปรับขนาดภาพได้'
+        });
       }
     },
 

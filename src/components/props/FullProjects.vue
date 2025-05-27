@@ -43,7 +43,7 @@
           <label class="block text-sm font-bold mb-2">ลูกค้า</label>
           <p>{{ detailEmployee.customer.customer_name }}</p>
         </div>
-        <div class="mb-4">
+        <!-- <div class="mb-4">
           <label class="block text-sm font-bold mb-2">รายละเอียดสินค้า</label>
           <ul>
             <li
@@ -56,7 +56,7 @@
               </p>
             </li>
           </ul>
-        </div>
+        </div> -->
 
         <div class="col-span-2">
           <label class="block text-sm font-bold mb-2"

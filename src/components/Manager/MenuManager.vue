@@ -14,19 +14,14 @@
       <CCloseButton class="d-lg-none" dark @click="$store.commit('toggleSidebar')" />
     </CSidebarHeader>
 
-    <div class="flex items-center justify-between px-4 py-3 bg-[#B4D4FF]">
+    <div class="flex items-center justify-between px-2  py-3 bg-green-200 rounded-md">
       <div class="flex items-center mr-5">
-        <div class="mr-5">
-          <div class="inline-block relative shrink-0 cursor-pointer rounded-[.95rem]">
-            <img :src="ME.image
-              ? 'https://drive.google.com/thumbnail?id=' + ME.image
-              : ''
-              " v-if="ME.image" class="w-16 h-16 object-cover rounded-full" />
-            <span v-else
-              class="w-16 h-16 flex items-center text-sm justify-center text-gray-400 bg-gray-200 rounded-full">ไม่มีรูปภาพ</span>
-          </div>
+        <div class="">
+          <img :src="ME.image" v-if="ME.image" class="w-16 h-16 object-cover rounded-full" />
+          <span v-else
+            class="w-16 h-16 flex items-center text-sm justify-center text-gray-400 bg-gray-200 rounded-full">ไม่มีรูปภาพ</span>
         </div>
-        <div class="mr-2">
+        <!-- <div class="mr-2">
           <div
             class="text-[#102C57] transition-colors duration-200 ease-in-out text-sm font-medium text-secondary-inverse">
             {{ ME?.first_name }} {{ ME?.last_name }}
@@ -39,9 +34,19 @@
                 : $store.getters.role
             }}
           </span>
+        </div> -->
+      </div>
+      <div class="text-sm text-gray-800">
+        <div class="flex flex-col">
+          <p class="mb-0">{{ ME.first_name }} {{ ME.last_name }}</p>
+
+          <p class="mb-0">{{ $store.getters.position }}</p>
+
+          <p class="mb-0">{{ ME.role }}</p>
         </div>
       </div>
-      <button
+
+      <div @click="$router.push('/profile')"
         class="inline-flex relative items-center group justify-end text-base font-medium leading-normal text-center align-middle cursor-pointer rounded-[.95rem] transition-colors duration-150 ease-in-out text-dark bg-transparent shadow-none border-0"
         title="ตั้งค่าโปรไฟล์">
         <span
@@ -54,7 +59,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
           </svg>
         </span>
-      </button>
+      </div>
     </div>
     <!-- <AppSidebarNav /> -->
 
@@ -152,7 +157,7 @@
 <script>
 import Swal from "sweetalert2";
 import { computed } from "vue";
-import { RouterLink } from "vue-router";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import axios from "axios";
 // import Icon from "../Amin_Icon.vue";
@@ -168,6 +173,7 @@ export default {
       isMobile: false,
       isSubmenuOpen: false,
       selectedMenuItem: null,
+      router: useRouter(),
       menuItems: [
         {
           text: "หน้าแรก",
@@ -252,7 +258,7 @@ export default {
         {
           text: "ใบแจ้งหนี้",
           action: "/invoice",
-          icon: "<i class='pi pi-file-import' style='font-size: 1.4rem'></i>",
+          icon: "<i class='pi pi-file' style='font-size: 1.4rem'></i>",
         },
         {
           text: "ใบเสร็จ",

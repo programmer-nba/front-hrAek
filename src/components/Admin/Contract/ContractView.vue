@@ -55,7 +55,7 @@
 
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 ">
-                                <tr v-for="(item, index) in items" :key="index" v-if="items.length > 0">
+                                <tr v-for="(item, index) in items" :key="index">
                                     <td class="px-4 py-4 text-sm whitespace-nowrap">
                                         <div>
                                             <h4 class="text-gray-700 ">{{ item.contract_code }} </h4>
@@ -150,9 +150,9 @@
 
                                 </tr>
 
-                                <tr v-else>
+                                <!-- <tr>
                                     <td colspan="6" class="px-4 py-4 text-sm text-center text-gray-500">ไม่มีรายการ</td>
-                                </tr>
+                                </tr> -->
                             </tbody>
                         </table>
                     </div>

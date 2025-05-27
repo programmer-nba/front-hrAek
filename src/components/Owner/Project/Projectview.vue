@@ -1,15 +1,45 @@
 <template>
   <div>
     <Sidebar v-model:visible="Detailsvisible" header="ข้อมูลเพิ่มเติม" position="right" class="w-4/12">
-      <div class="grid grid-cols-2 gap-8">
+      <div v-if="detailEmployee.image && detailEmployee.image.length"
+        class="relative w-full h-60 border rounded overflow-hidden">
+        <img :src="detailEmployee.image[currentIndex]" alt="preview"
+          class="w-full h-full object-cover transition-all duration-300" />
+
+        <!-- ลูกศรซ้าย -->
+        <button v-if="detailEmployee.image.length > 1" @click="prevImage"
+          class="absolute top-1/2 left-2 -translate-y-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded-full hover:bg-opacity-70">
+          ‹
+        </button>
+
+        <!-- ลูกศรขวา -->
+        <button v-if="detailEmployee.image.length > 1" @click="nextImage"
+          class="absolute top-1/2 right-2 -translate-y-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded-full hover:bg-opacity-70">
+          ›
+        </button>
+      </div>
+
+      <!-- แสดงดอทใต้ภาพ -->
+      <div class="flex justify-center mt-2 space-x-2">
+        <span v-for="(img, i) in detailEmployee.image" :key="i" @click="currentIndex = i" :class="[
+          'w-3 h-3 rounded-full cursor-pointer',
+          currentIndex === i ? 'bg-blue-500' : 'bg-gray-300',
+        ]"></span>
+      </div>
+      <div class="grid grid-cols-2 gap-8 mt-5">
         <div class="mb-4">
           <label class="block text-sm font-bold mb-2">รหัส</label>
           <p>{{ detailEmployee.code }}</p>
         </div>
-        <div class="mb-4">
+        <!-- <div class="mb-4">
           <label class="block text-sm font-bold mb-2">ประเภท</label>
           <p>{{ detailEmployee.projectType }}</p>
+        </div> -->
+        <div class="mb-4">
+          <label class="block text-sm font-bold mb-2">ชื่อโปรเจค</label>
+          <p>{{ detailEmployee.title }}</p>
         </div>
+
         <div class="mb-4">
           <label class="block text-sm font-bold mb-2">รายละเอียด</label>
           <p>{{ detailEmployee.detail }}</p>
@@ -20,7 +50,7 @@
         </div>
         <div class="mb-4">
           <label class="block text-sm font-bold mb-2">วันที่ครบกำหนด</label>
-          <p>{{ formatDate(detailEmployee.due_date) }}</p>
+          <p>{{ formatDate(detailEmployee.endDate) }}</p>
         </div>
         <!-- <div class="mb-4">
           <label class="block text-sm font-bold mb-2">ความคืบหน้า</label>
@@ -32,10 +62,12 @@
         </div>
         <div class="mb-4">
           <label class="block text-sm font-bold mb-2">พนักงาน</label>
-          <p v-for="emp in detailEmployee.employees" :key="emp">
-            <!-- {{ console.log(emp) }} -->
-            {{ filterEmployee(emp) }}
-          </p>
+          <div v-if="detailEmployee.employees.length">
+            <p v-for="(employeeId, index) in detailEmployee.employees" :key="index" class="text-center m-0 font-medium">
+              {{ getEmployeeName(employeeId) }}
+            </p>
+          </div>
+
           <p v-if="detailEmployee.employees.length < 1">ไม่มี</p>
         </div>
         <div class="mb-4">
@@ -44,7 +76,7 @@
           <p>เบอร์โทรศัพท์ : {{ detailEmployee.customer.customer_tel }}</p>
           <p>Line ID : {{ detailEmployee.customer.customer_line }}</p>
         </div>
-        <div class="mb-4">
+        <!-- <div class="mb-4">
           <label class="block text-sm font-bold mb-2">รายละเอียดสินค้า</label>
           <ul>
             <li v-for="detailEmployee in detailEmployee.refs" :key="detailEmployee._id">
@@ -54,12 +86,12 @@
               </p>
             </li>
           </ul>
-        </div>
+        </div> -->
 
-        <div class="col-span-2">
+        <!-- <div class="col-span-2">
           <label class="block text-sm font-bold mb-2">รายละเอียดเพิ่มเติม</label>
           <p>{{ detailEmployee.detail }}</p>
-        </div>
+        </div> -->
         <div class="col-span-2">
           <label class="block text-sm font-bold mb-2">หมายเหตุ</label>
           <p>{{ detailEmployee.remark }}</p>
@@ -67,22 +99,22 @@
       </div>
     </Sidebar>
 
-    <Dialog v-model:visible="showAddProjectModal" :modal="true" class="w-1/2" header="เพิ่มโปรเจคใหม่">
+    <Dialog v-model:visible="showAddProjectModal" :modal="true" class="sm:w-1/2 w-[90%]" header="เพิ่มโปรเจคใหม่">
       <form class="px-4 sm:px-10 mt-2 sm:mt-5">
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-2 gap-3 w-full">
           <div>
             <label for="projectTitle"
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ชื่อโปรเจค</label>
             <input v-model="newProject.title" type="text" id="projectTitle"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="" required />
+              class="bg-gray-50 border border-gray-500 h-[46px] text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
+              placeholder="กรอกชื่อโปรเจค" required />
           </div>
           <div>
             <label for="sizeSelect" class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">
               ขนาด
             </label>
             <select v-model="newProject.size" id="sizeSelect"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5">
+              class="bg-gray-50 border border-gray-300 text-gray-900 h-[46px] text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5">
               <option value="S">S</option>
               <option value="M">M</option>
               <option value="L">L</option>
@@ -91,7 +123,6 @@
           </div>
         </div>
         <div class="grid gap-3 sm:gap-6 mb-3 sm:mb-6 md:grid-cols-2">
-
           <!-- <div>
             <label for="projectType"
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ผู้รับผิดชอบ</label>
@@ -106,15 +137,15 @@
           </div> -->
 
           <div class="mt-3 border-1 rounded-md py-2">
-            <div class="flex justify-center">
+            <div class="flex justify-center sm:text-base text-sm">
               <label>ตั้งแต่วันที่:</label>
-              <input type="date" v-model="newProject.selectedStartDate">
+              <input type="date" v-model="newProject.selectedStartDate" />
             </div>
           </div>
           <div class="mt-3 border-1 rounded-md py-2">
-            <div class="flex justify-center">
+            <div class="flex justify-center sm:text-base text-sm">
               <label>ถึงวันที่:</label>
-              <input type="date" v-model="newProject.selectedEndDate">
+              <input type="date" v-model="newProject.selectedEndDate" />
             </div>
           </div>
 
@@ -122,8 +153,8 @@
             <label for="projectTitle"
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ที่อยู่</label>
             <input v-model="newProject.location" type="text" id="projectTitle"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="" required />
+              class="bg-gray-50 border border-gray-500 h-[46px] text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
+              placeholder="กรอกที่อยู่ ตัวอย่าง 111/1 หมู่1" required />
           </div>
 
           <div class="transition-all duration-300">
@@ -148,18 +179,39 @@
           </div>
 
           <div class="transition-all duration-300 mt-1">
-            <label for="postcode" class="block mb-1 font-medium text-gray-700">รหัสไปรษณีย์</label>
+            <label for="postcode" class="block mb-1 sm:text-base text-sm font-medium text-gray-700">รหัสไปรษณีย์</label>
             <input v-model="newProject.postcode" type="text" id="postcode"
               class="w-full border border-gray-300 rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
-              readonly />
+              readonly placeholder="รหัสไปรษณีย์" />
           </div>
 
           <div>
             <label for="projectTitle"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">เลขพิกัดละติจูด ลองจิจูด</label>
+            class="block mb-2 sm:text-base text-sm font-medium text-gray-700">เลขพิกัดละติจูด ลองจิจูด</label>
             <input v-model="newProject.address" type="text" id="projectTitle"
+              class="w-full border border-gray-300 rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+              placeholder="กรอกเลขพิกัดละติจูด ลองจิจูด" required />
+          </div>
+
+          <div>
+            <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ชื่อลูกค้า</label>
+            <input type="text" v-model="newProject.customer_name"
               class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="" required />
+              placeholder="กรอกชื่อลูกค้า" required />
+          </div>
+
+          <div>
+            <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">เบอร์ลูกค้า</label>
+            <input type="text" v-model="newProject.customer_tel"
+              class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
+              placeholder="กรอกเบอร์ลูกค้า" required />
+          </div>
+
+          <div>
+            <label class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">Line ID ลูกค้า</label>
+            <input type="text" v-model="newProject.customer_line"
+              class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
+              placeholder="Line ID" required />
           </div>
 
           <div class="col-span-2">
@@ -170,8 +222,35 @@
               placeholder=""></textarea>
           </div>
         </div>
-        <div class="flex justify-end">
-          <button @click="submitProject" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
+
+        <div class="w-full border-2 p-2 rounded-md max-w-3xl mx-auto">
+          <label for="projectPic"
+            class="block mb-1 sm:mb-2 text-xs sm:text-base text-center font-medium text-gray-900">รูปโปรเจค</label>
+
+          <div v-if="projectPic && projectPic.length > 0" class="grid sm:grid-cols-4 grid-cols-2 mt-2 gap-3">
+            <div v-for="(img, index) in projectPic" :key="index" class="relative">
+              <img :src="img" alt="preview" class="w-full h-full object-cover rounded-md" />
+              <button @click="removeImage(index)"
+                class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs">
+                ลบ
+              </button>
+            </div>
+          </div>
+          <div v-else class="mt-3 flex justify-center">ยังไม่ได้เพิ่มรูปภาพ</div>
+
+          <div class="flex justify-center">
+            <label
+              class="mt-4 inline-flex items-center sm:w-[50%] w-[70%] px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded cursor-pointer hover:bg-purple-700 transition-colors duration-200">
+              <input type="file" accept="image/*" multiple @change="handleImageChange" class="hidden" />
+              <div class="flex justify-center items-center w-full">
+                <i class="pi pi-upload mr-2"></i>
+                <p class="mb-0">เลือกรูปภาพ</p>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="flex justify-end mt-3">
+          <button @click="submitProject" class="bg-blue-500 text-white p-2 w-full rounded hover:bg-blue-700">
             เพิ่มงาน
           </button>
         </div>
@@ -250,20 +329,19 @@
             </select>
           </div> -->
 
-          <!-- Sub Type -->
-          <div>
-            <label for="editProjectSubType"
-              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ประเภทงาน</label>
-            <input v-model="editedProject.sub_type" type="text" id="editProjectSubType"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
-              placeholder="" required />
-          </div>
-
           <!-- Customer -->
           <div>
             <label for="editProjectCustomer"
               class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">ชื่อลูกค้า</label>
-            <input v-model="editedProject.customer_name" type="text" id="editProjectCustomer"
+            <input v-model="editedProject.customer.customer_name" type="text" id="editProjectCustomer"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
+              placeholder="" required />
+          </div>
+
+          <div>
+            <label for="editProjectCustomer"
+              class="block mb-1 sm:mb-2 text-xs sm:text-base font-medium text-gray-900">เบอร์ลูกค้า</label>
+            <input v-model="editedProject.customer.customer_tel" type="text" id="editProjectCustomer"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 sm:p-2.5"
               placeholder="" required />
           </div>
@@ -320,9 +398,9 @@
     </Dialog>
 
     <div class="flex flex-wrap -mx-3 bg-white h-full sm:h-screen">
-      <div class="w-full max-w-full px-3 mb-6 mx-auto">
+      <div class="w-full max-w-full sm:px-3 mb-6 mx-auto">
         <div
-          class="relative flex-[1_auto] flex flex-col break-words min-w-0 bg-clip-border rounded-[.95rem] bg-zinc-100 m-5">
+          class="relative flex-[1_auto] flex flex-col break-words min-w-0 bg-clip-border rounded-[.95rem] bg-zinc-100 sm:m-5">
           <div class="shadow-xl">
             <!-- card header -->
             <div class="px-9 pt-5 flex justify-between items-stretch flex-wrap min-h-[70px] pb-0 bg-transparent">
@@ -341,10 +419,15 @@
               </div>
               <div class="w-full">
                 <div class="relative mx-auto pt-2 text-gray-600">
-                  <input v-model="searchQuery" type="search" name="search" placeholder="ค้นหาชื่อ"
-                    class=" h-10 pr-16 text-sm bg-white border-2 border-gray-300 rounded-lg focus:outline-none pl-2 w-full" />
+                  <input v-model="searchQuery" type="search" name="search"
+                    placeholder="ค้นหาตามชื่อโปรเจกต์, รหัส, พนักงาน, หรือสถานะ"
+                    class="h-10 pr-16 text-sm bg-white border-2 border-gray-300 rounded-lg focus:outline-none pl-2 w-full" />
+                  <button @click="searchQuery = ''" class="absolute right-0 top-0 mt-3 mr-4" v-if="searchQuery">
+                    <i class="pi pi-times"></i>
+                  </button>
                 </div>
               </div>
+
               <!-- <div class="w-full space-y-2">
                 <label for="filterType" class=" text-gray-600">ประเภทงาน</label>
                 <select v-model="filterType" id="filterType"
@@ -386,9 +469,7 @@
                         </div>
                       </th>
                       <th class="p-4 text-center min-w-[50px]">สถานะ</th>
-                      <th class="p-4 text-center min-w-[100px]">
-                        วันกำหนดส่ง
-                      </th>
+                      <th class="p-4 text-center min-w-[100px]">วันกำหนดส่ง</th>
                       <th class="p-4 text-center min-w-[100px]">จัดการ</th>
                       <!-- เพิ่มหัวข้อใหม่ -->
                     </tr>
@@ -397,7 +478,9 @@
                     <tr v-for="(project, index) in filteredProjects" :key="index"
                       class="border-b border-dashed last:border-b-0 text-sm">
                       <td class="p-3 text-start">
-                        <span class="font-semibold text-light-inverse text-md/normal">{{ project.code }}</span>
+                        <span class="font-semibold text-light-inverse text-md/normal">{{
+                          project.code
+                        }}</span>
                       </td>
                       <td class="p-3">
                         <div class="flex items-center justify-center">
@@ -420,20 +503,14 @@
                         </div>
                       </td>
                       <td class="p-3 text-center">
-                        <!-- <div v-if="project.employees.length"
-                          class="font-semibold text-light-inverse text-md/normal flex justify-center">
-                          <div v-for="em in getEmployeesData(project.employees)" :key="em._id">
-                            <p>{{ em.first_name || em.last_name }}</p>
-                          </div>
-                          <ButtonP icon="pi pi-plus-circle text-purple-500 font-bold text-4xl"
-                            class="bg-white hidden rounded-full scale-75 focus:outline-0 focus:ring-0 hover:bg-purple-300"
-                            @click="openSelectEmployees(project)" />
-                        </div> -->
                         <div v-if="project.employees.length">
-                          <p v-for="(employee, index) in project.employees" :key="index"
+                          <p v-for="(employeeId, index) in project.employees" :key="index"
                             class="text-center m-0 font-medium">
-                            {{ employee }}
+                            {{ getEmployeeName(employeeId) }}
                           </p>
+                          <ButtonP icon="pi pi-plus-circle text-purple-500 font-bold text-xl"
+                            class="bg-purple-200 rounded py-2 focus:outline-0 focus:ring-0 hover:bg-purple-300"
+                            @click="openSelectEmployees(project)" />
                         </div>
                         <div v-else>
                           <ButtonP icon="pi pi-plus-circle text-purple-500 font-bold text-xl"
@@ -444,16 +521,16 @@
 
                       <td class="p-3">
                         <div>
-                          <ButtonP icon="pi pi-angle-double-up" :label="project.status[project.status.length - 1]?.name
-                            " :class="[
+                          <ButtonP icon="pi pi-angle-double-up" :label="project.status[project.status.length - 1]?.name"
+                            :class="[
                               project.status[project.status.length - 1]?.name ===
                                 'รอรับงาน'
                                 ? 'bg-teal-500'
-                                : project.status[project.status.length - 1]
-                                  ?.name === 'กำลังดำเนินการ'
+                                : project.status[project.status.length - 1]?.name ===
+                                  'กำลังดำเนินการ'
                                   ? 'bg-yellow-500'
-                                  : project.status[project.status.length - 1]
-                                    ?.name === 'เสร็จแล้ว'
+                                  : project.status[project.status.length - 1]?.name ===
+                                    'เสร็จแล้ว'
                                     ? 'bg-blue-500'
                                     : 'bg-gray-500', // กรณีอื่นๆ ใช้สีเทา
                             ]" class="px-3 py-2 text-white inline-block rounded hover:shadow-lg"
@@ -544,11 +621,21 @@
         <span class="rounded-full px-2.5 text-white" :class="selectedEmployees.length ? 'bg-red-500' : 'bg-gray-500'">{{
           selectedEmployees.length }}</span>
       </p>
-      <p class="text-red-500 text-sm">คำเตือน : เลือกพนักได้แค่ 1 ครั้ง โปรดตรวจรายชื่อพนักงานก่อนบันทึก</p>
+      <!-- <p class="text-red-500 text-sm">
+        คำเตือน : เลือกพนักได้แค่ 1 ครั้ง โปรดตรวจรายชื่อพนักงานก่อนบันทึก
+      </p> -->
+
+      <div class="relative mx-auto pt-2 text-gray-600">
+        <input v-model="employeeSearchQuery" type="search" name="employeeSearch"
+          placeholder="ค้นหาพนักงานตามชื่อหรือชื่อเล่น"
+          class="h-10 pr-16 text-sm bg-white border-2 border-gray-300 rounded-lg focus:outline-none pl-2 w-full" />
+        <button @click="employeeSearchQuery = ''" class="absolute right-0 top-0 mt-3 mr-4" v-if="employeeSearchQuery">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+
       <div class="flex overflow-x-auto bg-white gap-x-2">
-
         <div v-for="(selected, index) in selectedEmployees" :key="selected._id">
-
           <div
             class="flex justify-between hover:line-through w-[200px] hover:bg-red-200 text-xs border rounded shadow-sm py-2 px-3 items-center cursor-pointer"
             @click="selectedEmployees.splice(index, 1)">
@@ -596,10 +683,10 @@
       </div>
       <div class="grid grid-cols-2 justify-center items-center gap-y-3">
         <div v-for="employ in filteredEmployees" :key="employ._id">
-          <div class="flex justify-between w-[300px] border rounded shadow-sm py-2 px-3 items-center" :class="selectedEmployees.includes(employ) ? 'bg-green-100' : 'bg-white'
-            ">
+          <div class="flex justify-between w-[300px] border rounded shadow-sm py-2 px-3 items-center"
+            :class="selectedEmployees.includes(employ) ? 'bg-green-100' : 'bg-white'">
             <div class="flex items-center gap-2">
-              <Image v-if="employ.imageUrl" :src="employ.imageUrl" :alt="employ.image" preview
+              <Image v-if="employ.image" :src="employ.image" :alt="employ.image" preview
                 imageClass="w-[40px] h-[40px] rounded-full" />
               <div>
                 <p class="m-0 px-0 py-1 text-left line-clamp-1">
@@ -720,6 +807,7 @@ export default {
       searchQuery: "", // เพิ่มตัวแปรสำหรับเก็บค่าการค้นหา
       projectPositions: [], // เพิ่ม array สำหรับเก็บตำแหน่งงาน
       showEditProjectModal: false,
+      employeeSearchQuery: "",
       editedProject: {},
       employees: [],
       employeeDropdownVisible: false,
@@ -727,6 +815,7 @@ export default {
       selectedEmployees: [],
       filterEmployees: [],
       Detailsvisible: false,
+      currentIndex: 0,
       projects: [],
       isLoading: false,
       showAddProjectModal: false,
@@ -737,6 +826,9 @@ export default {
       DetailsStatus: false,
       selectedStartDate: null,
       selectedEndDate: null,
+      me: {},
+
+      projectPic: ref([]),
 
       provinces: ref([]),
       districts: ref([]),
@@ -749,92 +841,231 @@ export default {
     };
   },
   mounted() {
-    this.fetchProjects();
     this.fetchProjectTypes();
     this.fetchEmployees();
-    this.fetchProvinces()
+    this.fetchProvinces();
+    this.fetchME()
+
+    console.log('me ', this.me)
+
     // เรียกใช้เมื่อโหลด component
   },
   computed: {
+    // filteredEmployees() {
+
+    //   const customOrder = this.employTypesOptions.map((co) => co?.toLowerCase());
+    //   const result = this.filterEmployees.length
+    //     ? this.employees
+    //       .filter((em) =>
+    //         this.filterEmployees.some((se) =>
+    //           se?.toLowerCase().includes(em.position?.toLowerCase())
+    //         )
+    //       )
+    //       .sort(
+    //         (a, b) =>
+    //           customOrder.indexOf(a.position?.toLowerCase()) -
+    //           customOrder.indexOf(b.position?.toLowerCase())
+    //       )
+    //     : this.employees.sort(
+    //       (a, b) =>
+    //         customOrder.indexOf(a.position?.toLowerCase()) -
+    //         customOrder.indexOf(b.position?.toLowerCase())
+    //     );
+    //   return result;
+    // },
     filteredEmployees() {
-      const customOrder = this.employTypesOptions.map((co) =>
-        co?.toLowerCase()
+      const customOrder = this.employTypesOptions.map((co) => co?.toLowerCase());
+      const existingEmployeeIds = this.newProject.employees || [];
+      const searchQuery = this.employeeSearchQuery?.toLowerCase() || "";
+
+      // กรองพนักงานที่ยังไม่ถูกเลือกใน newProject
+      let result = this.employees.filter(employee =>
+        !existingEmployeeIds.includes(employee._id)
       );
-      const result = this.filterEmployees.length
-        ? this.employees
-          .filter((em) =>
-            this.filterEmployees.some((se) =>
-              se?.toLowerCase().includes(em.position?.toLowerCase())
-            )
+
+      // ถ้ามีการเลือก filterEmployees จะกรองเพิ่มตามตำแหน่ง
+      if (this.filterEmployees.length) {
+        result = result.filter(em =>
+          this.filterEmployees.some(se =>
+            se?.toLowerCase().includes(em.position?.toLowerCase())
           )
-          .sort(
-            (a, b) =>
-              customOrder.indexOf(a.position?.toLowerCase()) -
-              customOrder.indexOf(b.position?.toLowerCase())
-          )
-        : this.employees.sort(
-          (a, b) =>
-            customOrder.indexOf(a.position?.toLowerCase()) -
-            customOrder.indexOf(b.position?.toLowerCase())
         );
+      }
+
+      // ถ้ามีคำค้นหา จะกรองตามชื่อพนักงาน
+      if (searchQuery) {
+        result = result.filter(employee =>
+          (employee.first_name + ' ' + employee.last_name).toLowerCase().includes(searchQuery) ||
+          (employee.nick_name && employee.nick_name.toLowerCase().includes(searchQuery))
+        );
+      }
+
+      // เรียงลำดับตาม customOrder
+      result = result.sort((a, b) =>
+        customOrder.indexOf(a.position?.toLowerCase()) -
+        customOrder.indexOf(b.position?.toLowerCase())
+      );
+
       return result;
     },
     filteredProjects() {
-      // กรองโปรเจคตามค่าค้นหาของรหัสโปรเจค และชื่อโปรเจค
       const filtered = this.projects.filter((project) => {
+        const searchQueryLower = this.searchQuery?.toLowerCase() || "";
+
         const matchesSearch =
-          project.code
-            ?.toLowerCase()
-            .includes(this.searchQuery?.toLowerCase()) ||
-          project.product_detail[0].packagename
-            ?.toLowerCase()
-            .includes(this.searchQuery?.toLowerCase());
+          project.code?.toLowerCase().includes(searchQueryLower) ||
+          project.title?.toLowerCase().includes(searchQueryLower) ||
+          (project.employees &&
+            project.employees.some((emp) =>
+              emp.toLowerCase().includes(searchQueryLower)
+            )) ||
+          (project.status.length > 0 &&
+            project.status[project.status.length - 1]?.name
+              ?.toLowerCase()
+              .includes(searchQueryLower));
+
         const matchesType =
           !this.filterType || project.code.substring(0, 3) === this.filterType;
         const matchesStatus =
-          !this.filterStatus || project.status.name === this.filterStatus;
+          !this.filterStatus ||
+          (project.status.length > 0 &&
+            project.status[project.status.length - 1]?.name === this.filterStatus);
+
         return matchesSearch && matchesType && matchesStatus;
       });
 
-      // คำนวณจำนวนหน้าทั้งหมด
       this.totalPages = Math.ceil(filtered.length / this.pageSize);
 
-      // คำนวณหน้าที่แสดง
       const startIndex = (this.currentPage - 1) * this.pageSize;
       const endIndex = startIndex + this.pageSize;
       return filtered.slice(startIndex, endIndex);
     },
   },
   methods: {
+    async fetchME() {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_VUE_APP_DECCAN}/getme `,
+          {
+            headers: {
+              "auth-token": localStorage.getItem("token"),
+            },
+          }
+        );
+        this.me = response.data.data;
+
+        console.log('me : ', this.me)
+
+        await this.fetchProjects();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    },
+    getEmployeeName(employeeId) {
+      const employee = this.employees.find(emp => emp._id === employeeId);
+      return employee
+        ? `${employee.first_name} ${employee.last_name}`
+        : 'ไม่พบข้อมูล';
+    },
+    compressAndConvertToBase64(file, maxWidth = 800, quality = 0.6) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            const scale = Math.min(1, maxWidth / img.width);
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            const compressedBase64 = canvas.toDataURL("image/webp", quality);
+            resolve(compressedBase64);
+          };
+          img.onerror = (e) => reject(e);
+          img.src = reader.result;
+        };
+        reader.onerror = (error) => reject(error);
+      });
+    },
+    convertToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+    },
+    async handleImageChange(event, type) {
+      const files = Array.from(event.target.files);
+      if (!files.length) return;
+
+      const remainingSlots = 4 - this.projectPic.length;
+      const validFiles = files.slice(0, remainingSlots);
+
+      for (const file of validFiles) {
+        const base64 = await this.compressAndConvertToBase64(file);
+        this.projectPic.push(base64);
+      }
+      event.target.value = "";
+
+      console.log("projectPic : ", this.projectPic);
+    },
     async fetchProvinces() {
       try {
         const response = await axios.get(
-          'https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province_with_amphure_tambon.json'
+          "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province_with_amphure_tambon.json"
         );
 
         this.provinces = response.data;
       } catch (error) {
-        console.error('Error fetching provinces: ', error);
+        console.error("Error fetching provinces: ", error);
       }
     },
     async updateEmployees() {
-      this.isLoaing = true;
+      // ตรวจสอบว่ามีพนักงานซ้ำหรือไม่
+      const existingEmployees = this.newProject.employees || [];
+      const newEmployeeIds = this.selectedEmployees.map(em => em._id);
+
+      console.log('existingEmployees', existingEmployees)
+      console.log('newEmployeeIds', newEmployeeIds)
+
+      // หาพนักงานที่ซ้ำ
+      const duplicateEmployees = newEmployeeIds.filter(id =>
+        existingEmployees.includes(id)
+      );
+
+      if (duplicateEmployees.length > 0) {
+        const duplicateNames = this.selectedEmployees
+          .filter(em => duplicateEmployees.includes(em._id))
+          .map(em => `${em.first_name} ${em.last_name}`)
+          .join(', ');
+
+        Swal.fire({
+          icon: 'error',
+          title: 'ไม่สามารถบันทึกได้',
+          text: `พนักงานต่อไปนี้มีอยู่ในโปรเจคแล้ว: ${duplicateNames}`,
+          confirmButtonText: 'ตกลง'
+        });
+        return;
+      }
+
+      this.isLoading = true;
       const id = this.newProject._id;
-      const employees = this.selectedEmployees.map((em) => em._id);
+      const employees = [...newEmployeeIds]; // รวมพนักงานเดิมและใหม่
+
       try {
         const { data } = await axios.put(
           `${import.meta.env.VITE_VUE_APP_DECCAN}/project/${id}/update`,
-          {
-            employees: employees,
-          },
-          {
-            headers: {
-              token: localStorage.getItem("token"),
-            },
-          }
+          { employees },
+          { headers: { token: localStorage.getItem("token") } }
         );
+
         if (data.status) {
-          console.log(data);
           Swal.fire({
             icon: "success",
             title: "เพิ่มพนักงานลงงานสำเร็จ",
@@ -852,8 +1083,7 @@ export default {
           timer: 1500,
         });
       } finally {
-        this.isLoaing = false;
-        this.newProject = {};
+        this.isLoading = false;
         this.openSelectEmployeesDialog = false;
         this.selectedEmployees = [];
       }
@@ -898,46 +1128,58 @@ export default {
       }
     },
     formatDayLeft(dueDate) {
-      const timestamps = new Date(dueDate).getTime() - new Date().getTime();
-      // Convert timestamps to days and hours
+      const now = new Date();
+      const end = new Date(dueDate);
+      const diff = end.getTime() - now.getTime();
+
       const millisecondsPerDay = 24 * 60 * 60 * 1000;
       const millisecondsPerHour = 60 * 60 * 1000;
 
-      const days = Math.floor(timestamps / millisecondsPerDay);
-      const hours = Math.floor(
-        (timestamps % millisecondsPerDay) / millisecondsPerHour
-      );
-      const result =
-        days + 1 > 7
-          ? {
-            text: `อีก ${days + 1} วัน`,
+      const days = Math.floor(diff / millisecondsPerDay);
+      const hours = Math.floor((diff % millisecondsPerDay) / millisecondsPerHour);
+
+      let result;
+
+      if (diff > 0) {
+        if (days >= 7) {
+          result = {
+            text: `อีก ${days} วัน`,
             class: "",
-          }
-          : days + 1 > 0 && days + 1 < 7
-            ? {
-              text: `อีก ${days + 1} วัน`,
-              class: "text-orange-500",
-            }
-            : days + 1 === 0
-              ? {
-                text: `ครบกำหนดวันนี้`,
-                class: "text-red-500",
-              }
-              : {
-                text: `เกินกำหนด ${Math.abs(days + 1)} วัน`,
-                class: "text-red-500",
-              };
+          };
+        } else if (days >= 1) {
+          result = {
+            text: `อีก ${days} วัน`,
+            class: "text-orange-500",
+          };
+        } else {
+          result = {
+            text: `ครบกำหนดวันนี้`,
+            class: "text-red-500",
+          };
+        }
+      } else {
+        const overdueDays = Math.abs(Math.ceil(diff / millisecondsPerDay));
+        result = {
+          text: `เกินกำหนด ${overdueDays} วัน`,
+          class: "text-red-500",
+        };
+      }
+
       return result;
     },
+
     getEmployeesData(emId) {
       const result = this.employees.filter((e) => emId.includes(e._id));
       return result;
     },
-    openSelectEmployees(project) {
+    async openSelectEmployees(project) {
       this.newProject = project;
-      this.selectedEmployees = this.getEmployeesData(project.employees);
-      console.log(this.selectedEmployees);
+      // this.selectedEmployees = this.employees.filter(e =>
+      //   project.employees.includes(e._id)
+      // );
       this.openSelectEmployeesDialog = true;
+
+      console.log('selectedEmployees', this.selectedEmployees)
     },
     openSelectDueDate(project) {
       this.newProject = project;
@@ -953,12 +1195,9 @@ export default {
 
       if (selectedPosition === "GRP" || selectedPosition === "DEV") {
         try {
-          const response = await axios.get(
-            `${import.meta.env.VITE_VUE_APP_DECCAN}/get`,
-            {
-              headers: { "auth-token": localStorage.getItem("token") },
-            }
-          );
+          const response = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/get`, {
+            headers: { "auth-token": localStorage.getItem("token") },
+          });
           // Filter employees based on selected job position
           this.employees = response.data.data.filter((employee) =>
             employee.employee_number.startsWith(selectedPosition)
@@ -987,17 +1226,13 @@ export default {
         (employee) => employee._id === this.editedProject.employee_id
       );
       if (selectedEmployeeData) {
-        this.editedProject.employee_number =
-          selectedEmployeeData.employee_number;
+        this.editedProject.employee_number = selectedEmployeeData.employee_number;
         this.editedProject.nick_name = selectedEmployeeData.nick_name;
       }
     },
     editProject(project) {
-      // Open the edit dialog
       this.showEditProjectModal = true;
-      // Populate the editedProject with the project details
       this.editedProject = { ...project };
-      // Find the corresponding type in projectTypes and assign its type_code and type_name to editedProject
       const selectedType = this.projectTypes.find(
         (type) => type.type_code === project.type.type_code
       );
@@ -1014,7 +1249,7 @@ export default {
         this.isLoading = true;
         // Make a PUT request to update the project
         const response = await axios.put(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/requset/update/project/${this.editedProject._id
+          `${import.meta.env.VITE_VUE_APP_DECCAN}/project/update/${this.editedProject._id
           }`,
           this.editedProject,
           {
@@ -1059,21 +1294,16 @@ export default {
     },
     async fetchEmployees() {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_VUE_APP_DECCAN}/get`,
-          {
-            headers: { "auth-token": localStorage.getItem("token") },
-          }
-        );
+        const response = await axios.get(`${import.meta.env.VITE_VUE_APP_DECCAN}/get`, {
+          headers: { "auth-token": localStorage.getItem("token") },
+        });
 
         this.employees = response.data.data;
         this.employees.map((em) => {
           this.imageUrl(em);
         });
         this.employTypesOptions = [
-          ...new Set(
-            response.data.data.map((em) => em.position?.toLowerCase())
-          ),
+          ...new Set(response.data.data.map((em) => em.position?.toLowerCase())),
         ];
         console.log(this.employTypesOptions);
         console.log("employees", this.employees);
@@ -1082,7 +1312,7 @@ export default {
       }
     },
     viewDetails(project) {
-      console.log(project);
+      console.log('project : ', project);
       this.detailEmployee = project;
       this.Detailsvisible = true;
     },
@@ -1213,8 +1443,6 @@ export default {
       }
     },
 
-
-
     async fetchProjects() {
       try {
         this.isLoading = true;
@@ -1226,41 +1454,33 @@ export default {
             },
           }
         );
-        this.projects = response.data.data.slice().reverse();
-        console.log(this.projects);
 
-        await Promise.all(
-          this.projects.map(async (project) => {
-            if (Array.isArray(project.employees) && project.employees.length) {
-              // ขยาย array ซ้อนให้เป็น array ของ employeeId ทั้งหมด
-              const employeeIds = project.employees.flat();
+        let projects = response.data.data.slice().reverse();
 
-              // เรียก fetchEmployeeById สำหรับแต่ละ employeeId
-              project.employees = await Promise.all(
-                employeeIds.map((id) => this.fetchEmployeeById(id))
-              );
-            } else {
-              project.employees = [];
-            }
-          })
-        );
+        // ถ้าเป็นพนักงานภาคสนาม ให้กรองเฉพาะโปรเจกต์ที่ตรงกับตำแหน่ง
+        if (this.me.position === "พนักงานภาคสนาม") {
+          projects = projects.filter(project => project.positionCreate === "พนักงานภาคสนาม" && project.idCreate === this.me._id);
 
-        // แปลงเวลาในโซน UTC เป็นเวลาในโซนไทย
-        this.projects.forEach((project) => {
-          project.due_date = dayjs(project.due_date)
-            .locale("th")
-            .format("YYYY-MM-DD");
-          project.finish_date = dayjs(project.finish_date)
-            .locale("th")
-            .format("YYYY-MM-DD");
+
+        }
+
+        // แปลงวันที่
+        projects.forEach((project) => {
+          project.due_date = dayjs(project.due_date).locale("th").format("YYYY-MM-DD");
+          project.finish_date = dayjs(project.finish_date).locale("th").format("YYYY-MM-DD");
         });
+
+        this.projects = projects;
       } catch (error) {
         console.error("Error fetching projects:", error);
       } finally {
         this.isLoading = false;
       }
     },
+
     async fetchEmployeeById(employeeId) {
+
+      console.log('emId : ', employeeId)
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_VUE_APP_DECCAN}/getid/${employeeId}`,
@@ -1282,7 +1502,7 @@ export default {
     async submitProject() {
       this.isLoading = true;
 
-      console.log('newProject : ', this.newProject)
+      console.log("newProject : ", this.newProject);
       const payload = this.newProject;
 
       const projectSubmit = {
@@ -1296,12 +1516,21 @@ export default {
         province: payload.province,
         postcode: payload.postcode,
         remark: payload.remark,
-        size: payload.size
-      }
+        size: payload.size,
+        image: this.projectPic,
+
+        positionCreate: this.me.position,
+        idCreate: this.me._id,
+
+        //ลูกค้า
+        customer_name: payload.customer_name,
+        customer_tel: payload.customer_tel,
+        customer_line: payload.customer_line,
+      };
 
       try {
-        console.log('payload', payload)
-        console.log('projectSub : ', projectSubmit)
+        console.log("payload", payload);
+        console.log("projectSub : ", projectSubmit);
         const response = await axios.post(
           `${import.meta.env.VITE_VUE_APP_DECCAN}/project`,
           projectSubmit
@@ -1379,8 +1608,8 @@ export default {
       const province = this.provinces.find((p) => p.id === parseInt(selectedProvinceId));
 
       this.newProject.province = selectedProvinceId;
-      this.newProject.district = '';
-      this.newProject.subdistrict = '';
+      this.newProject.district = "";
+      this.newProject.subdistrict = "";
       this.districts = province ? province.amphure : [];
       this.subdistricts = [];
     },
@@ -1389,15 +1618,28 @@ export default {
       const district = this.districts.find((d) => d.id === parseInt(selectedDistrictId));
 
       this.newProject.district = selectedDistrictId;
-      this.newProject.subdistrict = '';
+      this.newProject.subdistrict = "";
       this.subdistricts = district ? district.tambon : [];
     },
     handleSubdistrictChange(e) {
       const selectedSubdistrictId = e.value;
-      const subdistrict = this.subdistricts.find((s) => s.id === parseInt(selectedSubdistrictId));
+      const subdistrict = this.subdistricts.find(
+        (s) => s.id === parseInt(selectedSubdistrictId)
+      );
 
       this.newProject.subdistrict = selectedSubdistrictId;
-      this.newProject.postcode = subdistrict ? subdistrict.zip_code.toString() : '';
+      this.newProject.postcode = subdistrict ? subdistrict.zip_code.toString() : "";
+    },
+    nextImage() {
+      this.currentIndex = (this.currentIndex + 1) % this.detailEmployee.image.length;
+    },
+    prevImage() {
+      this.currentIndex =
+        (this.currentIndex - 1 + this.detailEmployee.image.length) %
+        this.detailEmployee.image.length;
+    },
+    removeImage(index) {
+      this.projectPic.splice(index, 1);
     },
   },
 };

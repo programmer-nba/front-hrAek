@@ -392,6 +392,7 @@
               <option value="owner">Owner</option>
               <option value="ช่างเทคนิค">ช่างเทคนิค</option>
               <option value="พนักงานภาคสนาม">พนักงานภาคสนาม</option>
+              
             </select>
           </div>
         </div>
@@ -623,7 +624,7 @@
                       แก้ไข
                     </button>
                   </td>
-                  <td v-if=" this.position === 'owner'" class="border border-solid border-gray-500 px-4 py-2">
+                  <td  class="border border-solid border-gray-500 px-4 py-2">
                     <button @click.prevent="confirmDelete(employee._id)"
                       class="text-red-500 hover:text-red-700 transition-all">
                       <svg class="h-8 w-8 text-red-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
@@ -748,7 +749,8 @@ export default {
       subPosition: "",
       subForPosition: [
         { label: "พนักงานภาคสนาม", value: "พนักงานภาคสนาม" },
-        { label: "	ช่างเทคนิค", value: "	ช่างเทคนิค" },
+        { label: "ช่างเทคนิค", value: "ช่างเทคนิค" },
+        { label: "manager", value: "manager" },
       ],
       searchKeyword: "",
       editableDiv: "",
@@ -853,6 +855,8 @@ export default {
         );
         this.employees = response.data.data.reverse();
 
+        console.log('posotion : ' , this.position)
+
         console.log('employees : ' , this.employees)
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -866,7 +870,6 @@ export default {
           first_name: this.first_name,
           last_name: this.last_name,
           iden_number: this.iden_number,
-          role: "employee",
           //role_id: this.selectedSubPosition._id,
           userid: this.iden_number,
           password: this.iden_number,

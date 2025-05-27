@@ -44,7 +44,7 @@
           <p>เบอร์โทรศัพท์ : {{ detailEmployee.customer.customer_tel }}</p>
           <p>Line ID : {{ detailEmployee.customer.customer_line }}</p>
         </div>
-        <div class="mb-4">
+        <!-- <div class="mb-4">
           <label class="block text-sm font-bold mb-2">รายละเอียดสินค้า</label>
           <ul>
             <li v-for="detailEmployee in detailEmployee.refs" :key="detailEmployee._id">
@@ -54,7 +54,7 @@
               </p>
             </li>
           </ul>
-        </div>
+        </div> -->
 
         <div class="col-span-2">
           <label class="block text-sm font-bold mb-2">รายละเอียดเพิ่มเติม</label>

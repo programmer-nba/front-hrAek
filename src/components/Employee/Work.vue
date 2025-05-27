@@ -747,7 +747,7 @@
                   " @click="() => { detailEmployee = project; openReceipt(); }" label="ใบเสร็จรับเงิน"
                     class="px-3 py-2 text-violet-500 border-2 border-violet-500 rounded hover:bg-violet-500 hover:text-white" />
 
-                    <ButtonP v-if="
+                  <ButtonP v-if="
                     position !== 'ช่างเทคนิค' &&
                     project.status[project.status.length - 1].name !== 'รอรับงาน' &&
                     project.status[project.status.length - 1].name !== 'ดำเนินการสำเร็จ' &&
@@ -841,7 +841,7 @@
           </p>
           <p>Line : {{ detailEmployee.customer.customer_line || "ไม่มี" }}</p>
         </div>
-        <div class="mb-4">
+        <!-- <div class="mb-4">
           <label class="block text-sm font-bold mb-2">รายละเอียดสินค้า</label>
           <ul>
             <li v-for="detailEmployee in detailEmployee.refs" :key="detailEmployee._id">
@@ -851,7 +851,7 @@
               </p>
             </li>
           </ul>
-        </div>
+        </div> -->
         <div class="mb-4">
           <label class="block text-sm font-bold mb-2">ใบเสร็จเลขที่</label>
           <p>{{ detailEmployee.billNo || "ไม่มี" }}</p>

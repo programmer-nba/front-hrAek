@@ -4,7 +4,7 @@ let routes = [
   {
     path: "/",
     name: "Manager",
-    component: () => import("../components/Manager/DashboardView.vue"),
+    component: () => import("../components/Owner/HomeView.vue"),
   },
 
   {
@@ -45,7 +45,7 @@ let routes = [
   {
     path: "/Profile",
     name: "Profile",
-    component: () => import("../components/Manager/Profile.vue"),
+    component: () => import("../components/Employee/ProfileView.vue"),
   },
   {
     path: "/SubmitDocuments",
@@ -61,7 +61,7 @@ let routes = [
   {
     path: "/Project",
     name: "Projectview",
-    component: () => import("../components/Manager/Project/Projectview.vue"),
+    component: () => import("../components/Owner/Project/Projectview.vue"),
   },
   {
     path: "/SendBill",

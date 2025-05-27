@@ -44,9 +44,9 @@ let routes = [
     component: () => import("../components/Owner/Time/HistoryTime.vue"),
   },
   {
-    path: "/Profile/Profile",
+    path: "/Profile",
     name: "Profile",
-    component: () => import("../components/Owner/Profile/Profile.vue"),
+    component: () => import("../components/Employee/ProfileView.vue"),
   },
   {
     path: "/Project",

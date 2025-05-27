@@ -43,6 +43,18 @@ let routes = [
     component: () => import("../components/Employee/ReceiptHisView.vue"),
   },
   {
+    path: "/invoice",
+    name: "invoice",
+    component: () =>
+      import("../components/Owner/InvoiceView.vue"),
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: () =>
+      import("../components/Employee/ProfileSetting.vue"),
+  },
+  {
     path: "/ReportEmployee",
     name: "ReportEmployee",
     component: () =>
@@ -109,11 +121,7 @@ let routes = [
     name: "RecordView",
     component: () => import("../components/Employee/Record/RecordView.vue"),
   },
-  {
-    path: "/project",
-    name: "mywork",
-    component: () => import("../components/Employee/Work/MyWork.vue"),
-  },
+
   {
     path: "/Work/AddWork",
     name: "AddWork",
@@ -124,11 +132,11 @@ let routes = [
   //   name: "Contract",
   //   component: () => import("../components/Admin/Contract/ContractView.vue"),
   // },
-  // {
-  //   path: "/Employee/profile",
-  //   name: "profile",
-  //   component: () => import("../components/Employee/ProfileView.vue"),
-  // },
+  {
+    path: "/Employee/profile",
+    name: "profile",
+    component: () => import("../components/Employee/ProfileView.vue"),
+  },
 
   {
     path: "/home/lawyer",
@@ -145,6 +153,11 @@ let routes = [
     name: "RequesttoLeave",
     component: () =>
       import("../components/Employee/HeadSupervisor/RequesttoLeave.vue"),
+  },
+  {
+    path: "/Project",
+    name: "Projectview",
+    component: () => import("../components/Owner/Project/Projectview.vue"),
   },
 ];
 

@@ -14,35 +14,26 @@
       <CCloseButton class="d-lg-none" dark @click="$store.commit('toggleSidebar')" />
     </CSidebarHeader>
 
-    <div class="flex items-center justify-between px-4 py-3 green-800">
+    <div class="flex items-center justify-between px-2  py-3 bg-green-200 rounded-md">
       <div class="flex items-center mr-5">
-        <div class="mr-5">
-          <div class="inline-block relative shrink-0 cursor-pointer rounded-[.95rem]">
-            <img :src="ME.image
-                ? 'https://drive.google.com/thumbnail?id=' + ME.image
-                : ''
-              " v-if="ME.image" class="w-16 h-16 object-cover rounded-full" />
-            <span v-else
-              class="w-16 h-16 flex items-center text-sm justify-center text-gray-400 bg-gray-200 rounded-full">ไม่มีรูปภาพ</span>
-          </div>
-        </div>
-        <div class="mr-2">
-          <!-- {{ console.log('fff',$store.getters.role) }} -->
-          <div
-            class="text-[#102C57] transition-colors duration-200 ease-in-out text-sm font-medium text-secondary-inverse">
-            ผู้บริหาร {{ ME.first_name }}
-          </div>
-
-          <span class="text-[#102C57] font-medium block text-[0.85rem]">
-            {{
-              $store.getters.role === "head_department"
-                ? "หัวหน้าแผนก"
-                : $store.getters.role
-            }}
-          </span>
+        <div class="">
+          <img :src="ME.image" v-if="ME.image" class="w-16 h-16 object-cover rounded-full" />
+          <span v-else
+            class="w-16 h-16 flex items-center text-sm justify-center text-gray-400 bg-gray-200 rounded-full">ไม่มีรูปภาพ</span>
         </div>
       </div>
-      <button
+
+      <div class="text-sm text-gray-800">
+        <div class="flex flex-col">
+          <p class="mb-0">{{ ME.first_name }} {{ ME.last_name }}</p>
+
+          <p class="mb-0">{{ $store.getters.position }}</p>
+
+          <p class="mb-0">{{ ME.role }}</p>
+        </div>
+      </div>
+
+      <button @click="$router.push('/profile')"
         class="inline-flex relative items-center group justify-end text-base font-medium leading-normal text-center align-middle cursor-pointer rounded-[.95rem] transition-colors duration-150 ease-in-out text-dark bg-transparent shadow-none border-0"
         title="ตั้งค่าโปรไฟล์">
         <span
@@ -78,7 +69,7 @@
           </span>
 
           <span :class="{ 'text-[#001B79]': menuItem.showSubmenu }" class="font-medium text-base">{{ menuItem.text
-            }}</span>
+          }}</span>
 
           <span class="ml-10">
             <svg v-if="menuItem.submenu" width="24" height="24" fill="currentColor" viewBox="0 0 20 20" :class="{
@@ -298,7 +289,7 @@ export default {
     this.initializeSidebar();
     this.fetchDocument();
     this.fetchDataApporveDocumemt();
-    // this.fetchME();
+    this.fetchME();
 
     // ตรวจสอบหน้าจอ mobile หรือไม่
     this.isMobile = window.innerWidth <= 1150;
@@ -319,6 +310,8 @@ export default {
         );
 
         this.ME = response.data.data;
+
+        console.log('me: ', this.ME)
       } catch (error) {
         console.error("Error fetching documents:", error);
       }

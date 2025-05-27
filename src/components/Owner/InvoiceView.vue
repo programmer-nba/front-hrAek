@@ -11,6 +11,8 @@ const selectedFile = ref(null);
 const selectedProject = ref(null);
 const selectedFileBase64 = ref(null);
 
+const position = localStorage.getItem('position')
+
 const openInvoice = (project) => {
     selectedProject.value = project;
     modalInvoice.value.showModal();
@@ -188,7 +190,7 @@ onMounted(async () => {
                                     class="w-16 h-16 object-cover cursor-pointer border rounded-lg"
                                     :src="invoice.img_deliverwork" alt="ส่งมอบ">
                             </td>
-                            <td class="px-6 py-4 text-center">
+                            <td v-if="position !== 'พนักงานภาคสนาม'" class="px-6 py-4 text-center">
                                 <div v-if="invoice.employeePosition !== 'ช่างเทคนิค'">
                                     <button @click="openInvoice(invoice.projectID)"
                                         class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">ส่งใบแจ้งหนี้</button>
